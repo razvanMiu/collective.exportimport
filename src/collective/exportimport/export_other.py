@@ -880,8 +880,6 @@ class ExportEEAFigure(ExportContent):
                 self.errors.append({"path": None, "message": msg})
                 logger.exception(msg, exc_info=True)
                 continue
-        import pdb
-        pdb.set_trace()
         return item
 
     def dict_hook_document(self, item, obj):
