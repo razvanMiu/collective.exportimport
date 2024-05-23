@@ -147,8 +147,6 @@ class ExportContent(BrowserView):
 
         self.update()
 
-        import pdb
-        pdb
         if not self.request.form.get("form.submitted", False):
             return self.template()
 
@@ -339,6 +337,8 @@ class ExportContent(BrowserView):
         return query
 
     def export_content(self):
+        import pdb
+        pdb
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
         brains = catalog.unrestrictedSearchResults(**query)
