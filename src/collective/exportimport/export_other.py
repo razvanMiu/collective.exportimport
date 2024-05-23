@@ -813,9 +813,6 @@ class ExportRedirects(BaseExport):
 
 
 class ExportEEAFigure(ExportContent):
-
-    catalog = api.portal.get_tool("portal_catalog")
-
     QUERY = {
         'EEAFigure': {
             "id": "marine-regions"
@@ -852,6 +849,7 @@ class ExportEEAFigure(ExportContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        catalog = api.portal.get_tool("portal_catalog")
 
         site = api.portal.get()
         site_absolute_url = site.absolute_url()
@@ -861,7 +859,7 @@ class ExportEEAFigure(ExportContent):
         query = {"portal_type": ('EEAFigureFile', 'Image', 'File'), "path": {
             "query": path, "depth": 2}}
 
-        brains = self.catalog.unrestrictedSearchResults(**query)
+        brains = catalog.unrestrictedSearchResults(**query)
         import pdb
         pdb.set_trace()
 
