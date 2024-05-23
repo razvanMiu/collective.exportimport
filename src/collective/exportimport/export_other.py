@@ -827,6 +827,7 @@ class ExportEEAFigure(ExportContent):
     def update(self):
         """Use this to override stuff before the export starts
         (e.g. force a specific language in the request)."""
+        self.portal_type = ["EEAFigure"]
 
     def start(self):
         """Hook to do something before export."""
