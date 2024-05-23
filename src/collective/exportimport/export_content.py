@@ -321,6 +321,8 @@ class ExportContent(BrowserView):
         """Hook to do something after export finishes."""
 
     def build_query(self):
+        import pdb
+        pdb.set_trace()
         query = {
             "portal_type": self.portal_type,
             "sort_on": "path",
@@ -337,9 +339,6 @@ class ExportContent(BrowserView):
         return query
 
     def export_content(self):
-        import pdb
-        pdb.set_trace()
-
         p = int(self.request.get('p', '0'))
         nrOfHits = int(self.request.get('nrOfHits', '0'))
         query = self.build_query()
