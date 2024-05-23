@@ -3,6 +3,7 @@ from Acquisition import aq_base
 from App.config import getConfiguration
 from collective.exportimport import _
 from collective.exportimport import config
+from collective.exportimport.export_content import ExportContent
 from OFS.interfaces import IOrderedContainer
 from operator import itemgetter
 from plone import api
@@ -93,7 +94,9 @@ class BaseExport(BrowserView):
             if directory:
                 if not os.path.exists(directory):
                     os.makedirs(directory)
-                    logger.info("Created central export/import directory %s", directory)
+                    logger.info(
+                        "Created central export/import directory %s",
+                        directory)
             else:
                 cfg = getConfiguration()
                 directory = cfg.clienthome
@@ -122,8 +125,8 @@ class ExportRelations(BaseExport):
     """Export all relations"""
 
     def __call__(
-        self, download_to_server=False, debug=False, include_linkintegrity=False
-    ):
+            self, download_to_server=False, debug=False,
+            include_linkintegrity=False):
         self.title = _(u"Export relations")
         self.download_to_server = download_to_server
         if not self.request.form.get("form.submitted", False):
@@ -141,7 +144,8 @@ class ExportRelations(BaseExport):
 
             # Archetypes
             # Get all data from the reference_catalog if it exists
-            reference_catalog = getToolByName(self.context, REFERENCE_CATALOG, None)
+            reference_catalog = getToolByName(
+                self.context, REFERENCE_CATALOG, None)
             if reference_catalog is not None:
                 ref_catalog = reference_catalog._catalog
                 for rid in ref_catalog.data:
@@ -185,13 +189,15 @@ class ExportRelations(BaseExport):
                     try:
                         rel_from_path_and_rel_to_path = rel.from_path and rel.to_path
                     except ValueError:
-                        logger.exception("Cannot export relation %s, skipping", rel)
+                        logger.exception(
+                            "Cannot export relation %s, skipping", rel)
                         continue
                     if rel_from_path_and_rel_to_path:
                         from_brain = portal_catalog(
                             path=dict(query=rel.from_path, depth=0)
                         )
-                        to_brain = portal_catalog(path=dict(query=rel.to_path, depth=0))
+                        to_brain = portal_catalog(
+                            path=dict(query=rel.to_path, depth=0))
                         if len(from_brain) > 0 and len(to_brain) > 0:
                             item = {
                                 "from_uuid": from_brain[0].UID,
@@ -256,9 +262,8 @@ class ExportMembers(BaseExport):
             if group.id in self.AUTO_GROUPS:
                 continue
             item = {"groupid": group.id}
-            item["roles"] = [
-                i for i in api.group.get_roles(group=group) if i not in self.AUTO_ROLES
-            ]
+            item["roles"] = [i for i in api.group.get_roles(
+                group=group) if i not in self.AUTO_ROLES]
             item["groups"] = [
                 i.id
                 for i in api.group.get_groups(user=group)
@@ -301,7 +306,8 @@ class ExportMembers(BaseExport):
     def _getUserData(self, userId):
         member = self.pms.getMemberById(userId)
         groups = []
-        group_ids = [i for i in member.getGroups() if i not in self.AUTO_GROUPS]
+        group_ids = [i for i in member.getGroups()
+                     if i not in self.AUTO_GROUPS]
         # Drop groups in which the user is a transitive member
         for group_id in group_ids:
             group = api.group.get(group_id)
@@ -362,7 +368,8 @@ class ExportTranslations(BaseExport):
                 from Products.Archetypes.config import REFERENCE_CATALOG
 
                 # Get all data from the reference_catalog if it exists
-                reference_catalog = getToolByName(self.context, REFERENCE_CATALOG, None)
+                reference_catalog = getToolByName(
+                    self.context, REFERENCE_CATALOG, None)
                 if reference_catalog is not None:
                     for ref in reference_catalog(relationship="translationOf"):
                         source = api.content.get(UID=ref.sourceUID)
@@ -383,7 +390,8 @@ class ExportTranslations(BaseExport):
         # Archetypes and Dexterity with plone.app.multilingual
         portal_catalog = api.portal.get_tool("portal_catalog")
         if "TranslationGroup" not in portal_catalog.indexes():
-            logger.debug(u"No index TranslationGroup (p.a.multilingual not installed)")
+            logger.debug(
+                u"No index TranslationGroup (p.a.multilingual not installed)")
             return results
 
         for uid in portal_catalog.uniqueValuesFor("TranslationGroup"):
@@ -432,7 +440,8 @@ class ExportLocalRoles(BaseExport):
         self.results = []
 
         portal = api.portal.get()
-        portal.ZopeFindAndApply(portal, search_sub=True, apply_func=self.get_localroles)
+        portal.ZopeFindAndApply(portal, search_sub=True,
+                                apply_func=self.get_localroles)
 
         self.get_root_localroles()
 
@@ -530,7 +539,8 @@ class ExportDefaultPages(BaseExport):
             try:
                 obj = brain.getObject()
             except Exception:
-                logger.info(u"Error getting obj for %s", brain.getURL(), exc_info=True)
+                logger.info(u"Error getting obj for %s",
+                            brain.getURL(), exc_info=True)
                 continue
             if obj is None:
                 logger.error(u"brain.getObject() is None %s", brain.getPath())
@@ -560,7 +570,8 @@ class ExportDefaultPages(BaseExport):
                 data["uuid"] = config.SITE_ROOT
                 results.append(data)
         except Exception:
-            logger.info(u"Error exporting default_page for portal", exc_info=True)
+            logger.info(u"Error exporting default_page for portal",
+                        exc_info=True)
 
         return results
 
@@ -610,7 +621,8 @@ class ExportDiscussion(BaseExport):
             try:
                 obj = brain.getObject()
                 if obj is None:
-                    logger.error(u"brain.getObject() is None %s", brain.getPath())
+                    logger.error(u"brain.getObject() is None %s",
+                                 brain.getPath())
                     continue
                 conversation = IConversation(obj, None)
                 if not conversation:
@@ -620,11 +632,12 @@ class ExportDiscussion(BaseExport):
                 )
                 output = serializer()
                 if output:
-                    results.append({"uuid": IUUID(obj), "conversation": output})
+                    results.append(
+                        {"uuid": IUUID(obj),
+                         "conversation": output})
             except Exception:
-                logger.info(
-                    "Error exporting comments for %s", brain.getURL(), exc_info=True
-                )
+                logger.info("Error exporting comments for %s",
+                            brain.getURL(), exc_info=True)
                 continue
         return results
 
@@ -713,7 +726,8 @@ def export_local_portlets(obj):
             values = {}
             for name in schema.names(all=True):
                 value = getattr(assignment, name, None)
-                if RelationValue is not None and isinstance(value, RelationValue):
+                if RelationValue is not None and isinstance(
+                        value, RelationValue):
                     value = value.to_object.UID()
                 elif isinstance(value, RichTextValue):
                     value = {
@@ -736,7 +750,9 @@ def export_local_portlets(obj):
 def export_portlets_blacklist(obj):
     results = []
     for manager_name, manager in getUtilitiesFor(IPortletManager):
-        assignable = queryMultiAdapter((obj, manager), ILocalPortletAssignmentManager)
+        assignable = queryMultiAdapter(
+            (obj, manager),
+            ILocalPortletAssignmentManager)
         if assignable is None:
             continue
         for category in (
@@ -794,3 +810,52 @@ class ExportRedirects(BaseExport):
         data = export_plone_redirects()
         logger.info(u"Exported %s redirects", len(data))
         self.download(data)
+
+
+class ExportEEAFigure(ExportContent):
+
+    QUERY = {
+        'EEAFigure': {
+            "id": "marine-regions"
+        },
+    }
+
+    # DROP_PATHS = [
+    #     '/Plone/userportal',
+    #     '/Plone/en/obsolete_content',
+    # ]
+
+    # DROP_UIDS = [
+    #     '71e3e0a6f06942fea36536fbed0f6c42',
+    # ]
+
+    def update(self):
+        """Use this to override stuff before the export starts
+        (e.g. force a specific language in the request)."""
+
+    def start(self):
+        """Hook to do something before export."""
+
+    def finish(self):
+        """Hook to do something after export."""
+
+    def global_obj_hook(self, obj):
+        """Inspect the content item before serialisation data.
+        Bad: Changing the content-item is a horrible idea.
+        Good: Return None if you want to skip this particular object.
+        """
+        return obj
+
+    def global_dict_hook(self, item, obj):
+        """Use this to modify or skip the serialized data.
+        Return None if you want to skip this particular object.
+        """
+        import pdb
+        pdb.set_trace()
+        return item
+
+    def dict_hook_document(self, item, obj):
+        """Use this to modify or skip the serialized data by type.
+        Return the modified dict (item) or None if you want to skip this particular object.
+        """
+        return item

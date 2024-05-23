@@ -46,6 +46,10 @@
          <li><a class=""
             tal:attributes="href python: portal_url + '/@@export_redirects'" i18n:translate="">Export redirects
          </a></li>
+
+         <li><a class=""
+            tal:attributes="href python: portal_url + '/@@export_eeafigure'" i18n:translate="">Export EEA figure
+         </a></li>
       </ul>
 
       <h3 i18n:translate="">Imports</h3>
