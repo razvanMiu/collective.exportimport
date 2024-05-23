@@ -114,6 +114,7 @@ class ExportContent(BrowserView):
         include_revisions=False,
         write_errors=False,
     ):
+        print("======= CALL =======")
         self.portal_type = portal_type or []
         if isinstance(self.portal_type, str):
             self.portal_type = [self.portal_type]
@@ -337,11 +338,17 @@ class ExportContent(BrowserView):
         return query
 
     def export_content(self):
+        print("======= EXPORTING =======")
         import pdb
         pdb
+
+        p = int(self.request.get('p', '0'))
+        nrOfHits = int(self.request.get('nrOfHits', '0'))
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
         brains = catalog.unrestrictedSearchResults(**query)
+        if p and nrOfHits:
+            brains = brains[(p - 1) * nrOfHits:p * nrOfHits]
         logger.info(u"Exporting {} {}".format(len(brains), self.portal_type))
 
         # Override richtext serializer to export links using resolveuid/xxx

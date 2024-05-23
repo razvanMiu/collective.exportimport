@@ -813,11 +813,7 @@ class ExportRedirects(BaseExport):
 
 
 class ExportEEAFigure(ExportContent):
-    QUERY = {
-        'EEAFigure': {
-            "id": "marine-regions"
-        },
-    }
+    QUERY = {}
 
     # DROP_PATHS = [
     #     '/Plone/userportal',
