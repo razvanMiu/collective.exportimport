@@ -856,7 +856,7 @@ class ExportEEAFigure(ExportContent):
         site_relative_url = "/".join(site.getPhysicalPath())
         path = site_relative_url + item["@id"].replace(site_absolute_url, "")
 
-        query = {"portal_type": ('EEAFigureFile', 'Image', 'File'), "path": {
+        query = {"portal_type": ('Image'), "path": {
             "query": path, "depth": 2}}
 
         brains = catalog.unrestrictedSearchResults(**query)
@@ -867,15 +867,21 @@ class ExportEEAFigure(ExportContent):
                 serializer = getMultiAdapter(
                     (obj, self.request),
                     ISerializeToJson)
-                child = serializer()
-                import pdb
-                pdb.set_trace()
+                try:
+                    child = serializer()
+                    if '.75dpi.png' not in child.get("id", ''):
+                        continue
+                    item["preview_image"] = child.get("image", {})
+                    break
+                except Exception:
+                    continue
             except Exception:
                 msg = u"Error getting brain {}".format(brain.getPath())
                 self.errors.append({"path": None, "message": msg})
                 logger.exception(msg, exc_info=True)
                 continue
-
+        import pdb
+        pdb.set_trace()
         return item
 
     def dict_hook_document(self, item, obj):
