@@ -339,10 +339,6 @@ class ExportContent(BrowserView):
     def export_content(self):
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
-
-        query = {"portal_type": ('EEAFigureFile', 'Image', 'File'), "path": {
-            "query": "/www/SITE/about-us/countries-and-eionet/marine-regions", "depth": 2}}
-
         brains = catalog.unrestrictedSearchResults(**query)
         logger.info(u"Exporting {} {}".format(len(brains), self.portal_type))
 
