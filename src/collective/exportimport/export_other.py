@@ -814,6 +814,8 @@ class ExportRedirects(BaseExport):
 
 class ExportEEAFigure(ExportContent):
 
+    catalog = api.portal.get_tool("portal_catalog")
+
     QUERY = {
         'EEAFigure': {
             "id": "marine-regions"
@@ -850,8 +852,19 @@ class ExportEEAFigure(ExportContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+
+        site = api.portal.get()
+        site_absolute_url = site.absolute_url()
+        site_relative_url = "/".join(site.getPhysicalPath())
+        path = site_relative_url + item["@id"].replace(site_absolute_url, "")
+
+        query = {"portal_type": ('EEAFigureFile', 'Image', 'File'), "path": {
+            "query": path, "depth": 2}}
+
+        brains = self.catalog.unrestrictedSearchResults(**query)
         import pdb
         pdb.set_trace()
+
         return item
 
     def dict_hook_document(self, item, obj):

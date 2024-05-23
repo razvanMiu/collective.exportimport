@@ -142,7 +142,8 @@ class ExportContent(BrowserView):
             ("2", _(u"as blob paths")),
         )
         self.include_revisions = include_revisions
-        self.write_errors = write_errors or self.request.form.get("write_errors")
+        self.write_errors = write_errors or self.request.form.get(
+            "write_errors")
 
         self.update()
 
@@ -190,7 +191,9 @@ class ExportContent(BrowserView):
             if directory:
                 if not os.path.exists(directory):
                     os.makedirs(directory)
-                    logger.info("Created central export/import directory %s", directory)
+                    logger.info(
+                        "Created central export/import directory %s",
+                        directory)
             else:
                 cfg = getConfiguration()
                 directory = cfg.clienthome
@@ -232,7 +235,9 @@ class ExportContent(BrowserView):
             if directory:
                 if not os.path.exists(directory):
                     os.makedirs(directory)
-                    logger.info("Created central export/import directory %s", directory)
+                    logger.info(
+                        "Created central export/import directory %s",
+                        directory)
             else:
                 cfg = getConfiguration()
                 directory = cfg.clienthome
@@ -334,6 +339,10 @@ class ExportContent(BrowserView):
     def export_content(self):
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
+
+        query = {"portal_type": ('EEAFigureFile', 'Image', 'File'), "path": {
+            "query": "/www/SITE/about-us/countries-and-eionet/marine-regions", "depth": 2}}
+
         brains = catalog.unrestrictedSearchResults(**query)
         logger.info(u"Exporting {} {}".format(len(brains), self.portal_type))
 
@@ -371,7 +380,9 @@ class ExportContent(BrowserView):
                 continue
             try:
                 self.safe_portal_type = fix_portal_type(obj.portal_type)
-                serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
+                serializer = getMultiAdapter(
+                    (obj, self.request),
+                    ISerializeToJson)
                 if IPloneSiteRoot.providedBy(obj):
                     item = serializer()
                 elif getattr(aq_base(obj), "isPrincipiaFolderish", False):
@@ -383,7 +394,8 @@ class ExportContent(BrowserView):
                 yield item
             except Exception:
                 msg = u"Error exporting {}".format(obj.absolute_url())
-                self.errors.append({"path": obj.absolute_url(), "message": msg})
+                self.errors.append(
+                    {"path": obj.absolute_url(), "message": msg})
                 logger.exception(msg, exc_info=True)
 
     def portal_types(self):
@@ -457,7 +469,8 @@ class ExportContent(BrowserView):
         Use this to modify or skip the serialized data by type.
         Return a dict or None if you want to skip this particular object.
         """
-        hook = getattr(self, "dict_hook_{}".format(self.safe_portal_type), None)
+        hook = getattr(self, "dict_hook_{}".format(
+            self.safe_portal_type), None)
         if hook and callable(hook):
             item = hook(item, obj)
         return item
@@ -575,7 +588,8 @@ class ExportContent(BrowserView):
         repo_tool = api.portal.get_tool("portal_repository")
         history_metadata = repo_tool.getHistoryMetadata(obj)
         serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
-        content_history_viewlet = ContentHistoryViewlet(obj, self.request, None, None)
+        content_history_viewlet = ContentHistoryViewlet(
+            obj, self.request, None, None)
         content_history_viewlet.navigation_root_url = ""
         content_history_viewlet.site_url = ""
         full_history = content_history_viewlet.fullHistory() or []
@@ -590,9 +604,8 @@ class ExportContent(BrowserView):
             item_version = self.update_data_for_migration(item_version, obj)
             item["exportimport.versions"][version_id] = item_version
             # inject metadata (missing for Archetypes content):
-            comment = history_metadata.retrieve(version_id)["metadata"]["sys_metadata"][
-                "comment"
-            ]
+            comment = history_metadata.retrieve(
+                version_id)["metadata"]["sys_metadata"]["comment"]
             if comment and comment != item["exportimport.versions"][version_id].get(
                 "changeNote"
             ):
@@ -600,17 +613,14 @@ class ExportContent(BrowserView):
             principal = history_metadata.retrieve(version_id)["metadata"][
                 "sys_metadata"
             ]["principal"]
-            if principal and principal != item["exportimport.versions"][version_id].get(
-                "changeActor"
-            ):
+            if principal and principal != item["exportimport.versions"][
+                    version_id].get("changeActor"):
                 item["exportimport.versions"][version_id]["changeActor"] = principal
         # current changenote
-        item["changeNote"] = history_metadata.retrieve(-1)["metadata"]["sys_metadata"][
-            "comment"
-        ]
-        item["changeActor"] = history_metadata.retrieve(-1)["metadata"]["sys_metadata"][
-            "principal"
-        ]
+        item["changeNote"] = history_metadata.retrieve(
+            -1)["metadata"]["sys_metadata"]["comment"]
+        item["changeActor"] = history_metadata.retrieve(
+            -1)["metadata"]["sys_metadata"]["principal"]
         return item
 
 
