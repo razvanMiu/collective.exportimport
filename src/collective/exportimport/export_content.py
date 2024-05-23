@@ -114,7 +114,6 @@ class ExportContent(BrowserView):
         include_revisions=False,
         write_errors=False,
     ):
-        print("======= CALL =======")
         self.portal_type = portal_type or []
         if isinstance(self.portal_type, str):
             self.portal_type = [self.portal_type]
@@ -338,9 +337,8 @@ class ExportContent(BrowserView):
         return query
 
     def export_content(self):
-        print("======= EXPORTING =======")
         import pdb
-        pdb
+        pdb.set_trace()
 
         p = int(self.request.get('p', '0'))
         nrOfHits = int(self.request.get('nrOfHits', '0'))

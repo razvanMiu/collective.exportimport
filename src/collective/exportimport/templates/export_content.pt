@@ -14,10 +14,19 @@
 
         <form id="export_content" action="@@export_content" tal:attributes="action request/URL" method="post" enctype="multipart/form-data">
 
+          <div>
+            <label>Toggle batching </label>
             <input type="checkbox" class="checkboxType" name="with_batching" id="with_batching"
               title="Toggle batching"  />
+          </div>
+          <div>
+            <label>Page </label>
             <input name="p" />
+          </div>
+          <div>
+            <label>Nr of hits </label>
             <input name="nrOfHits" />
+          </div>
             <div class="field mb-3">
               <label for="portal_type">
                 <span i18n:translate="">Content Types to export</span>
