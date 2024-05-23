@@ -14,8 +14,10 @@
 
         <form id="export_content" action="@@export_content" tal:attributes="action request/URL" method="post" enctype="multipart/form-data">
 
-            <input type="hidden" name="p" tal:attributes="value request/get('p', '')"/>
-            <input type="hidden" name="nrOfHits" tal:attributes="value request/get('nrOfHits', '')"/>
+            <input type="checkbox" class="checkboxType" name="with_batching" id="with_batching"
+              title="Toggle batching"  />
+            <input name="p" />
+            <input name="nrOfHits" />
             <div class="field mb-3">
               <label for="portal_type">
                 <span i18n:translate="">Content Types to export</span>

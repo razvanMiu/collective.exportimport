@@ -147,8 +147,6 @@ class ExportContent(BrowserView):
 
         self.update()
 
-        import pdb
-        pdb.set_trace()
         if not self.request.form.get("form.submitted", False):
             return self.template()
 
