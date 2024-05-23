@@ -860,8 +860,21 @@ class ExportEEAFigure(ExportContent):
             "query": path, "depth": 2}}
 
         brains = catalog.unrestrictedSearchResults(**query)
-        import pdb
-        pdb.set_trace()
+
+        for index, brain in enumerate(brains, start=1):
+            try:
+                obj = brain.getObject()
+                serializer = getMultiAdapter(
+                    (obj, self.request),
+                    ISerializeToJson)
+                child = serializer()
+                import pdb
+                pdb.set_trace()
+            except Exception:
+                msg = u"Error getting brain {}".format(brain.getPath())
+                self.errors.append({"path": None, "message": msg})
+                logger.exception(msg, exc_info=True)
+                continue
 
         return item
 
