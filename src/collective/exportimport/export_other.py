@@ -825,16 +825,91 @@ class ExportEEAContent(ExportContent):
         self.portal_type = self.PORTAL_TYPE
 
     def global_dict_hook(self, item, obj):
-        item["preview_image"] = item.get('image', None)
-        item["temporal_coverage"] = self.fix_temporal_coverage(
-            item, "temporalCoverage")
+        item = self.fix_image(item, 'image')
+        item = self.fix_temporal_coverage(item, "temporalCoverage")
+        item = self.fix_topics(item, "themes")
 
         return item
 
+    def fix_image(self, item, field):
+        if field in item:
+            item["preview_image"] = item[field]
+            del item[field]
+        return item
+
     def fix_temporal_coverage(self, item, field):
+        if field in item:
+            temporals = item[field]
+            item["temporal_coverage"] = {
+                "temporal": []
+            }
+            for temporal in temporals:
+                if not temporal > 0:
+                    continue
+                item["temporal_coverage"]["temporal"].append({
+                    "label": temporal,
+                    "value": temporal
+                })
+            del item[field]
+        return item
+
+    def fix_topics(self, item, field):
+        if field in item:
+            item["topics"] = []
+            for topic in item[field]:
+                if topic in topics:
+                    item["topics"].append(topics[topic])
+            del item[field]
+        return item
+
+
+class ExportInfographic(ExportEEAContent):
+    QUERY = {}
+    PORTAL_TYPE = ["Infographic"]
+
+    def global_dict_hook(self, item, obj):
+        """Use this to modify or skip the serialized data.
+        Return None if you want to skip this particular object.
+        """
+        item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
+        item["@type"] = 'infographic'
+
+        return item
+
+
+class ExportGisMapApplication(ExportEEAContent):
+    QUERY = {}
+    PORTAL_TYPE = ["GIS Application"]
+
+    def global_dict_hook(self, item, obj):
+        """Use this to modify or skip the serialized data.
+        Return None if you want to skip this particular object.
+        """
+        item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
+        item["@type"] = 'map_interactive'
+        item["maps"] = {
+            "dataprotection": {},
+            "url": item.get("arcgis_url", None),
+        }
+        if "arcgis_url" in item:
+            del item["arcgis_url"]
+
+        return item
+
+
+class ExportDavizFigure(ExportEEAContent):
+    QUERY = {}
+    PORTAL_TYPE = ["DavizVisualization"]
+
+    def global_dict_hook(self, item, obj):
+        """Use this to modify or skip the serialized data.
+        Return None if you want to skip this particular object.
+        """
+        item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
         import pdb
         pdb.set_trace()
-        return None
+
+        return item
 
 
 class ExportEEAFigure(ExportEEAContent):
@@ -846,6 +921,14 @@ class ExportEEAFigure(ExportEEAContent):
         Return None if you want to skip this particular object.
         """
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
+
+        figure_type = item.get("figureType", "")
+
+        if figure_type == 'map':
+            item["@type"] = 'map_static'
+
+        if figure_type == 'graph':
+            item["@type"] = 'chart_static'
 
         catalog = api.portal.get_tool("portal_catalog")
 

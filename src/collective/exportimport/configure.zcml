@@ -103,6 +103,30 @@
   <browser:page
       name="export_eeafigure"
       for="zope.interface.Interface"
+      class=".export_other.ExportInfographic"
+      template="templates/export_other.pt"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
+      name="export_eeafigure"
+      for="zope.interface.Interface"
+      class=".export_other.ExportGisMapApplication"
+      template="templates/export_other.pt"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
+      name="export_eeafigure"
+      for="zope.interface.Interface"
+      class=".export_other.ExportDavizFigure"
+      template="templates/export_other.pt"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
+      name="export_eeafigure"
+      for="zope.interface.Interface"
       class=".export_other.ExportEEAFigure"
       template="templates/export_other.pt"
       permission="cmf.ManagePortal"
