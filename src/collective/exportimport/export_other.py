@@ -910,12 +910,66 @@ class ExportDavizFigure(ExportEEAContent):
         Return None if you want to skip this particular object.
         """
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
+
+        images = []
+        view = queryMultiAdapter((obj, self.request), name='daviz-view.html')
+
+        tabs = view.tabs
+
+        for tab in tabs:
+            if tab.get('title', None) == 'Table' or tab:
+                continue
+            if tab.title != 'Table':
+                images.append(tab)
+
+        csv = queryMultiAdapter(
+            (obj, self.request),
+            name='download.csv')
+
+        if csv:
+            csv = csv(
+                attachment=False)
+
         import pdb
         pdb.set_trace()
-
-        view = queryMultiAdapter((obj, self.request), name='daviz-view.html')
+        item["file"] = csv
         if 'spreadsheet' in item:
             del item['spreadsheet']
+
+        if len(images) == 1:
+            imageName = images[0].get('name', None)
+            if imageName:
+                imageObj = obj.get(
+                    imageName + '.svg') or obj.get(imageName + '.png')
+            if imageObj:
+                serializer = getMultiAdapter(
+                    (imageObj, self.request), ISerializeToJson)
+                image = serializer()
+            if image:
+                item["preview_image"] = image.get("image", None)
+        if len(images) > 1:
+            items = []
+            itemTitle = item.get("title", "")
+            itemId = item.get("id", "")
+            for i in images:
+                imageName = i.get('name', "")
+                if imageName:
+                    imageObj = obj.get(
+                        imageName + '.svg') or obj.get(imageName + '.png')
+                if imageObj:
+                    serializer = getMultiAdapter(
+                        (imageObj, self.request), ISerializeToJson)
+                    image = serializer()
+                if image:
+                    imageTitle = i.get('title', "")
+                    items.append(
+                        {**item, "title": itemTitle
+                         + (" " + imageTitle if imageTitle else ""),
+                         "id": itemId
+                         + ("_" + imageName if imageName else ""),
+                         "preview_image": image.get("image", None),
+                         "UID": image.get("UID", None) or item.get(
+                             "UID", None), })
 
         return item
 

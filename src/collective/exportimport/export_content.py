@@ -391,7 +391,11 @@ class ExportContent(BrowserView):
                     item = serializer()
                 item = self.update_export_data(item, obj)
 
-                yield item
+                if isinstance(item, list):
+                    for i in item:
+                        yield i
+                else:
+                    yield item
             except Exception:
                 msg = u"Error exporting {}".format(obj.absolute_url())
                 self.errors.append(
