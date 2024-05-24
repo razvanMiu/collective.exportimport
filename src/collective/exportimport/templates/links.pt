@@ -48,7 +48,19 @@
          </a></li>
 
          <li><a class=""
-            tal:attributes="href python: portal_url + '/@@export_eeafigure'" i18n:translate="">Export EEA figure
+            tal:attributes="href python: portal_url + '/@@export_infographic'" i18n:translate="">Export Infographics
+         </a></li>
+
+         <li><a class=""
+            tal:attributes="href python: portal_url + '/@@export_gis_map_application'" i18n:translate="">Export Gis Map Applications
+         </a></li>
+
+         <li><a class=""
+            tal:attributes="href python: portal_url + '/@@export_daviz_figure'" i18n:translate="">Export Daviz Figures
+         </a></li>
+
+         <li><a class=""
+            tal:attributes="href python: portal_url + '/@@export_eeafigure'" i18n:translate="">Export EEA figures
          </a></li>
       </ul>
 
