@@ -921,6 +921,20 @@ class ExportInfographic(ExportEEAContent):
         return item
 
 
+class ExportDashboard(ExportEEAContent):
+    QUERY = {}
+    PORTAL_TYPE = ["Dashboard"]
+
+    def global_dict_hook(self, item, obj):
+        """Use this to modify or skip the serialized data.
+        Return None if you want to skip this particular object.
+        """
+        item = super(ExportInfographic, self).global_dict_hook(item, obj)
+        item["@type"] = 'tableau_visualization'
+
+        return item
+
+
 class ExportGisMapApplication(ExportEEAContent):
     QUERY = {}
     PORTAL_TYPE = ["GIS Application"]
