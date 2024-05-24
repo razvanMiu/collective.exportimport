@@ -936,9 +936,6 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
 
-        import pdb
-        pdb.set_trace()
-
         if 'spreadsheet' in item:
             del item['spreadsheet']
 
@@ -971,16 +968,18 @@ class ExportDavizFigure(ExportEEAContent):
                 if image:
                     imageTitle = i.get('title', "")
                     newItem = item.copy()
-                    newItem["title"] = itemTitle + " " + imageTitle
+                    newItem["title"] = itemTitle + " - " + imageTitle
                     newItem["id"] = itemId + "_" + imageName
-                    newItem["preview_image"] = image.get("image", None)
+                    newItem["preview_image"] = image.get(
+                        "file", None) or image.get(
+                        "image", None)
                     newItem["UID"] = image.get("UID", None) or item.get(
                         "UID", None)
                     if newItem["preview_image"]:
                         newItem["filename"] = image.get("id", None)
                     items.append(newItem)
 
-        return item
+        return items or item
 
 
 class ExportEEAFigure(ExportEEAContent):
