@@ -820,6 +820,32 @@ class ExportRedirects(BaseExport):
 class ExportEEAContent(ExportContent):
     QUERY = {}
     PORTAL_TYPE = []
+    DISSALLOWED_FIELDS = [
+        "constrainTypesMode",
+        "coverImage",
+        "dataLink",
+        "dataOwner",
+        "dataTitle",
+        "dataWarning",
+        "disableProgressTrailViewlet",
+        "eeaManagementPlan",
+        "external",
+        "inheritedprovenance",
+        "image",  # handled by fix_image
+        "layout",
+        "pdfMaxBreadth",
+        "pdfMaxDepth",
+        "pdfMaxItems",
+        "pdfStatic",
+        "pdfTheme",
+        "provenances",  # handled by fix_data_provenance
+        "quickUpload",
+        "temporalCoverage",  # handled by fix_temporal_coverage
+        "themes",  # handled by fix_topics
+        "tocExclude",
+        "tocdepth",
+        "workflow_history",
+    ]
 
     def update(self):
         """Use this to override stuff before the export starts
@@ -832,12 +858,15 @@ class ExportEEAContent(ExportContent):
         item = self.fix_topics(item, "themes")
         item = self.fix_data_provenance(item, "provenances")
 
+        for field in self.DISSALLOWED_FIELDS:
+            if field in item:
+                del item[field]
+
         return item
 
     def fix_image(self, item, field):
         if field in item:
             item["preview_image"] = item[field]
-            del item[field]
         return item
 
     def fix_temporal_coverage(self, item, field):
@@ -853,7 +882,6 @@ class ExportEEAContent(ExportContent):
                     "label": temporal,
                     "value": temporal
                 })
-            del item[field]
         return item
 
     def fix_topics(self, item, field):
@@ -862,7 +890,6 @@ class ExportEEAContent(ExportContent):
             for topic in item[field]:
                 if topic in topics:
                     item["topics"].append(topics[topic])
-            del item[field]
         return item
 
     def fix_data_provenance(self, item, field):
@@ -877,7 +904,6 @@ class ExportEEAContent(ExportContent):
                     "title": provenance.get("title", None),
                     "organization": provenance.get("owner", None),
                 })
-            del item[field]
         return item
 
 
@@ -994,7 +1020,8 @@ class ExportDavizFigure(ExportEEAContent):
                     newItem["UID"] = image.get("UID", None) or item.get(
                         "UID", None)
                     if newItem["preview_image"]:
-                        newItem["filename"] = image.get("id", None)
+                        newItem["preview_image"]["filename"] = image.get(
+                            "id", None)
                     items.append(newItem)
 
         return items or item
