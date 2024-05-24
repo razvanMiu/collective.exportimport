@@ -1035,6 +1035,8 @@ class ExportEEAFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        self.DISSALLOWED_FIELDS.append("figureType")
+
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
         figure_type = item.get("figureType", "")
@@ -1044,6 +1046,9 @@ class ExportEEAFigure(ExportEEAContent):
 
         if figure_type == 'graph':
             item["@type"] = 'chart_static'
+
+        import pdb
+        pdb.set_trace()
 
         catalog = api.portal.get_tool("portal_catalog")
 
