@@ -962,14 +962,13 @@ class ExportDavizFigure(ExportEEAContent):
                     image = serializer()
                 if image:
                     imageTitle = i.get('title', "")
-                    items.append(
-                        {**item, "title": itemTitle
-                         + (" " + imageTitle if imageTitle else ""),
-                         "id": itemId
-                         + ("_" + imageName if imageName else ""),
-                         "preview_image": image.get("image", None),
-                         "UID": image.get("UID", None) or item.get(
-                             "UID", None), })
+                    newItem = item.copy()
+                    newItem["title"] = itemTitle + " " + imageTitle
+                    newItem["id"] = itemId + "_" + imageName
+                    newItem["preview_image"] = image.get("image", None)
+                    newItem["UID"] = image.get("UID", None) or item.get(
+                        "UID", None)
+                    items.append(newItem)
 
         return item
 
