@@ -935,7 +935,7 @@ class ExportDashboard(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        item = super(ExportInfographic, self).global_dict_hook(item, obj)
+        item = super(ExportDashboard, self).global_dict_hook(item, obj)
         item["@type"] = 'tableau_visualization'
 
         return item
