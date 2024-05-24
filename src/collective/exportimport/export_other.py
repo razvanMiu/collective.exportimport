@@ -929,14 +929,13 @@ class ExportGisMapApplication(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
-        item["@type"] = 'map_interactive'
+        self.DISSALLOWED_FIELDS.append("arcgis_url")
         item["maps"] = {
             "dataprotection": {},
             "url": item.get("arcgis_url", None),
         }
-        if "arcgis_url" in item:
-            del item["arcgis_url"]
+        item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
+        item["@type"] = 'map_interactive'
 
         return item
 
@@ -953,6 +952,7 @@ class ExportDavizFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        self.DISSALLOWED_FIELDS.append("spreadsheet")
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
 
         images = []
@@ -978,9 +978,6 @@ class ExportDavizFigure(ExportEEAContent):
                 "content_type": "text/csv",
                 "encoding": "base64"
             }
-
-        if 'spreadsheet' in item:
-            del item['spreadsheet']
 
         if len(images) == 1:
             imageName = images[0].get('name', None)
@@ -1044,8 +1041,6 @@ class ExportEEAFigure(ExportEEAContent):
         """
         self.DISSALLOWED_FIELDS.append("figureType")
 
-        item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
-
         figure_type = item.get("figureType", "")
 
         if figure_type == 'map':
@@ -1053,6 +1048,8 @@ class ExportEEAFigure(ExportEEAContent):
 
         if figure_type == 'graph':
             item["@type"] = 'chart_static'
+
+        item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
         figures = obj.values()
 
@@ -1068,6 +1065,8 @@ class ExportEEAFigure(ExportEEAContent):
                 except Exception:
                     file = None
                 if file and self.IMAGE_FORMAT in file.get("id", ''):
+                    import pdb
+                    pdb.set_trace()
                     item["preview_image"] = file.get("image", {}) or file.get(
                         "file", {})
                     if item["preview_image"]:
