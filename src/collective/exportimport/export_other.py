@@ -75,6 +75,9 @@ logger = logging.getLogger(__name__)
 
 PORTAL_PLACEHOLDER = "<Portal>"
 
+with open('./resources/topics.json') as file:
+    topics = json.load(file)
+
 
 class BaseExport(BrowserView):
     """Just DRY"""
@@ -812,40 +815,42 @@ class ExportRedirects(BaseExport):
         self.download(data)
 
 
-class ExportEEAFigure(ExportContent):
+class BaseEEAExport(ExportContent):
     QUERY = {}
+    PORTAL_TYPE = []
 
-    # DROP_PATHS = [
-    #     '/Plone/userportal',
-    #     '/Plone/en/obsolete_content',
-    # ]
-
-    # DROP_UIDS = [
-    #     '71e3e0a6f06942fea36536fbed0f6c42',
-    # ]
+    def __init__(self, context, request, type=[]):
+        super(BaseEEAExport, self).__init__(context, request)
+        self.PORTAL_TYPE = type
 
     def update(self):
         """Use this to override stuff before the export starts
         (e.g. force a specific language in the request)."""
-        self.portal_type = ["EEAFigure"]
+        self.portal_type = self.PORTAL_TYPE
 
-    def start(self):
-        """Hook to do something before export."""
+    def global_dict_hook(self, item, obj):
+        item["preview_image"] = item.get('image', None)
+        item["temporal_coverage"] = self.fix_temporal_coverage(
+            item, "temporalCoverage")
 
-    def finish(self):
-        """Hook to do something after export."""
+        return item
 
-    def global_obj_hook(self, obj):
-        """Inspect the content item before serialisation data.
-        Bad: Changing the content-item is a horrible idea.
-        Good: Return None if you want to skip this particular object.
-        """
-        return obj
+    def fix_temporal_coverage(self, item, field):
+        import pdb
+        pdb.set_trace()
+        return None
+
+
+class ExportEEAFigure(BaseEEAExport):
+    QUERY = {}
+    PORTAL_TYPE = ["EEAFigure"]
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        item = super().global_dict_hook(item, obj)
+
         catalog = api.portal.get_tool("portal_catalog")
 
         site = api.portal.get()
@@ -858,6 +863,7 @@ class ExportEEAFigure(ExportContent):
 
         brains = catalog.unrestrictedSearchResults(**query)
 
+        # Get 75dpi preview image
         for index, brain in enumerate(brains, start=1):
             try:
                 obj = brain.getObject()
@@ -877,10 +883,4 @@ class ExportEEAFigure(ExportContent):
                 self.errors.append({"path": None, "message": msg})
                 logger.exception(msg, exc_info=True)
                 continue
-        return item
-
-    def dict_hook_document(self, item, obj):
-        """Use this to modify or skip the serialized data by type.
-        Return the modified dict (item) or None if you want to skip this particular object.
-        """
         return item

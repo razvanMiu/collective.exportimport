@@ -13,18 +13,17 @@
       <p class="documentDescription" i18n:translate="">Select which content to export as a json-file.</p>
 
         <form id="export_content" action="@@export_content" tal:attributes="action request/URL" method="post" enctype="multipart/form-data">
-
-          <div>
-            <label>Toggle batching </label>
+          <div style="margin-bottom: 1rem; display: flex; column-gap: 1rem;">
+            <label>Toggle batching</label>
             <input type="checkbox" class="checkboxType" name="with_batching" id="with_batching"
               title="Toggle batching"  />
           </div>
-          <div>
-            <label>Page </label>
+          <div style="margin-bottom: 1rem; display: flex; column-gap: 1rem;">
+            <label>Page</label>
             <input name="p" />
           </div>
-          <div>
-            <label>Nr of hits </label>
+          <div style="margin-bottom: 1rem; display: flex; column-gap: 1rem;">
+            <label>Nr of hits</label>
             <input name="nrOfHits" />
           </div>
             <div class="field mb-3">
