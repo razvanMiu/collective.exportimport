@@ -992,7 +992,8 @@ class ExportDavizFigure(ExportEEAContent):
                     (imageObj, self.request), ISerializeToJson)
                 image = serializer()
             if image:
-                item["preview_image"] = image.get("image", None)
+                item["preview_image"] = image.get("image", None) or image.get(
+                    "file", None)
             if item["preview_image"]:
                 item["filename"] = image.get("id", None)
         if len(images) > 1:
@@ -1005,9 +1006,14 @@ class ExportDavizFigure(ExportEEAContent):
                     imageObj = obj.get(
                         imageName + '.svg') or obj.get(imageName + '.png')
                 if imageObj:
-                    serializer = getMultiAdapter(
-                        (imageObj, self.request), ISerializeToJson)
-                    image = serializer()
+                    try:
+                        serializer = getMultiAdapter(
+                            (imageObj, self.request), ISerializeToJson)
+                        image = serializer()
+                    except Exception:
+                        print("Error getting image for {}".format(
+                            item['@id'] + "-" + imageName))
+                        image = None
                 if image:
                     imageTitle = i.get('title', "")
                     newItem = item.copy()
@@ -1015,8 +1021,8 @@ class ExportDavizFigure(ExportEEAContent):
                     newItem["id"] = itemId + "-" + imageName
                     newItem["title"] = itemTitle + " - " + imageTitle
                     newItem["preview_image"] = image.get(
-                        "file", None) or image.get(
-                        "image", None)
+                        "image", None) or image.get(
+                        "file", None)
                     newItem["UID"] = image.get("UID", None) or item.get(
                         "UID", None)
                     if newItem["preview_image"]:
@@ -1030,6 +1036,7 @@ class ExportDavizFigure(ExportEEAContent):
 class ExportEEAFigure(ExportEEAContent):
     QUERY = {}
     PORTAL_TYPE = ["EEAFigure"]
+    IMAGE_FORMAT = '.75dpi.png'
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
@@ -1047,39 +1054,22 @@ class ExportEEAFigure(ExportEEAContent):
         if figure_type == 'graph':
             item["@type"] = 'chart_static'
 
-        import pdb
-        pdb.set_trace()
+        figures = obj.values()
 
-        catalog = api.portal.get_tool("portal_catalog")
-
-        site = api.portal.get()
-        site_absolute_url = site.absolute_url()
-        site_relative_url = "/".join(site.getPhysicalPath())
-        path = site_relative_url + item["@id"].replace(site_absolute_url, "")
-
-        query = {"portal_type": ('Image'), "path": {
-            "query": path, "depth": 2}}
-
-        brains = catalog.unrestrictedSearchResults(**query)
-
-        # Get 75dpi preview image
-        for index, brain in enumerate(brains, start=1):
-            try:
-                obj = brain.getObject()
-                serializer = getMultiAdapter(
-                    (obj, self.request),
-                    ISerializeToJson)
+        for figure in figures:
+            figureFiles = figure.values()
+            for figureFile in figureFiles:
                 try:
-                    child = serializer()
-                    if '.75dpi.png' not in child.get("id", ''):
-                        continue
-                    item["preview_image"] = child.get("image", {})
-                    break
+                    serializer = getMultiAdapter(
+                        (figureFile,
+                         self.request),
+                        ISerializeToJson)
+                    file = serializer()
                 except Exception:
-                    continue
-            except Exception:
-                msg = u"Error getting brain {}".format(brain.getPath())
-                self.errors.append({"path": None, "message": msg})
-                logger.exception(msg, exc_info=True)
-                continue
+                    file = None
+                if file and self.IMAGE_FORMAT in file.get("id", ''):
+                    item["preview_image"] = file.get("image", {}) or file.get(
+                        "file", {})
+                    if item["preview_image"]:
+                        item["filename"] = file.get("id", None)
         return item
