@@ -39,6 +39,7 @@ import logging
 import os
 import pkg_resources
 import six
+import base64
 
 try:
     pkg_resources.get_distribution("Products.Archetypes")
@@ -922,13 +923,17 @@ class ExportDavizFigure(ExportEEAContent):
             if tab.title != 'Table':
                 images.append(tab)
 
-        csv = queryMultiAdapter(
-            (obj, self.request),
-            name='download.csv')
+        csv = queryMultiAdapter((obj, self.request), name='download.csv')
 
         if csv:
             csv = csv(
                 attachment=False)
+            item["file"] = {
+                "data": base64.b64encode(csv),
+                "filename": obj.getId() + '.csv',
+                "content_type": "text/csv",
+                "encoding": "base64"
+            }
 
         import pdb
         pdb.set_trace()
@@ -947,6 +952,8 @@ class ExportDavizFigure(ExportEEAContent):
                 image = serializer()
             if image:
                 item["preview_image"] = image.get("image", None)
+            if item["preview_image"]:
+                item["filename"] = image.get("id", None)
         if len(images) > 1:
             items = []
             itemTitle = item.get("title", "")
@@ -968,6 +975,8 @@ class ExportDavizFigure(ExportEEAContent):
                     newItem["preview_image"] = image.get("image", None)
                     newItem["UID"] = image.get("UID", None) or item.get(
                         "UID", None)
+                    if newItem["preview_image"]:
+                        newItem["filename"] = image.get("id", None)
                     items.append(newItem)
 
         return item
