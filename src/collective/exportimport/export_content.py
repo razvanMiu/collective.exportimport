@@ -114,8 +114,6 @@ class ExportContent(BrowserView):
         include_revisions=False,
         write_errors=False,
     ):
-        import pdb
-        pdb.set_trace()
         self.portal_type = portal_type or []
         if isinstance(self.portal_type, str):
             self.portal_type = [self.portal_type]
@@ -339,8 +337,8 @@ class ExportContent(BrowserView):
         return query
 
     def export_content(self):
-        p = int(self.request.get('p', '0'))
-        nrOfHits = int(self.request.get('nrOfHits', '0'))
+        p = int(self.request.get('p', '0') or '0')
+        nrOfHits = int(self.request.get('nrOfHits', '0') or '0')
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
         brains = catalog.unrestrictedSearchResults(**query)
