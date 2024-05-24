@@ -1079,10 +1079,9 @@ class ExportEEAFigure(ExportEEAContent):
                 except Exception:
                     file = None
                 if file and self.IMAGE_FORMAT in file.get("id", ''):
-                    import pdb
-                    pdb.set_trace()
                     item["preview_image"] = file.get("image", {}) or file.get(
                         "file", {})
                     if item["preview_image"]:
-                        item["filename"] = file.get("id", None)
+                        item["preview_image"]["filename"] = file.get(
+                            "id", None)
         return item
