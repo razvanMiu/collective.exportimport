@@ -845,7 +845,7 @@ class ExportEEAFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        item = super().global_dict_hook(item, obj)
+        item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
         catalog = api.portal.get_tool("portal_catalog")
 
