@@ -922,8 +922,7 @@ class ExportDavizFigure(ExportEEAContent):
                     'title', None) == 'Table' or 'table.preview' in tab.get(
                     "fallback-image", "") or 'Table' in tab.get("css", ""):
                 continue
-            if tab.title != 'Table':
-                images.append(tab)
+            images.append(tab)
 
         csv = queryMultiAdapter((obj, self.request), name='download.csv')
 
