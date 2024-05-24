@@ -114,6 +114,8 @@ class ExportContent(BrowserView):
         include_revisions=False,
         write_errors=False,
     ):
+        import pdb
+        pdb.set_trace()
         self.portal_type = portal_type or []
         if isinstance(self.portal_type, str):
             self.portal_type = [self.portal_type]
