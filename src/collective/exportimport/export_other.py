@@ -898,7 +898,11 @@ class ExportGisMapApplication(ExportEEAContent):
 
 
 class ExportDavizFigure(ExportEEAContent):
-    QUERY = {}
+    QUERY = {
+        'DavizVisualization': {
+            "review_state": ["published"]
+        }
+    }
     PORTAL_TYPE = ["DavizVisualization"]
 
     def global_dict_hook(self, item, obj):
@@ -908,6 +912,10 @@ class ExportDavizFigure(ExportEEAContent):
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
         import pdb
         pdb.set_trace()
+
+        view = queryMultiAdapter((obj, self.request), name='daviz-view.html')
+        if 'spreadsheet' in item:
+            del item['spreadsheet']
 
         return item
 
