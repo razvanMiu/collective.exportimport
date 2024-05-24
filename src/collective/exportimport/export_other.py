@@ -75,7 +75,7 @@ logger = logging.getLogger(__name__)
 
 PORTAL_PLACEHOLDER = "<Portal>"
 
-with open('./resources/topics.json') as file:
+with open(os.path.dirname(__file__) + '/resources/topics.json') as file:
     topics = json.load(file)
 
 
