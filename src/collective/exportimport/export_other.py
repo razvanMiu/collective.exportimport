@@ -825,20 +825,26 @@ class ExportEEAContent(ExportContent):
         "coverImage",
         "dataLink",
         "dataOwner",
+        "dataSource",
         "dataTitle",
         "dataWarning",
         "disableProgressTrailViewlet",
         "eeaManagementPlan",
         "external",
+        "forcedisableautolinks",
+        "geographicCoverage",
         "inheritedprovenance",
         "image",  # handled by fix_image
         "layout",
+        "methodology",
+        "moreInfo",
         "pdfMaxBreadth",
         "pdfMaxDepth",
         "pdfMaxItems",
         "pdfStatic",
         "pdfTheme",
         "provenances",  # handled by fix_data_provenance
+        "processor",
         "quickUpload",
         "temporalCoverage",  # handled by fix_temporal_coverage
         "themes",  # handled by fix_topics
