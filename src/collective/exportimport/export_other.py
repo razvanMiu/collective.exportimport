@@ -815,13 +815,9 @@ class ExportRedirects(BaseExport):
         self.download(data)
 
 
-class BaseEEAExport(ExportContent):
+class ExportEEAContent(ExportContent):
     QUERY = {}
     PORTAL_TYPE = []
-
-    def __init__(self, context, request, type=[]):
-        super(BaseEEAExport, self).__init__(context, request)
-        self.PORTAL_TYPE = type
 
     def update(self):
         """Use this to override stuff before the export starts
@@ -841,7 +837,7 @@ class BaseEEAExport(ExportContent):
         return None
 
 
-class ExportEEAFigure(BaseEEAExport):
+class ExportEEAFigure(ExportEEAContent):
     QUERY = {}
     PORTAL_TYPE = ["EEAFigure"]
 
