@@ -918,7 +918,9 @@ class ExportDavizFigure(ExportEEAContent):
         tabs = view.tabs
 
         for tab in tabs:
-            if tab.get('title', None) == 'Table' or tab:
+            if tab.get(
+                    'title', None) == 'Table' or 'table.preview' in tab.get(
+                    "fallback-image", "") or 'Table' in tab.get("css", ""):
                 continue
             if tab.title != 'Table':
                 images.append(tab)
@@ -937,7 +939,7 @@ class ExportDavizFigure(ExportEEAContent):
 
         import pdb
         pdb.set_trace()
-        item["file"] = csv
+
         if 'spreadsheet' in item:
             del item['spreadsheet']
 
