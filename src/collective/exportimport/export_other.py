@@ -40,6 +40,7 @@ import os
 import pkg_resources
 import six
 import base64
+import uuid
 
 try:
     pkg_resources.get_distribution("Products.Archetypes")
@@ -829,6 +830,7 @@ class ExportEEAContent(ExportContent):
         item = self.fix_image(item, 'image')
         item = self.fix_temporal_coverage(item, "temporalCoverage")
         item = self.fix_topics(item, "themes")
+        item = self.fix_data_provenance(item, "provenances")
 
         return item
 
@@ -860,6 +862,21 @@ class ExportEEAContent(ExportContent):
             for topic in item[field]:
                 if topic in topics:
                     item["topics"].append(topics[topic])
+            del item[field]
+        return item
+
+    def fix_data_provenance(self, item, field):
+        if field in item:
+            item["data_provenance"] = {
+                "data": []
+            }
+            for provenance in item[field]:
+                item["data_provenance"]["data"].append({
+                    "@id": str(uuid.uuid4()),
+                    "link": provenance.get("link", None),
+                    "title": provenance.get("title", None),
+                    "organization": provenance.get("owner", None),
+                })
             del item[field]
         return item
 
@@ -968,8 +985,9 @@ class ExportDavizFigure(ExportEEAContent):
                 if image:
                     imageTitle = i.get('title', "")
                     newItem = item.copy()
+                    newItem["@id"] = item["@id"] + "-" + imageName
+                    newItem["id"] = itemId + "-" + imageName
                     newItem["title"] = itemTitle + " - " + imageTitle
-                    newItem["id"] = itemId + "_" + imageName
                     newItem["preview_image"] = image.get(
                         "file", None) or image.get(
                         "image", None)
