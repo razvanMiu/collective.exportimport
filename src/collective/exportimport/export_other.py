@@ -871,7 +871,7 @@ class ExportInfographic(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
+        item = super(ExportInfographic, self).global_dict_hook(item, obj)
         item["@type"] = 'infographic'
 
         return item
@@ -885,7 +885,7 @@ class ExportGisMapApplication(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
+        item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
         item["@type"] = 'map_interactive'
         item["maps"] = {
             "dataprotection": {},
@@ -905,7 +905,7 @@ class ExportDavizFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
+        item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
         import pdb
         pdb.set_trace()
 
