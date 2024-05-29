@@ -369,11 +369,11 @@ class ExportContent(BrowserView):
                 obj = brain.getObject()
                 if IObjectArchived.providedBy(obj):
                     continue
-                cindex += 1
                 if p and nrOfHits and cindex < (p - 1) * nrOfHits:
                     continue
                 if p and nrOfHits and cindex >= p * nrOfHits:
                     break
+                cindex += 1
             except Exception:
                 msg = u"Error getting brain {}".format(brain.getPath())
                 self.errors.append({"path": None, "message": msg})
@@ -399,6 +399,8 @@ class ExportContent(BrowserView):
                 else:
                     item = serializer()
                 item = self.update_export_data(item, obj)
+                if not item:
+                    continue
 
                 if isinstance(item, list):
                     for i in item:
