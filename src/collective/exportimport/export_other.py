@@ -930,6 +930,7 @@ class ExportInfographic(ExportEEAContent):
 class ExportDashboard(ExportEEAContent):
     QUERY = {
         "Dashboard": {
+            "getId": "air-pollutant-emissions-data-viewer-4",
             "review_state": "published",
         }
     }
@@ -1004,25 +1005,24 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
 
-        if len(images) == 1:
-            imageName = images[0].get('name', None)
-            if imageName:
-                imageObj = obj.get(
-                    imageName + '.svg') or obj.get(imageName + '.png')
-            if imageObj:
-                serializer = getMultiAdapter(
-                    (imageObj, self.request), ISerializeToJson)
-                image = serializer()
-            if image:
-                item["preview_image"] = image.get("image", None) or image.get(
-                    "file", None)
-            if item["preview_image"]:
-                item["filename"] = image.get("id", None)
+        imageName = images[0].get('name', None)
+        if imageName:
+            imageObj = obj.get(
+                imageName + '.svg') or obj.get(imageName + '.png')
+        if imageObj:
+            serializer = getMultiAdapter(
+                (imageObj, self.request), ISerializeToJson)
+            image = serializer()
+        if image:
+            item["preview_image"] = image.get("image", None) or image.get(
+                "file", None)
+        if item["preview_image"]:
+            item["filename"] = image.get("id", None)
         if len(images) > 1:
             items = []
             itemTitle = item.get("title", "")
             itemId = item.get("id", "")
-            for i in images:
+            for i in images[1:]:
                 imageName = i.get('name', "")
                 if imageName:
                     imageObj = obj.get(
