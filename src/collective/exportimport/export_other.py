@@ -1001,20 +1001,20 @@ class ExportDavizFigure(ExportEEAContent):
                 "content_type": "text/csv",
                 "encoding": "base64"
             }
-
-        imageName = images[0].get('name', None)
-        if imageName:
-            imageObj = obj.get(
-                imageName + '.svg') or obj.get(imageName + '.png')
-        if imageObj:
-            serializer = getMultiAdapter(
-                (imageObj, self.request), ISerializeToJson)
-            image = serializer()
-        if image:
-            item["preview_image"] = image.get("image", None) or image.get(
-                "file", None)
-        if item["preview_image"]:
-            item["filename"] = image.get("id", None)
+        if images[0]:
+            imageName = images[0].get('name', None)
+            if imageName:
+                imageObj = obj.get(
+                    imageName + '.svg') or obj.get(imageName + '.png')
+            if imageObj:
+                serializer = getMultiAdapter(
+                    (imageObj, self.request), ISerializeToJson)
+                image = serializer()
+            if image:
+                item["preview_image"] = image.get("image", None) or image.get(
+                    "file", None)
+            if item["preview_image"]:
+                item["filename"] = image.get("id", None)
         if len(images) > 1:
             items = []
             itemTitle = item.get("title", "")
