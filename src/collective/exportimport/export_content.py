@@ -372,11 +372,10 @@ class ExportContent(BrowserView):
                 if IObjectArchived.providedBy(obj):
                     continue
                 if p and nrOfHits:
-                    import pdb
-                    pdb.set_trace()
                     startIndex = (p - 1) * nrOfHits
                     endIndex = p * nrOfHits
                     if cindex < startIndex:
+                        cindex += 1
                         continue
                     if cindex >= endIndex:
                         break
