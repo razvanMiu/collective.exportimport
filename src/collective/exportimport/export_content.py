@@ -217,7 +217,9 @@ class ExportContent(BrowserView):
                     with open(os.path.join(directory, "errors.json"), "w") as f:
                         json.dump(errors, f, indent=4)
             msg = _(u"Exported {} items ({}) to {} with {} errors").format(
-                number, ", ".join(self.portal_type), directory, len(self.errors)
+                number, ", ".join(
+                    self.portal_type), directory, len(
+                    self.errors)
             )
             logger.info(msg)
             api.portal.show_message(msg, self.request)
@@ -369,11 +371,16 @@ class ExportContent(BrowserView):
                 obj = brain.getObject()
                 if IObjectArchived.providedBy(obj):
                     continue
-                if p and nrOfHits and cindex < (p - 1) * nrOfHits:
-                    continue
-                if p and nrOfHits and cindex >= p * nrOfHits:
-                    break
-                cindex += 1
+                if p and nrOfHits:
+                    import pdb
+                    pdb.set_trace()
+                    startIndex = (p - 1) * nrOfHits
+                    endIndex = p * nrOfHits
+                    if cindex < startIndex:
+                        continue
+                    if cindex >= endIndex:
+                        break
+                    cindex += 1
             except Exception:
                 msg = u"Error getting brain {}".format(brain.getPath())
                 self.errors.append({"path": None, "message": msg})
