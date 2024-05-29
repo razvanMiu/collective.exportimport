@@ -1067,9 +1067,8 @@ class ExportDavizFigure(ExportEEAContent):
                         newItem["preview_image"]["filename"] = image.get(
                             "id", None)
                     items.append(newItem)
-
-        if items and len(items) > 1:
-            return items
+            if len(items) > 1:
+                return items
         return item
 
 
