@@ -20,6 +20,7 @@ from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
 from Products.CMFPlone.utils import safe_unicode
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from eea.workflow.interfaces import IObjectArchived
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.i18n import translate
@@ -337,13 +338,14 @@ class ExportContent(BrowserView):
         return query
 
     def export_content(self):
-        p = int(self.request.get('p', '0') or '0')
-        nrOfHits = int(self.request.get('nrOfHits', '0') or '0')
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
         brains = catalog.unrestrictedSearchResults(**query)
-        if p and nrOfHits:
-            brains = brains[(p - 1) * nrOfHits:p * nrOfHits]
+        p = int(self.request.get('p', '0') or '0')
+        nrOfHits = int(self.request.get('nrOfHits', '0') or '0')
+
+        cindex = 0
+
         logger.info(u"Exporting {} {}".format(len(brains), self.portal_type))
 
         # Override richtext serializer to export links using resolveuid/xxx
@@ -365,6 +367,13 @@ class ExportContent(BrowserView):
                 logger.info(u"Handled {} items...".format(index))
             try:
                 obj = brain.getObject()
+                if IObjectArchived.providedBy(obj):
+                    continue
+                cindex += 1
+                if p and nrOfHits and cindex < (p - 1) * nrOfHits:
+                    continue
+                if p and nrOfHits and cindex >= p * nrOfHits:
+                    break
             except Exception:
                 msg = u"Error getting brain {}".format(brain.getPath())
                 self.errors.append({"path": None, "message": msg})
