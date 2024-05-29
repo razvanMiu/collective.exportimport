@@ -867,7 +867,7 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_topics(item, "themes")
         item = self.migrate_data_provenance(item, "provenances")
 
-        if "rights" in item:
+        if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
 
         for field in self.DISSALLOWED_FIELDS:
