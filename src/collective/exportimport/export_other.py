@@ -819,9 +819,7 @@ class ExportRedirects(BaseExport):
 
 
 class ExportEEAContent(ExportContent):
-    QUERY = {
-        "review_state": "published",
-    }
+    QUERY = {}
     PORTAL_TYPE = []
     DISSALLOWED_FIELDS = [
         "body",
@@ -922,7 +920,11 @@ class ExportEEAContent(ExportContent):
 
 
 class ExportInfographic(ExportEEAContent):
-    QUERY = {}
+    QUERY = {
+        "Infographic": {
+            "review_state": "published",
+        }
+    }
     PORTAL_TYPE = ["Infographic"]
 
     def global_dict_hook(self, item, obj):
@@ -938,7 +940,11 @@ class ExportInfographic(ExportEEAContent):
 
 
 class ExportDashboard(ExportEEAContent):
-    QUERY = {}
+    QUERY = {
+        "Dashboard": {
+            "review_state": "published",
+        }
+    }
     PORTAL_TYPE = ["Dashboard"]
 
     def global_dict_hook(self, item, obj):
@@ -952,7 +958,11 @@ class ExportDashboard(ExportEEAContent):
 
 
 class ExportGisMapApplication(ExportEEAContent):
-    QUERY = {}
+    QUERY = {
+        "GIS Application": {
+            "review_state": "published",
+        }
+    }
     PORTAL_TYPE = ["GIS Application"]
 
     def global_dict_hook(self, item, obj):
@@ -971,7 +981,11 @@ class ExportGisMapApplication(ExportEEAContent):
 
 
 class ExportDavizFigure(ExportEEAContent):
-    QUERY = {}
+    QUERY = {
+        "DavizVisualization": {
+            "review_state": "published",
+        }
+    }
     PORTAL_TYPE = ["DavizVisualization"]
 
     def global_dict_hook(self, item, obj):
@@ -1057,7 +1071,11 @@ class ExportDavizFigure(ExportEEAContent):
 
 
 class ExportEEAFigure(ExportEEAContent):
-    QUERY = {}
+    QUERY = {
+        "EEAFigure": {
+            "review_state": "published",
+        }
+    }
     PORTAL_TYPE = ["EEAFigure"]
     IMAGE_FORMAT = '.75dpi.png'
 
