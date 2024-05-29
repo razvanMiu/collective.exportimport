@@ -870,7 +870,7 @@ class ExportEEAContent(ExportContent):
         item = self.fix_data_provenance(item, "provenances")
 
         if "rights" in item:
-            item["rights"] = item["rights"].replace("\\n", " ")
+            item["rights"] = item["rights"].replace("\n", " ")
 
         for field in self.DISSALLOWED_FIELDS:
             if field in item:
