@@ -928,7 +928,11 @@ class ExportInfographic(ExportEEAContent):
 
 
 class ExportDashboard(ExportEEAContent):
-    QUERY = {}
+    QUERY = {
+        "Dashboard": {
+            "review_state": "published",
+        }
+    }
     PORTAL_TYPE = ["Dashboard"]
 
     def global_dict_hook(self, item, obj):
@@ -973,6 +977,7 @@ class ExportDavizFigure(ExportEEAContent):
         Return None if you want to skip this particular object.
         """
         self.DISSALLOWED_FIELDS.append("spreadsheet")
+        item["@type"] = 'chart_static'
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
 
         images = []
