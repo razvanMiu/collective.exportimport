@@ -819,7 +819,9 @@ class ExportRedirects(BaseExport):
 
 
 class ExportEEAContent(ExportContent):
-    QUERY = {}
+    QUERY = {
+        "review_state": "published",
+    }
     PORTAL_TYPE = []
     DISSALLOWED_FIELDS = [
         "body",
@@ -932,19 +934,13 @@ class ExportInfographic(ExportEEAContent):
 
 
 class ExportDashboard(ExportEEAContent):
-    QUERY = {
-        "Dashboard": {
-            "review_state": "published",
-        }
-    }
+    QUERY = {}
     PORTAL_TYPE = ["Dashboard"]
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        if IObjectArchived.providedBy(obj):
-            return None
         item = super(ExportDashboard, self).global_dict_hook(item, obj)
         item["@type"] = 'tableau_visualization'
 
@@ -959,8 +955,6 @@ class ExportGisMapApplication(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        if IObjectArchived.providedBy(obj):
-            return None
         self.DISSALLOWED_FIELDS.append("arcgis_url")
         item["maps"] = {
             "dataprotection": {},
@@ -973,19 +967,13 @@ class ExportGisMapApplication(ExportEEAContent):
 
 
 class ExportDavizFigure(ExportEEAContent):
-    QUERY = {
-        'DavizVisualization': {
-            "review_state": ["published"]
-        }
-    }
+    QUERY = {}
     PORTAL_TYPE = ["DavizVisualization"]
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        if IObjectArchived.providedBy(obj):
-            return None
         self.DISSALLOWED_FIELDS.append("spreadsheet")
         item["@type"] = 'chart_static'
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
