@@ -27,6 +27,7 @@ from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.Five import BrowserView
+from eea.workflow.interfaces import IObjectArchived
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
@@ -821,6 +822,7 @@ class ExportEEAContent(ExportContent):
     QUERY = {}
     PORTAL_TYPE = []
     DISSALLOWED_FIELDS = [
+        "body",
         "constrainTypesMode",
         "coverImage",
         "dataLink",
@@ -921,6 +923,8 @@ class ExportInfographic(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        if IObjectArchived.providedBy(obj):
+            return None
         item = super(ExportInfographic, self).global_dict_hook(item, obj)
         item["@type"] = 'infographic'
 
@@ -930,7 +934,6 @@ class ExportInfographic(ExportEEAContent):
 class ExportDashboard(ExportEEAContent):
     QUERY = {
         "Dashboard": {
-            "getId": "air-pollutant-emissions-data-viewer-4",
             "review_state": "published",
         }
     }
@@ -940,6 +943,8 @@ class ExportDashboard(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        if IObjectArchived.providedBy(obj):
+            return None
         item = super(ExportDashboard, self).global_dict_hook(item, obj)
         item["@type"] = 'tableau_visualization'
 
@@ -954,6 +959,8 @@ class ExportGisMapApplication(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        if IObjectArchived.providedBy(obj):
+            return None
         self.DISSALLOWED_FIELDS.append("arcgis_url")
         item["maps"] = {
             "dataprotection": {},
@@ -977,6 +984,8 @@ class ExportDavizFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        if IObjectArchived.providedBy(obj):
+            return None
         self.DISSALLOWED_FIELDS.append("spreadsheet")
         item["@type"] = 'chart_static'
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
