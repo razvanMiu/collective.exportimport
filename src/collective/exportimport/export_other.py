@@ -838,7 +838,7 @@ class ExportEEAContent(ExportContent):
         "forcedisableautolinks",
         "geographicCoverage",
         "inheritedprovenance",
-        "image",  # handled by fix_image
+        "image",  # handled by migrate_image
         "layout",
         "methodology",
         "moreInfo",
@@ -847,11 +847,11 @@ class ExportEEAContent(ExportContent):
         "pdfMaxItems",
         "pdfStatic",
         "pdfTheme",
-        "provenances",  # handled by fix_data_provenance
+        "provenances",  # handled by migrate_data_provenance
         "processor",
         "quickUpload",
-        "temporalCoverage",  # handled by fix_temporal_coverage
-        "themes",  # handled by fix_topics
+        "temporalCoverage",  # handled by migrate_temporal_coverage
+        "themes",  # handled by migrate_topics
         "tocExclude",
         "tocdepth",
         "workflow_history",
@@ -864,10 +864,10 @@ class ExportEEAContent(ExportContent):
 
     def global_dict_hook(self, item, obj):
         item = json.loads(json.dumps(item).replace('\\r\\n', '\\n'))
-        item = self.fix_image(item, 'image')
-        item = self.fix_temporal_coverage(item, "temporalCoverage")
-        item = self.fix_topics(item, "themes")
-        item = self.fix_data_provenance(item, "provenances")
+        item = self.migrate_image(item, 'image')
+        item = self.migrate_temporal_coverage(item, "temporalCoverage")
+        item = self.migrate_topics(item, "themes")
+        item = self.migrate_data_provenance(item, "provenances")
 
         if "rights" in item:
             item["rights"] = item["rights"].replace("\n", " ")
@@ -878,12 +878,12 @@ class ExportEEAContent(ExportContent):
 
         return item
 
-    def fix_image(self, item, field):
+    def migrate_image(self, item, field):
         if field in item:
             item["preview_image"] = item[field]
         return item
 
-    def fix_temporal_coverage(self, item, field):
+    def migrate_temporal_coverage(self, item, field):
         if field in item:
             temporals = item[field]
             item["temporal_coverage"] = {
@@ -898,7 +898,7 @@ class ExportEEAContent(ExportContent):
                 })
         return item
 
-    def fix_topics(self, item, field):
+    def migrate_topics(self, item, field):
         if field in item:
             item["topics"] = []
             for topic in item[field]:
@@ -906,7 +906,7 @@ class ExportEEAContent(ExportContent):
                     item["topics"].append(topics[topic])
         return item
 
-    def fix_data_provenance(self, item, field):
+    def migrate_data_provenance(self, item, field):
         if field in item:
             item["data_provenance"] = {
                 "data": []
