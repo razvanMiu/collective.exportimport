@@ -863,6 +863,7 @@ class ExportEEAContent(ExportContent):
         self.portal_type = self.PORTAL_TYPE
 
     def global_dict_hook(self, item, obj):
+        item = json.loads(json.dumps(item).replace('\r\n', '\n'))
         item = self.fix_image(item, 'image')
         item = self.fix_temporal_coverage(item, "temporalCoverage")
         item = self.fix_topics(item, "themes")
