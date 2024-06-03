@@ -436,34 +436,7 @@ class ExportContent(BrowserView):
             if fti.id in config.SKIPPED_CONTENTTYPE_IDS:
                 continue
             query["portal_type"] = fti.id
-            number = 0
-            brains = catalog.unrestrictedSearchResults(**query)
-            for index, brain in enumerate(brains, start=1):
-                skip = False
-                if brain.UID in self.DROP_UIDS:
-                    continue
-
-                for drop in self.DROP_PATHS:
-                    if drop in brain.getPath():
-                        skip = True
-
-                if skip:
-                    continue
-
-                if not index % 100:
-                    logger.info(u"Handled {} items...".format(index))
-                try:
-                    obj = brain.getObject()
-                    if IObjectArchived.providedBy(obj):
-                        continue
-                    if isExpired(obj):
-                        continue
-                    if obj.getLanguage() != 'en':
-                        continue
-                    number += 1
-                except Exception:
-                    continue
-
+            number = len(catalog.unrestrictedSearchResults(**query))
             if number >= 1:
                 results.append(
                     {
