@@ -968,10 +968,11 @@ class ExportDummy(ExportEEAContent):
         for loc in item["location"]:
             if loc not in self.locations:
                 logger.info("====> Adding location: %s" % loc)
-                self.locations.append(item["location"])
+                self.locations.append(loc)
         return None
 
     def export_cb(self):
+        logger.info("!!====> Writing locations to file...")
         f = open(os.path.dirname(__file__) + '/resources/locations.json', "w")
         f.write(json.dumps(self.locations, indent=4))
         f.close()
