@@ -84,8 +84,6 @@ with open(os.path.dirname(__file__) + '/resources/topics.json') as file:
 with open(os.path.dirname(__file__) + '/resources/geo_coverage.json') as file:
     geo_coverage = json.load(file)
 
-locations = []
-
 
 class BaseExport(BrowserView):
     """Just DRY"""
@@ -959,6 +957,8 @@ class ExportDummy(ExportEEAContent):
     PORTAL_TYPE = ["Infographic", "Dashboard",
                    "GIS Application", "DavizVisualization", "EEAFigure"]
 
+    locations = []
+
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
@@ -966,13 +966,16 @@ class ExportDummy(ExportEEAContent):
         if "location" not in item:
             return None
         for loc in item["location"]:
-            if loc not in locations:
+            if loc not in self.locations:
                 logger.info("====> Adding location: %s" % loc)
-                locations.append(item["location"])
+                self.locations.append(item["location"])
         return None
 
-    def end_callback(self):
-        print(locations)
+    def export_cb(self):
+        f = open(os.path.dirname(__file__) + '/resources/locations.json', "w")
+        f.write(json.dumps(self.locations, indent=4))
+        f.close()
+        return
 
 
 class ExportInfographic(ExportEEAContent):

@@ -104,6 +104,8 @@ class ExportContent(BrowserView):
 
     DROP_PATHS = []
 
+    locations = []
+
     def __call__(
         self,
         portal_type=None,
@@ -184,7 +186,7 @@ class ExportContent(BrowserView):
         self.errors = []
         content_generator = self.export_content()
 
-        self.end_callback()
+        self.export_cb()
 
         number = 0
 
@@ -341,6 +343,9 @@ class ExportContent(BrowserView):
         """Overwrite this if you want more control over which content to export."""
         return query
 
+    def export_cb(self):
+        return
+
     def export_content(self):
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
@@ -450,10 +455,6 @@ class ExportContent(BrowserView):
                     }
                 )
         return sorted(results, key=itemgetter("title"))
-
-    def end_callback(self):
-        """Called after export is done."""
-        pass
 
     def global_obj_hook(self, obj):
         """Inspect the content item before serialisation data.
