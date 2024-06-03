@@ -17,7 +17,7 @@ from plone.uuid.interfaces import IUUID
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFPlone.interfaces.constrains import ENABLED
 from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
-from Products.CMFPlone.utils import safe_unicode
+from Products.CMFPlone.utils import safe_unicode, isExpired
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from eea.workflow.interfaces import IObjectArchived
@@ -371,6 +371,9 @@ class ExportContent(BrowserView):
                 obj = brain.getObject()
                 if IObjectArchived.providedBy(obj):
                     continue
+                if isExpired(obj):
+                    continue
+
                 if p and nrOfHits:
                     startIndex = (p - 1) * nrOfHits
                     endIndex = p * nrOfHits

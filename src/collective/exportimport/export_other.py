@@ -81,6 +81,9 @@ PORTAL_PLACEHOLDER = "<Portal>"
 with open(os.path.dirname(__file__) + '/resources/topics.json') as file:
     topics = json.load(file)
 
+with open(os.path.dirname(__file__) + '/resources/geo_coverage.json') as file:
+    geo_coverage = json.load(file)
+
 
 class BaseExport(BrowserView):
     """Just DRY"""
@@ -822,37 +825,38 @@ class ExportEEAContent(ExportContent):
     QUERY = {}
     PORTAL_TYPE = []
     DISSALLOWED_FIELDS = [
-        "body",
-        "constrainTypesMode",
-        "coverImage",
-        "dataLink",
-        "dataOwner",
-        "dataSource",
-        "dataTitle",
-        "dataWarning",
-        "disableProgressTrailViewlet",
-        "eeaManagementPlan",
-        "external",
-        "forcedisableautolinks",
-        "geographicCoverage",
-        "inheritedprovenance",
-        "image",  # handled by migrate_image
-        "layout",
-        "methodology",
-        "moreInfo",
-        "pdfMaxBreadth",
-        "pdfMaxDepth",
-        "pdfMaxItems",
-        "pdfStatic",
-        "pdfTheme",
-        "provenances",  # handled by migrate_data_provenance
-        "processor",
-        "quickUpload",
-        "temporalCoverage",  # handled by migrate_temporal_coverage
-        "themes",  # handled by migrate_topics
-        "tocExclude",
-        "tocdepth",
-        "workflow_history",
+        # "body",
+        # "constrainTypesMode",
+        # "coverImage",
+        # "dataLink",
+        # "dataOwner",
+        # "dataSource",
+        # "dataTitle",
+        # "dataWarning",
+        # "disableProgressTrailViewlet",
+        # "eeaManagementPlan",
+        # "external",
+        # "forcedisableautolinks",
+        # "geographicCoverage",
+        # "inheritedprovenance",
+        # "image",  # handled by migrate_image
+        # "layout",
+        # "location",  # handled by migrate_geo_coverage
+        # "methodology",
+        # "moreInfo",
+        # "pdfMaxBreadth",
+        # "pdfMaxDepth",
+        # "pdfMaxItems",
+        # "pdfStatic",
+        # "pdfTheme",
+        # "provenances",  # handled by migrate_data_provenance
+        # "processor",
+        # "quickUpload",
+        # "temporalCoverage",  # handled by migrate_temporal_coverage
+        # "themes",  # handled by migrate_topics
+        # "tocExclude",
+        # "tocdepth",
+        # "workflow_history",
     ]
 
     def update(self):
@@ -866,6 +870,7 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_temporal_coverage(item, "temporalCoverage")
         item = self.migrate_topics(item, "themes")
         item = self.migrate_data_provenance(item, "provenances")
+        item = self.migrate_geo_coverage(item, "location")
 
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
@@ -916,6 +921,17 @@ class ExportEEAContent(ExportContent):
                     "title": provenance.get("title", None),
                     "organization": provenance.get("owner", None),
                 })
+        return item
+
+    def migrate_geo_coverage(self, item, field):
+        if field in item:
+            item["geo_coverage"] = {
+                "geolocation": []
+            }
+            for location in item[field]:
+                if location in geo_coverage:
+                    item["geo_coverage"]["geolocation"].append(
+                        geo_coverage[location])
         return item
 
 
