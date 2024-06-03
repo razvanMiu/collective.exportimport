@@ -873,7 +873,7 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_temporal_coverage(item, "temporalCoverage")
         item = self.migrate_topics(item, "themes")
         item = self.migrate_data_provenance(item, "provenances")
-        item = self.migrate_geo_coverage(item, obj, "location")
+        item = self.migrate_geo_coverage(item, obj)
 
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
@@ -926,7 +926,7 @@ class ExportEEAContent(ExportContent):
                 })
         return item
 
-    def migrate_geo_coverage(self, item, obj, field):
+    def migrate_geo_coverage(self, item, obj):
 
         item["geo_coverage"] = {
             "geolocation": []
@@ -944,6 +944,8 @@ class ExportEEAContent(ExportContent):
                         "label": title,
                         "value": id,
                     })
+            elif title in geo_coverage:
+                item["geo_coverage"]["geolocation"].append(geo_coverage[title])
             else:
                 logger.warn(u"No geonameId found for tag %s", title)
 

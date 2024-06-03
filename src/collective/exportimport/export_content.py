@@ -367,8 +367,6 @@ class ExportContent(BrowserView):
             if skip:
                 continue
 
-            if not index % 100:
-                logger.info(u"Handled {} items...".format(index))
             try:
                 obj = brain.getObject()
                 if IObjectArchived.providedBy(obj):
@@ -387,6 +385,10 @@ class ExportContent(BrowserView):
                     if cindex >= endIndex:
                         break
                     cindex += 1
+
+                if not cindex % 100:
+                    logger.info(u"Handled {} items...".format(cindex))
+
             except Exception:
                 msg = u"Error getting brain {}".format(brain.getPath())
                 self.errors.append({"path": None, "message": msg})
