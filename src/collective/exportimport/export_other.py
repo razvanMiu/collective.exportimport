@@ -963,7 +963,12 @@ class ExportDummy(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        locations.append(item["location"])
+        if "location" not in item:
+            return None
+        for loc in item["location"]:
+            if loc not in locations:
+                logger.info("====> Adding location: %s" % loc)
+                locations.append(item["location"])
         return None
 
     def end_callback(self):
