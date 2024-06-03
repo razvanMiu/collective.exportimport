@@ -184,6 +184,8 @@ class ExportContent(BrowserView):
         self.errors = []
         content_generator = self.export_content()
 
+        self.end_callback()
+
         number = 0
 
         # Export each item to a separate json-file
@@ -373,6 +375,8 @@ class ExportContent(BrowserView):
                     continue
                 if isExpired(obj):
                     continue
+                if obj.getLanguage() != 'en':
+                    continue
 
                 if p and nrOfHits:
                     startIndex = (p - 1) * nrOfHits
@@ -424,6 +428,8 @@ class ExportContent(BrowserView):
 
     def portal_types(self):
         """A list with info on all content types with existing items."""
+        import pdb
+        pdb.set_trace()
         catalog = api.portal.get_tool("portal_catalog")
         portal_types = api.portal.get_tool("portal_types")
         results = []
@@ -446,6 +452,10 @@ class ExportContent(BrowserView):
                     }
                 )
         return sorted(results, key=itemgetter("title"))
+
+    def end_callback(self):
+        """Called after export is done."""
+        pass
 
     def global_obj_hook(self, obj):
         """Inspect the content item before serialisation data.
