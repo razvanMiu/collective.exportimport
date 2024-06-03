@@ -428,8 +428,6 @@ class ExportContent(BrowserView):
 
     def portal_types(self):
         """A list with info on all content types with existing items."""
-        import pdb
-        pdb.set_trace()
         catalog = api.portal.get_tool("portal_catalog")
         portal_types = api.portal.get_tool("portal_types")
         results = []
@@ -438,7 +436,34 @@ class ExportContent(BrowserView):
             if fti.id in config.SKIPPED_CONTENTTYPE_IDS:
                 continue
             query["portal_type"] = fti.id
-            number = len(catalog.unrestrictedSearchResults(**query))
+            number = 0
+            brains = catalog.unrestrictedSearchResults(**query)
+            for index, brain in enumerate(brains, start=1):
+                skip = False
+                if brain.UID in self.DROP_UIDS:
+                    continue
+
+                for drop in self.DROP_PATHS:
+                    if drop in brain.getPath():
+                        skip = True
+
+                if skip:
+                    continue
+
+                if not index % 100:
+                    logger.info(u"Handled {} items...".format(index))
+                try:
+                    obj = brain.getObject()
+                    if IObjectArchived.providedBy(obj):
+                        continue
+                    if isExpired(obj):
+                        continue
+                    if obj.getLanguage() != 'en':
+                        continue
+                    number += 1
+                except Exception:
+                    continue
+
             if number >= 1:
                 results.append(
                     {
