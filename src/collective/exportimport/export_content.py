@@ -386,7 +386,7 @@ class ExportContent(BrowserView):
                         break
                     cindex += 1
 
-                if not cindex % 100:
+                if not cindex % nrOfHits:
                     logger.info(u"Handled {} items...".format(cindex))
 
             except Exception:
