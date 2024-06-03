@@ -935,19 +935,17 @@ class ExportEEAContent(ExportContent):
         geo = getAdapter(obj, IGeoTags)
 
         for feature in geo.getFeatures():
-            import pdb
-            pdb.set_trace()
             other = feature['properties'].get('other', {})
+            title = feature["properties"]["title"]
             if other.has_key('geonameId'):
-                id = 'geo-' + str(feature['properties']['other']['geonameId'])
+                id = 'geo-' + str(other['geonameId'])
                 item["geo_coverage"]["geolocation"].append(
                     {
-                        "label": feature["properties"]["title"],
+                        "label": title,
                         "value": id,
                     })
             else:
-                logger.warn(u"No geonameId found for tag %s",
-                            feature["properties"]["title"])
+                logger.warn(u"No geonameId found for tag %s", title)
 
         return item
 
