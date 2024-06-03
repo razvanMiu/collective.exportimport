@@ -28,6 +28,8 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.Five import BrowserView
 from eea.workflow.interfaces import IObjectArchived
+from eea.geotags.interfaces import IGeoTags
+from zope.component import getAdapter
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
@@ -871,7 +873,7 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_temporal_coverage(item, "temporalCoverage")
         item = self.migrate_topics(item, "themes")
         item = self.migrate_data_provenance(item, "provenances")
-        item = self.migrate_geo_coverage(item, "location")
+        item = self.migrate_geo_coverage(item, obj, "location")
 
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
@@ -924,59 +926,30 @@ class ExportEEAContent(ExportContent):
                 })
         return item
 
-    def migrate_geo_coverage(self, item, field):
-        if field in item:
-            item["geo_coverage"] = {
-                "geolocation": []
-            }
-            for location in item[field]:
-                if location in geo_coverage:
-                    item["geo_coverage"]["geolocation"].append(
-                        geo_coverage[location])
-        return item
+    def migrate_geo_coverage(self, item, obj, field):
 
-
-class ExportDummy(ExportEEAContent):
-    QUERY = {
-        "Infographic": {
-            "review_state": "published",
-        },
-        "Dashboard": {
-            "review_state": "published",
-        },
-        "GIS Application": {
-            "review_state": "published",
-        },
-        "DavizVisualization": {
-            "review_state": "published",
-        },
-        "EEAFigure": {
-            "review_state": "published",
+        item["geo_coverage"] = {
+            "geolocation": []
         }
-    }
-    PORTAL_TYPE = ["Infographic", "Dashboard",
-                   "GIS Application", "DavizVisualization", "EEAFigure"]
 
-    locations = []
+        geo = getAdapter(obj, IGeoTags)
 
-    def global_dict_hook(self, item, obj):
-        """Use this to modify or skip the serialized data.
-        Return None if you want to skip this particular object.
-        """
-        if "location" not in item:
-            return None
-        for loc in item["location"]:
-            if loc not in self.locations:
-                logger.info("====> Adding location: %s" % loc)
-                self.locations.append(loc)
-        return None
+        for feature in geo.getFeatures():
+            import pdb
+            pdb.set_trace()
+            other = feature['properties'].get('other', {})
+            if other.has_key('geonameId'):
+                id = 'geo-' + str(feature['properties']['other']['geonameId'])
+                item["geo_coverage"]["geolocation"].append(
+                    {
+                        "label": feature["properties"]["title"],
+                        "value": id,
+                    })
+            else:
+                logger.warn(u"No geonameId found for tag %s",
+                            feature["properties"]["title"])
 
-    def finish(self):
-        logger.info("!!====> Writing locations to file...")
-        f = open(os.path.dirname(__file__) + '/resources/locations.json', "w")
-        f.write(json.dumps(self.locations, indent=4))
-        f.close()
-        return
+        return item
 
 
 class ExportInfographic(ExportEEAContent):

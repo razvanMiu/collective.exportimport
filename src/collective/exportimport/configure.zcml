@@ -101,14 +101,6 @@
       />
 
   <browser:page
-      name="export_dummy"
-      for="zope.interface.Interface"
-      class=".export_other.ExportDummy"
-      template="templates/export_other.pt"
-      permission="cmf.ManagePortal"
-      />
-
-  <browser:page
       name="export_infographic"
       for="zope.interface.Interface"
       class=".export_other.ExportInfographic"
