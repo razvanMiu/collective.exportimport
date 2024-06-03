@@ -971,7 +971,7 @@ class ExportDummy(ExportEEAContent):
                 self.locations.append(loc)
         return None
 
-    def export_cb(self):
+    def finish(self):
         logger.info("!!====> Writing locations to file...")
         f = open(os.path.dirname(__file__) + '/resources/locations.json', "w")
         f.write(json.dumps(self.locations, indent=4))

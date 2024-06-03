@@ -184,10 +184,7 @@ class ExportContent(BrowserView):
             filename = "{}.json".format(filename)
 
         self.errors = []
-        logger.info("====> 1. Call export_content")
         content_generator = self.export_content()
-        logger.info("====> 2. After export_content call")
-        self.export_cb()
 
         number = 0
 
@@ -343,9 +340,6 @@ class ExportContent(BrowserView):
     def update_query(self, query):
         """Overwrite this if you want more control over which content to export."""
         return query
-
-    def export_cb(self):
-        return
 
     def export_content(self):
         query = self.build_query()
