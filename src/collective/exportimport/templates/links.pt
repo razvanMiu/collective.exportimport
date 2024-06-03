@@ -48,6 +48,10 @@
          </a></li>
 
          <li><a class=""
+            tal:attributes="href python: portal_url + '/@@export_dummy'" i18n:translate="">Export Dummy
+         </a></li>
+
+         <li><a class=""
             tal:attributes="href python: portal_url + '/@@export_infographic'" i18n:translate="">Export EEA Infographics
          </a></li>
 
