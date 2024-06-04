@@ -1082,8 +1082,12 @@ class ExportDavizFigure(ExportEEAContent):
             if image:
                 item["preview_image"] = image.get("image", None) or image.get(
                     "file", None)
-            if "preview_image" in item and "filename" in item["preview_image"]:
-                item["preview_image"]["filename"] = image.get("id", None)
+            try:
+                if "preview_image" in item and "filename" in item["preview_image"]:
+                    item["preview_image"]["filename"] = image.get("id", None)
+            except Exception:
+                import pdb
+                pdb.set_trace()
         if len(images) > 1:
             items = []
             items.append(item)
