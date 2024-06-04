@@ -386,9 +386,6 @@ class ExportContent(BrowserView):
                         break
                     cindex += 1
 
-                if not cindex % nrOfHits:
-                    logger.info(u"Handled {} items...".format(cindex))
-
             except Exception:
                 msg = u"Error getting brain {}".format(brain.getPath())
                 self.errors.append({"path": None, "message": msg})

@@ -980,12 +980,21 @@ class ExportDashboard(ExportEEAContent):
     }
     PORTAL_TYPE = ["Dashboard"]
 
+    parsed_ids = {}
+
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
         item = super(ExportDashboard, self).global_dict_hook(item, obj)
         item["@type"] = 'tableau_visualization'
+
+        if item["id"] in self.parsed_ids:
+            parts = item["@id"].split('/')
+            [parentId, id] = parts[-2:]
+            item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
+        else:
+            self.parsed_ids[item["id"]] = True
 
         return item
 
