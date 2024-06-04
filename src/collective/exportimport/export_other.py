@@ -1078,7 +1078,7 @@ class ExportDavizFigure(ExportEEAContent):
                 item["filename"] = image.get("id", None)
         if len(images) > 1:
             items = []
-            items.push(item)
+            items.append(item)
             itemTitle = item.get("title", "")
             itemId = item.get("id", "")
             for i in images[1:]:
