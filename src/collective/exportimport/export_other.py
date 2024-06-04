@@ -1053,6 +1053,8 @@ class ExportDavizFigure(ExportEEAContent):
 
         csv = queryMultiAdapter((obj, self.request), name='download.csv')
 
+        import pdb
+        pdb.set_trace()
         if csv:
             csv = csv(
                 attachment=False)
