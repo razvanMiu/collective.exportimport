@@ -1063,6 +1063,8 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
         if len(images) == 1 and images[0]:
+            image = None
+            imageObj = None
             imageName = images[0].get('name', None)
             if imageName:
                 imageObj = obj.get(
@@ -1074,14 +1076,15 @@ class ExportDavizFigure(ExportEEAContent):
             if image:
                 item["preview_image"] = image.get("image", None) or image.get(
                     "file", None)
-            if item["preview_image"]:
-                item["filename"] = image.get("id", None)
+                item["preview_image"]["filename"] = image.get("id", None)
         if len(images) > 1:
             items = []
             items.append(item)
             itemTitle = item.get("title", "")
             itemId = item.get("id", "")
             for i in images[1:]:
+                image = None
+                imageObj = None
                 imageName = i.get('name', "")
                 if imageName:
                     imageObj = obj.get(
