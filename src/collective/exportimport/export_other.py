@@ -1053,11 +1053,9 @@ class ExportDavizFigure(ExportEEAContent):
 
         csv = queryMultiAdapter((obj, self.request), name='download.csv')
 
-        import pdb
-        pdb.set_trace()
         if csv:
             csv = csv(
-                attachment=False)
+                attachment=False).encode('utf-8')
             item["file"] = {
                 "data": base64.b64encode(csv),
                 "filename": obj.getId() + '.csv',
