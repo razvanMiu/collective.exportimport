@@ -827,39 +827,39 @@ class ExportEEAContent(ExportContent):
     QUERY = {}
     PORTAL_TYPE = []
     DISSALLOWED_FIELDS = [
-        # "body",
-        # "constrainTypesMode",
-        # "coverImage",
-        # "dataLink",
-        # "dataOwner",  # should be mapped to publisher
-        # "dataSource",
-        # "dataTitle",
-        # "dataWarning",
-        # "disableProgressTrailViewlet",
-        # "eeaManagementPlan",
-        # "external",
-        # "forcedisableautolinks",
-        # "geographicCoverage",
-        # "inheritedprovenance",
-        # "image",  # handled by migrate_image
-        # "layout",
-        # "location",  # handled by migrate_geo_coverage
-        # # "methodology", # should be handled in frontend
-        # # "moreInfo", # should be handled in frontend
-        # "pdfMaxBreadth",
-        # "pdfMaxDepth",
-        # "pdfMaxItems",
-        # "pdfStatic",
-        # "pdfTheme",
-        # "provenances",  # handled by migrate_data_provenance
-        # "processor",  # should be mapped to other organisations involved
-        # "quickUpload",
-        # "temporalCoverage",  # handled by migrate_temporal_coverage
-        # "themes",  # handled by migrate_topics
-        # "tocExclude",
-        # "tocdepth",
-        # # "units", # should be handled in frontend
-        # "workflow_history",
+        # "body", # should be handled in frontend
+        "constrainTypesMode",
+        "coverImage",
+        "dataLink",
+        "dataOwner",  # should be mapped to publisher
+        "dataSource",
+        "dataTitle",
+        "dataWarning",
+        "disableProgressTrailViewlet",
+        "eeaManagementPlan",
+        "external",
+        "forcedisableautolinks",
+        "geographicCoverage",
+        "inheritedprovenance",
+        "image",  # handled by migrate_image
+        "layout",
+        "location",  # handled by migrate_geo_coverage
+        # "methodology", # should be handled in frontend
+        # "moreInfo", # should be handled in frontend
+        "pdfMaxBreadth",
+        "pdfMaxDepth",
+        "pdfMaxItems",
+        "pdfStatic",
+        "pdfTheme",
+        "provenances",  # handled by migrate_data_provenance
+        "processor",  # should be mapped to other organisations involved
+        "quickUpload",
+        "temporalCoverage",  # handled by migrate_temporal_coverage
+        "themes",  # handled by migrate_topics
+        "tocExclude",
+        "tocdepth",
+        # "units", # should be handled in frontend
+        "workflow_history",
     ]
 
     def update(self):
