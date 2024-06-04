@@ -1062,7 +1062,7 @@ class ExportDavizFigure(ExportEEAContent):
                 "content_type": "text/csv",
                 "encoding": "base64"
             }
-        if images[0]:
+        if len(images) == 1 and images[0]:
             imageName = images[0].get('name', None)
             if imageName:
                 imageObj = obj.get(
