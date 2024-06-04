@@ -862,6 +862,8 @@ class ExportEEAContent(ExportContent):
         "workflow_history",
     ]
 
+    locations = []
+
     def update(self):
         """Use this to override stuff before the export starts
         (e.g. force a specific language in the request)."""
@@ -947,9 +949,13 @@ class ExportEEAContent(ExportContent):
             elif title in geo_coverage:
                 item["geo_coverage"]["geolocation"].append(geo_coverage[title])
             else:
+                self.locations.append(title)
                 logger.warn(u"No geonameId found for tag %s", title)
 
         return item
+
+    def finish(self):
+        print(self.locations)
 
 
 class ExportInfographic(ExportEEAContent):
@@ -1076,6 +1082,7 @@ class ExportDavizFigure(ExportEEAContent):
             if image:
                 item["preview_image"] = image.get("image", None) or image.get(
                     "file", None)
+            if "preview_image" in item and "filename" in item["preview_image"]:
                 item["preview_image"]["filename"] = image.get("id", None)
         if len(images) > 1:
             items = []
