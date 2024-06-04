@@ -845,7 +845,7 @@ class ExportEEAContent(ExportContent):
         "layout",
         "location",  # handled by migrate_geo_coverage
         # "methodology", # should be handled in frontend
-        "moreInfo",
+        # "moreInfo", # should be handled in frontend
         "pdfMaxBreadth",
         "pdfMaxDepth",
         "pdfMaxItems",
