@@ -993,6 +993,7 @@ class ExportDashboard(ExportEEAContent):
             parts = item["@id"].split('/')
             [parentId, id] = parts[-2:]
             item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
+            item["id"] = '%s-%s' % (id, parentId)
         else:
             self.parsed_ids[item["id"]] = True
 
