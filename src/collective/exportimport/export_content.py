@@ -20,6 +20,7 @@ from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
 from Products.CMFPlone.utils import safe_unicode, isExpired
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from eea.versions.interfaces import IGetVersions
 from eea.workflow.interfaces import IObjectArchived
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -373,9 +374,10 @@ class ExportContent(BrowserView):
                     continue
                 if isExpired(obj):
                     continue
+                if not IGetVersions(obj).isLatest():
+                    continue
                 if obj.getLanguage() != 'en':
                     continue
-
                 if p and nrOfHits:
                     startIndex = (p - 1) * nrOfHits
                     endIndex = p * nrOfHits
@@ -385,12 +387,12 @@ class ExportContent(BrowserView):
                     if cindex >= endIndex:
                         break
                     cindex += 1
-
             except Exception:
                 msg = u"Error getting brain {}".format(brain.getPath())
                 self.errors.append({"path": None, "message": msg})
                 logger.exception(msg, exc_info=True)
                 continue
+
             if obj is None:
                 msg = u"brain.getObject() is None {}".format(brain.getPath())
                 logger.error(msg)
