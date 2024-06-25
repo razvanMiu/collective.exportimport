@@ -903,9 +903,12 @@ class ExportEEAContent(ExportContent):
         pdb.set_trace()
 
         for relatedItem in relatedItems:
+            _item = getMultiAdapter(
+                (relatedItem, self.request),
+                ISerializeToJson)()
             item["data_provenance"]["data"].append({
                 "@id": str(uuid.uuid4()),
-                "title": relatedItem["title"],
+                "title": _item["title"],
             })
         return item
 
