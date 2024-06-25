@@ -871,6 +871,8 @@ class ExportEEAContent(ExportContent):
 
     def global_dict_hook(self, item, obj):
         item = json.loads(json.dumps(item).replace('\\r\\n', '\\n'))
+
+        item = self.migrate_related_items(item, obj)
         item = self.migrate_image(item, 'image')
         item = self.migrate_temporal_coverage(item, "temporalCoverage")
         item = self.migrate_topics(item, "themes")
@@ -884,6 +886,27 @@ class ExportEEAContent(ExportContent):
             if field in item:
                 del item[field]
 
+        return item
+
+    def migrate_related_items(self, item, obj):
+        relatedItems = obj.getRelatedItems()
+
+        if not relatedItems:
+            return item
+
+        if "data_provenance" not in item or not item["data_provenance"] or not "data" in item["data_provenance"]:
+            item["data_provenance"] = {
+                "data": []
+            }
+
+        import pdb
+        pdb.set_trace()
+
+        for relatedItem in relatedItems:
+            item["data_provenance"]["data"].append({
+                "@id": str(uuid.uuid4()),
+                "title": relatedItem["title"],
+            })
         return item
 
     def migrate_image(self, item, field):
@@ -915,10 +938,12 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_data_provenance(self, item, field):
-        if field in item:
+        if "data_provenance" not in item or not item["data_provenance"] or not "data" in item["data_provenance"]:
             item["data_provenance"] = {
                 "data": []
             }
+
+        if field in item:
             for provenance in item[field]:
                 item["data_provenance"]["data"].append({
                     "@id": str(uuid.uuid4()),
