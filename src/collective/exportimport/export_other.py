@@ -26,7 +26,9 @@ from plone.uuid.interfaces import IUUID
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
+from Products.CMFPlone.utils import isExpired
 from Products.Five import BrowserView
+from eea.versions.interfaces import IGetVersions
 from eea.workflow.interfaces import IObjectArchived
 from eea.geotags.interfaces import IGeoTags
 from zope.component import getAdapter
@@ -894,18 +896,32 @@ class ExportEEAContent(ExportContent):
         if not relatedItems:
             return item
 
-        if "data_provenance" not in item or not item["data_provenance"] or not "data" in item["data_provenance"]:
+        if "data_provenance" not in item or not item["data_provenance"] or "data" not in item["data_provenance"]:
             item["data_provenance"] = {
                 "data": []
             }
 
-        import pdb
-        pdb.set_trace()
-
         for relatedItem in relatedItems:
+            if IObjectArchived.providedBy(relatedItem):
+                continue
+            if isExpired(relatedItem):
+                continue
+            if not IGetVersions(relatedItem).isLatest():
+                continue
+            if relatedItem.getLanguage() != 'en':
+                continue
+            ok = True
             _item = getMultiAdapter(
                 (relatedItem, self.request),
                 ISerializeToJson)()
+            if _item['@type'] not in ['Data', 'ExternalDataSpec']:
+                continue
+            for data_provenance in item["data_provenance"]["data"]:
+                if data_provenance["title"] == _item["title"]:
+                    ok = False
+                    break
+            if not ok:
+                continue
             item["data_provenance"]["data"].append({
                 "@id": str(uuid.uuid4()),
                 "title": _item["title"],
@@ -941,13 +957,24 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_data_provenance(self, item, field):
-        if "data_provenance" not in item or not item["data_provenance"] or not "data" in item["data_provenance"]:
+        if "data_provenance" not in item or not item["data_provenance"] or "data" not in item["data_provenance"]:
             item["data_provenance"] = {
                 "data": []
             }
 
         if field in item:
             for provenance in item[field]:
+                ok = True
+
+                for data_provenance in item["data_provenance"]["data"]:
+                    if data_provenance["title"] == provenance.get(
+                            "title", None):
+                        ok = False
+                        break
+
+                if not ok:
+                    continue
+
                 item["data_provenance"]["data"].append({
                     "@id": str(uuid.uuid4()),
                     "link": provenance.get("link", None),
@@ -1073,6 +1100,7 @@ class ExportDavizFigure(ExportEEAContent):
         item["@type"] = 'chart_static'
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
 
+        items = []
         images = []
         view = queryMultiAdapter((obj, self.request), name='daviz-view.html')
 
@@ -1096,6 +1124,7 @@ class ExportDavizFigure(ExportEEAContent):
                 "content_type": "text/csv",
                 "encoding": "base64"
             }
+
         if len(images) == 1 and images[0]:
             image = None
             imageObj = None
@@ -1113,7 +1142,6 @@ class ExportDavizFigure(ExportEEAContent):
             if image and item["preview_image"] and "filename" in item["preview_image"]:
                 item["preview_image"]["filename"] = image.get("id", None)
         if len(images) > 1:
-            items = []
             items.append(item)
             itemTitle = item.get("title", "")
             itemId = item.get("id", "")
@@ -1149,6 +1177,18 @@ class ExportDavizFigure(ExportEEAContent):
                             "id", None)
                     items.append(newItem)
             if len(items) > 1:
+                for item in items:
+                    item["relatedItems"] = [
+                        {
+                            "@id": _item["@id"],
+                            "@type": _item["@type"],
+                            "UID": _item["UID"],
+                            "id": _item["id"],
+                            "title": item["title"]
+                        }
+                        for _item in items
+                        if _item["@id"] != item["@id"]
+                    ]
                 return items
         return item
 
