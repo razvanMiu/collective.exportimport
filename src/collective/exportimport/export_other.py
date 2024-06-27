@@ -1115,7 +1115,7 @@ class ExportDavizFigure(ExportEEAContent):
         tabs = view.tabs
 
         for index, view in enumerate(mutator.views):
-            if 'chartsconfig' in view:
+            if 'chartsconfig' in view and index < len(tabs) - 1:
                 images.append(tabs[index])
                 views.append(view)
 
