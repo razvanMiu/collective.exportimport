@@ -908,8 +908,6 @@ class ExportEEAContent(ExportContent):
                 continue
             if not IGetVersions(relatedItem).isLatest():
                 continue
-            if relatedItem.getLanguage() != 'en':
-                continue
             ok = True
             _item = getMultiAdapter(
                 (relatedItem, self.request),
@@ -1049,6 +1047,9 @@ class ExportDashboard(ExportEEAContent):
         """
         item = super(ExportDashboard, self).global_dict_hook(item, obj)
         item["@type"] = 'tableau_visualization'
+
+        if "introduction" in item and item["introduction"]:
+            print('%s - %s' % (item["@id"], item["introduction"]))
 
         if item["id"] in self.parsed_ids:
             parts = item["@id"].split('/')
