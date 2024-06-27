@@ -1094,8 +1094,6 @@ class ExportDavizFigure(ExportEEAContent):
     }
     PORTAL_TYPE = ["DavizVisualization"]
 
-    total = 0
-
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
@@ -1144,17 +1142,14 @@ class ExportDavizFigure(ExportEEAContent):
                 image = serializer()
             if image:
                 # Get figure note
-                # if "notes" in views[0].get("chartsconfig", {}):
-                #     import pdb
-                #     pdb.set_trace()
+                if "notes" in views[0].get("chartsconfig", {}):
+                    import pdb
+                    pdb.set_trace()
                 item["preview_image"] = image.get("image", None) or image.get(
                     "file", None)
             if image and item["preview_image"] and "filename" in item["preview_image"]:
                 item["preview_image"]["filename"] = image.get("id", None)
         if len(images) > 1:
-            self.total += 1
-            print("======> HEREE =====>")
-            print(item["@id"])
             items.append(item)
             itemTitle = item.get("title", "")
             itemId = item.get("id", "")
@@ -1204,10 +1199,6 @@ class ExportDavizFigure(ExportEEAContent):
                     ]
                 return items
         return item
-
-    def finish(self):
-        print("====> DONE <====")
-        print(self.total)
 
 
 class ExportEEAFigure(ExportEEAContent):
