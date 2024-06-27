@@ -1049,9 +1049,6 @@ class ExportDashboard(ExportEEAContent):
         item = super(ExportDashboard, self).global_dict_hook(item, obj)
         item["@type"] = 'tableau_visualization'
 
-        if "introduction" in item and item["introduction"]:
-            print('%s - %s' % (item["@id"], item["introduction"]))
-
         if item["id"] in self.parsed_ids:
             parts = item["@id"].split('/')
             [parentId, id] = parts[-2:]
@@ -1071,6 +1068,8 @@ class ExportGisMapApplication(ExportEEAContent):
     }
     PORTAL_TYPE = ["GIS Application"]
 
+    total = 0
+
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
@@ -1083,7 +1082,14 @@ class ExportGisMapApplication(ExportEEAContent):
         item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
         item["@type"] = 'map_interactive'
 
+        if "introduction" in item and item["introduction"]:
+            self.totla += 1
+            print('%s - %s' % (item["@id"], item["introduction"]))
+
         return item
+
+    def finish(self):
+        print(self.total)
 
 
 class ExportDavizFigure(ExportEEAContent):
@@ -1143,8 +1149,16 @@ class ExportDavizFigure(ExportEEAContent):
             if image:
                 # Get figure note
                 if "notes" in views[0].get("chartsconfig", {}):
-                    import pdb
-                    pdb.set_trace()
+                    if not item["figure_notes"]:
+                        item["figure_notes"] = {
+                            "content-type": "text/html",
+                            "data": ""
+                        }
+                    for note in views[0].get(
+                            "chartsconfig", {}).get(
+                            "notes", []):
+                        item["figure_notes"]["data"] += note.get("text", "")
+
                 item["preview_image"] = image.get("image", None) or image.get(
                     "file", None)
             if image and item["preview_image"] and "filename" in item["preview_image"]:
