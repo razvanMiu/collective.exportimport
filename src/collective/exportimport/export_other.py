@@ -1046,6 +1046,8 @@ class ExportDashboard(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        import pdb
+        pdb.set_trace()
         item = super(ExportDashboard, self).global_dict_hook(item, obj)
         item["@type"] = 'tableau_visualization'
 
@@ -1138,8 +1140,9 @@ class ExportDavizFigure(ExportEEAContent):
 
         for childObj in obj.listFolderContents(
                 contentFilter={"portal_type": "File"}):
-            import pdb
-            pdb.set_trace()
+            continue
+            # import pdb
+            # pdb.set_trace()
             # childItem = getMultiAdapter(
             #     (childObj, self.request),
             #     ISerializeToJson)
