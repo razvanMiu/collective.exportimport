@@ -1099,6 +1099,7 @@ class ExportDavizFigure(ExportEEAContent):
         }
     }
     PORTAL_TYPE = ["DavizVisualization"]
+    total = 0
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
@@ -1135,6 +1136,16 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
 
+        for childObj in obj.listFolderContents(
+                contentFilter={"portal_type": "File"}):
+            childItem = getMultiAdapter(
+                (childObj, self.request),
+                ISerializeToJson)
+            contentType = childItem["file"]["content-type"] if "file" in childItem and "content-type" in childItem["file"] else None
+            if contentType == "image/svg+xml":
+                continue
+            self.total += 1
+
         if len(images) == 1 and images[0]:
             image = None
             imageObj = None
@@ -1146,7 +1157,7 @@ class ExportDavizFigure(ExportEEAContent):
                 serializer = getMultiAdapter(
                     (imageObj, self.request), ISerializeToJson)
                 image = serializer()
-            if image:
+
                 # Get figure note
                 if "notes" in views[0].get("chartsconfig", {}):
                     if not item["figure_notes"]:
@@ -1158,6 +1169,8 @@ class ExportDavizFigure(ExportEEAContent):
                             "chartsconfig", {}).get(
                             "notes", []):
                         item["figure_notes"]["data"] += note.get("text", "")
+                        if note.get("text", ""):
+                            item["figure_notes"]["data"] += "<br/>"
 
                 item["preview_image"] = image.get("image", None) or image.get(
                     "file", None)
@@ -1213,6 +1226,10 @@ class ExportDavizFigure(ExportEEAContent):
                     ]
                 return items
         return item
+
+    def finish(self):
+        print("===> DONE <===")
+        print(self.total)
 
 
 class ExportEEAFigure(ExportEEAContent):
