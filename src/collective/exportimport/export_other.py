@@ -31,11 +31,12 @@ from Products.Five import BrowserView
 from eea.versions.interfaces import IGetVersions
 from eea.workflow.interfaces import IObjectArchived
 from eea.geotags.interfaces import IGeoTags
+from eea.app.visualization.interfaces import IVisualizationConfig
 from zope.component import getAdapter
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
-from zope.component import queryMultiAdapter
+from zope.component import queryMultiAdapter, queryAdapter
 from zope.component import queryUtility
 from zope.interface import providedBy
 
@@ -1093,26 +1094,30 @@ class ExportDavizFigure(ExportEEAContent):
     }
     PORTAL_TYPE = ["DavizVisualization"]
 
+    total = 0
+
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        items = []
+        images = []
+        views = []
+
         self.DISSALLOWED_FIELDS.append("spreadsheet")
         item["@type"] = 'chart_static'
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
 
-        items = []
-        images = []
+        mutator = queryAdapter(obj, IVisualizationConfig)
+
         view = queryMultiAdapter((obj, self.request), name='daviz-view.html')
 
         tabs = view.tabs
 
-        for tab in tabs:
-            if tab.get(
-                    'title', None) == 'Table' or 'table.preview' in tab.get(
-                    "fallback-image", "") or 'Table' in tab.get("css", ""):
-                continue
-            images.append(tab)
+        for index, view in enumerate(mutator.views):
+            if 'chartsconfig' in view:
+                images.append(tabs[index])
+                views.append(view)
 
         csv = queryMultiAdapter((obj, self.request), name='download.csv')
 
@@ -1126,8 +1131,6 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
 
-        import pdb
-        pdb.set_trace()
         if len(images) == 1 and images[0]:
             image = None
             imageObj = None
@@ -1140,11 +1143,18 @@ class ExportDavizFigure(ExportEEAContent):
                     (imageObj, self.request), ISerializeToJson)
                 image = serializer()
             if image:
+                # Get figure note
+                # if "notes" in views[0].get("chartsconfig", {}):
+                #     import pdb
+                #     pdb.set_trace()
                 item["preview_image"] = image.get("image", None) or image.get(
                     "file", None)
             if image and item["preview_image"] and "filename" in item["preview_image"]:
                 item["preview_image"]["filename"] = image.get("id", None)
         if len(images) > 1:
+            self.total += 1
+            print("======> HEREE =====>")
+            print(item["@id"])
             items.append(item)
             itemTitle = item.get("title", "")
             itemId = item.get("id", "")
@@ -1194,6 +1204,10 @@ class ExportDavizFigure(ExportEEAContent):
                     ]
                 return items
         return item
+
+    def finish(self):
+        print("====> DONE <====")
+        print(self.total)
 
 
 class ExportEEAFigure(ExportEEAContent):
