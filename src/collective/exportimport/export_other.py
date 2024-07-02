@@ -1162,7 +1162,7 @@ class ExportDavizFigure(ExportEEAContent):
 
                 # Get figure note
                 if "notes" in views[0].get("chartsconfig", {}):
-                    if not item["figure_notes"]:
+                    if "figure_notes" not in item or not item["figure_notes"]:
                         item["figure_notes"] = {
                             "content-type": "text/html",
                             "data": ""
