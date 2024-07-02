@@ -994,10 +994,9 @@ class ExportEEAContent(ExportContent):
 
     def migrate_introduction(self, item, field):
         if field in item:
-            item["text"] = {
-                **item.get(field, {}),
-                "encoding": "utf8"
-            }
+            item["text"] = item.get(field, {})
+            item["text"]["encoding"] = "utf8"
+
         return item
 
     def migrate_geo_coverage(self, item, obj):
