@@ -1089,9 +1089,8 @@ class ExportGisMapApplication(ExportEEAContent):
         item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
         item["@type"] = 'map_interactive'
 
-        if "body" in item and item["body"]:
-            import pdb
-            pdb.set_trace()
+        import pdb
+        pdb.set_trace()
 
         return item
 
