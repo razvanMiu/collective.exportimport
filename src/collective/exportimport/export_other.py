@@ -866,6 +866,7 @@ class ExportEEAContent(ExportContent):
     ]
 
     locations = []
+    parsed_ids = {}
 
     def update(self):
         """Use this to override stuff before the export starts
@@ -880,7 +881,16 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_temporal_coverage(item, "temporalCoverage")
         item = self.migrate_topics(item, "themes")
         item = self.migrate_data_provenance(item, "provenances")
+        item = self.migrate_related_items(item, obj, "introduction")
         item = self.migrate_geo_coverage(item, obj)
+
+        if item["id"] in self.parsed_ids:
+            parts = item["@id"].split('/')
+            [parentId, id] = parts[-2:]
+            item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
+            item["id"] = '%s-%s' % (id, parentId)
+        else:
+            self.parsed_ids[item["id"]] = True
 
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
@@ -982,6 +992,14 @@ class ExportEEAContent(ExportContent):
                 })
         return item
 
+    def migrate_introduction(self, item, field):
+        if field in item:
+            item["text"] = {
+                **item.get(field, {}),
+                "encoding": "utf8"
+            }
+        return item
+
     def migrate_geo_coverage(self, item, obj):
 
         item["geo_coverage"] = {
@@ -1040,24 +1058,12 @@ class ExportDashboard(ExportEEAContent):
     }
     PORTAL_TYPE = ["Dashboard"]
 
-    parsed_ids = {}
-
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        import pdb
-        pdb.set_trace()
         item = super(ExportDashboard, self).global_dict_hook(item, obj)
         item["@type"] = 'tableau_visualization'
-
-        if item["id"] in self.parsed_ids:
-            parts = item["@id"].split('/')
-            [parentId, id] = parts[-2:]
-            item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
-            item["id"] = '%s-%s' % (id, parentId)
-        else:
-            self.parsed_ids[item["id"]] = True
 
         return item
 
@@ -1069,8 +1075,6 @@ class ExportGisMapApplication(ExportEEAContent):
         }
     }
     PORTAL_TYPE = ["GIS Application"]
-
-    total = 0
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
@@ -1084,14 +1088,7 @@ class ExportGisMapApplication(ExportEEAContent):
         item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
         item["@type"] = 'map_interactive'
 
-        if "introduction" in item and item["introduction"]:
-            self.totla += 1
-            print('%s - %s' % (item["@id"], item["introduction"]))
-
         return item
-
-    def finish(self):
-        print(self.total)
 
 
 class ExportDavizFigure(ExportEEAContent):
@@ -1101,6 +1098,7 @@ class ExportDavizFigure(ExportEEAContent):
         }
     }
     PORTAL_TYPE = ["DavizVisualization"]
+
     total = 0
 
     def global_dict_hook(self, item, obj):
@@ -1117,9 +1115,11 @@ class ExportDavizFigure(ExportEEAContent):
 
         mutator = queryAdapter(obj, IVisualizationConfig)
 
-        view = queryMultiAdapter((obj, self.request), name='daviz-view.html')
+        davizView = queryMultiAdapter(
+            (obj, self.request),
+            name='daviz-view.html')
 
-        tabs = view.tabs
+        tabs = davizView.tabs
 
         for index, view in enumerate(mutator.views):
             if 'chartsconfig' in view and index < len(tabs) - 1:
@@ -1140,16 +1140,14 @@ class ExportDavizFigure(ExportEEAContent):
 
         for childObj in obj.listFolderContents(
                 contentFilter={"portal_type": "File"}):
-            continue
-            # import pdb
-            # pdb.set_trace()
-            # childItem = getMultiAdapter(
-            #     (childObj, self.request),
-            #     ISerializeToJson)
-            # contentType = childItem["file"]["content-type"] if "file" in childItem and "content-type" in childItem["file"] else None
-            # if contentType == "image/svg+xml":
-            #     continue
-            # self.total += 1
+            childItem = getMultiAdapter(
+                (childObj, self.request),
+                ISerializeToJson)
+            contentType = childItem["file"]["content-type"] if "file" in childItem and "content-type" in childItem["file"] else None
+            print("contentType", contentType)
+            if contentType == "image/svg+xml":
+                continue
+            self.total += 1
 
         if len(images) == 1 and images[0]:
             image = None
