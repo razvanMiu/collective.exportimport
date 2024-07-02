@@ -1141,7 +1141,7 @@ class ExportDavizFigure(ExportEEAContent):
                 contentFilter={"portal_type": "File"}):
             childItem = getMultiAdapter(
                 (childObj, self.request),
-                ISerializeToJson)
+                ISerializeToJson)()
             contentType = childItem["file"]["content-type"] if "file" in childItem and "content-type" in childItem["file"] else None
             print("contentType", contentType)
             if contentType == "image/svg+xml":
