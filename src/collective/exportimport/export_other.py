@@ -881,7 +881,7 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_temporal_coverage(item, "temporalCoverage")
         item = self.migrate_topics(item, "themes")
         item = self.migrate_data_provenance(item, "provenances")
-        item = self.migrate_related_items(item, obj, "introduction")
+        item = self.migrate_introduction(item, obj, "introduction")
         item = self.migrate_geo_coverage(item, obj)
 
         if item["id"] in self.parsed_ids:
