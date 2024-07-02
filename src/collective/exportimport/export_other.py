@@ -32,6 +32,7 @@ from eea.versions.interfaces import IGetVersions
 from eea.workflow.interfaces import IObjectArchived
 from eea.geotags.interfaces import IGeoTags
 from eea.app.visualization.interfaces import IVisualizationConfig
+from eea.versions.interfaces import IGetVersions
 from zope.component import getAdapter
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
@@ -88,6 +89,9 @@ with open(os.path.dirname(__file__) + '/resources/topics.json') as file:
 
 with open(os.path.dirname(__file__) + '/resources/geo_coverage.json') as file:
     geo_coverage = json.load(file)
+
+with open(os.path.dirname(__file__) + '/resources/related_items.json') as file:
+    related_items = json.load(file)
 
 
 class BaseExport(BrowserView):
@@ -923,8 +927,17 @@ class ExportEEAContent(ExportContent):
             _item = getMultiAdapter(
                 (relatedItem, self.request),
                 ISerializeToJson)()
+            data = {
+                "@id": str(uuid.uuid4()),
+                "title": _item["title"],
+            }
             if _item['@type'] not in ['Data', 'ExternalDataSpec']:
                 continue
+            if _item['@type'] == 'Data':
+                versionId = IGetVersions(relatedItem).versionId
+                if versionId not in related_items:
+                    ok = False
+                data["link"] = "/datahub/datahubitem-view/%s" % related_items[versionId]
             for data_provenance in item["data_provenance"]["data"]:
                 if data_provenance["title"] == _item["title"]:
                     ok = False
