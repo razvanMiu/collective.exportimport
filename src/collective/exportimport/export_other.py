@@ -995,6 +995,8 @@ class ExportEEAContent(ExportContent):
     def migrate_introduction(self, item, field):
         if field in item:
             item["text"] = item.get(field, {})
+            if not item["text"]:
+                item["text"] = {}
             item["text"]["encoding"] = "utf8"
 
         return item
