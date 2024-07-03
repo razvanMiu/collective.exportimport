@@ -1064,12 +1064,13 @@ class ExportEEAContent(ExportContent):
         blocks_layout = {
             "items": []
         }
-        if "body" in item and item["body"]["data"]:
-            [data.append(block)
-             for block in self.convert_to_blocks(item["body"]["data"])]
 
         import pdb
         pdb.set_trace()
+
+        if "body" in item and item["body"]["data"]:
+            [data.append(block)
+             for block in self.convert_to_blocks(item["body"]["data"])]
 
         return item
 
