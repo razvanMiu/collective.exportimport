@@ -50,8 +50,8 @@ import base64
 import uuid
 import requests
 
-SLATE_CONVERTER = "volto-convertor:8000/html"
-BLOCKS_CONVERTER = "volto-convertor:8000/toblocks"
+SLATE_CONVERTER = "http://volto-convertor:8000/html"
+BLOCKS_CONVERTER = "http://volto-convertor:8000/toblocks"
 
 try:
     pkg_resources.get_distribution("Products.Archetypes")
