@@ -1060,9 +1060,9 @@ class ExportEEAContent(ExportContent):
 
     def migrate_more_info(self, item):
         blocks = []
-        if "body" in item:
+        if "body" in item and item["body"]["data"]:
             [blocks.append(block)
-             for block in self.convert_to_blocks(item["body"])]
+             for block in self.convert_to_blocks(item["body"]["data"])]
         import pdb
         pdb.set_trace()
 
