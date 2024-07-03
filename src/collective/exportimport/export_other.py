@@ -1064,11 +1064,11 @@ class ExportEEAContent(ExportContent):
             [blocks.append(block)
              for block in self.convert_to_blocks(item["body"]["data"])]
 
+        print(blocks)
+
         return item
 
     def convert_to_blocks(self, text):
-        import pdb
-        pdb.set_trace()
         data = {"html": text}
         headers = {"Content-type": "application/json",
                    "Accept": "application/json"}
