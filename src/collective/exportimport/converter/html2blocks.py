@@ -381,9 +381,8 @@ def convert_volto_block(block, node, plaintext, parent=None):
         return table_to_table_block(node, plaintext)
 
     elif node_type == "img":
-        if (
-            block is node or plaintext == ""
-        ):  # convert to a volto block only on top level element or if the block has no text
+        # convert to a volto block only on top level element or if the block has no text
+        if (block is node or plaintext == ""):
             res = {
                 "@type": "image",
                 "url": node.get("url", "").split("/@@images", 1)[0],
@@ -397,7 +396,7 @@ def convert_volto_block(block, node, plaintext, parent=None):
             if parent and parent.get("type") == "link":
                 href = parent.get("data", {}).get("url", "")
                 if href.startswith("resolveuid"):
-                    href = f"../{href}"
+                    href = "../%s" % href
                 if "resolveuid" in href:
                     href = [
                         {
