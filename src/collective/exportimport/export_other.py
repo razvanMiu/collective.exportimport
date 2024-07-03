@@ -48,6 +48,10 @@ import pkg_resources
 import six
 import base64
 import uuid
+import requests
+
+SLATE_CONVERTER = "http://10.110.30.12:6060/html"
+BLOCKS_CONVERTER = "http://10.110.30.12:6060/toblocks"
 
 try:
     pkg_resources.get_distribution("Products.Archetypes")
@@ -869,6 +873,10 @@ class ExportEEAContent(ExportContent):
         "workflow_history",
     ]
 
+    type = None
+    blocks = None
+    blocks_layout = None
+
     locations = []
     parsed_ids = {}
 
@@ -877,8 +885,17 @@ class ExportEEAContent(ExportContent):
         (e.g. force a specific language in the request)."""
         self.portal_type = self.PORTAL_TYPE
 
+    def add_blocks(self):
+        with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
+            self.blocks = json.load(file)
+        with open(os.path.dirname(__file__) + '/resources/%s/blocks_layout.json' % self.type) as file:
+            self.blocks_layout = json.load(file)
+
     def global_dict_hook(self, item, obj):
         item = json.loads(json.dumps(item).replace('\\r\\n', '\\n'))
+
+        if self.type:
+            item["@type"] = self.type
 
         item = self.migrate_related_items(item, obj)
         item = self.migrate_image(item, 'image')
@@ -1040,6 +1057,30 @@ class ExportEEAContent(ExportContent):
 
         return item
 
+    def convert_to_blocks(text):
+        data = {"html": text}
+        headers = {"Content-type": "application/json",
+                   "Accept": "application/json"}
+
+        req = requests.post(
+            BLOCKS_CONVERTER, data=json.dumps(data), headers=headers)
+        if req.status_code != 200:
+            logger.debug(req.text)
+            raise ValueError
+
+        blocks = req.json()["data"]
+        return blocks
+
+    def text_to_slate(text):
+        data = {"html": text}
+        headers = {"Content-type": "application/json",
+                   "Accept": "application/json"}
+
+        req = requests.post(
+            SLATE_CONVERTER, data=json.dumps(data), headers=headers)
+        slate = req.json()["data"]
+        return slate
+
     def finish(self):
         print(self.locations)
 
@@ -1051,6 +1092,7 @@ class ExportInfographic(ExportEEAContent):
         }
     }
     PORTAL_TYPE = ["Infographic"]
+    type = "infographic"
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
@@ -1059,7 +1101,6 @@ class ExportInfographic(ExportEEAContent):
         if IObjectArchived.providedBy(obj):
             return None
         item = super(ExportInfographic, self).global_dict_hook(item, obj)
-        item["@type"] = 'infographic'
 
         return item
 
@@ -1071,13 +1112,15 @@ class ExportDashboard(ExportEEAContent):
         }
     }
     PORTAL_TYPE = ["Dashboard"]
+    type = 'tableau_visualization'
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
         item = super(ExportDashboard, self).global_dict_hook(item, obj)
-        item["@type"] = 'tableau_visualization'
+
+        self.add_blocks()
 
         return item
 
@@ -1089,18 +1132,21 @@ class ExportGisMapApplication(ExportEEAContent):
         }
     }
     PORTAL_TYPE = ["GIS Application"]
+    type = 'map_interactive'
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
         self.DISSALLOWED_FIELDS.append("arcgis_url")
+
         item["maps"] = {
             "dataprotection": {},
             "url": item.get("arcgis_url", None),
         }
         item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
-        item["@type"] = 'map_interactive'
+
+        self.add_blocks()
 
         import pdb
         pdb.set_trace()
@@ -1115,6 +1161,7 @@ class ExportDavizFigure(ExportEEAContent):
         }
     }
     PORTAL_TYPE = ["DavizVisualization"]
+    type = 'chart_static'
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
@@ -1124,8 +1171,10 @@ class ExportDavizFigure(ExportEEAContent):
         views = []
 
         self.DISSALLOWED_FIELDS.append("spreadsheet")
-        item["@type"] = 'chart_static'
+
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
+
+        self.add_blocks()
 
         mutator = queryAdapter(obj, IVisualizationConfig)
 
@@ -1203,12 +1252,16 @@ class ExportEEAFigure(ExportEEAContent):
         figure_type = item.get("figureType", "")
 
         if figure_type == 'map':
-            item["@type"] = 'map_static'
+            self.type = 'map_static'
 
         if figure_type == 'graph':
-            item["@type"] = 'chart_static'
+            self.type = 'chart_static'
+
+        item["@type"] = self.type
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
+
+        self.add_blocks()
 
         figures = obj.values()
 
