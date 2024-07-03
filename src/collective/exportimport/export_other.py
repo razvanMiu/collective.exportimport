@@ -1072,6 +1072,8 @@ class ExportEEAContent(ExportContent):
             result = self.convert_to_blocks(item["body"]["data"])
             [data.append(block) for block in result]
 
+        import pdb
+        pdb.set_trace()
         for block_id in self.blocks:
             if block_id and self.blocks[block_id]['title'] == 'Metadata section':
                 tabs_block_id = self.blocks[block_id]['data'][
