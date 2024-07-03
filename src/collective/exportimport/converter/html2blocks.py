@@ -7,7 +7,7 @@ from uuid import uuid4
 from bs4 import BeautifulSoup
 from lxml.html import document_fromstring
 
-from app.config import DEFAULT_BLOCK_TYPE, VALID_TOPLEVEL_SLATE_TYPES
+from collective.exportimport.converter.config import DEFAULT_BLOCK_TYPE, VALID_TOPLEVEL_SLATE_TYPES
 
 from .html2slate import text_to_slate
 from .slate2html import slate_to_html
