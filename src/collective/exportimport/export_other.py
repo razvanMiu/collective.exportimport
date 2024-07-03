@@ -4,6 +4,7 @@ from App.config import getConfiguration
 from collective.exportimport import _
 from collective.exportimport import config
 from collective.exportimport.export_content import ExportContent
+from collective.converter.html2blocks import text_to_blocks
 from OFS.interfaces import IOrderedContainer
 from operator import itemgetter
 from plone import api
@@ -1120,7 +1121,6 @@ class ExportDavizFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        items = []
         images = []
         views = []
 
@@ -1153,7 +1153,7 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
 
-        if len(images) == 1 and images[0]:
+        if images[0]:
             image = None
             imageObj = None
             imageName = images[0].get('name', None)
@@ -1183,55 +1183,6 @@ class ExportDavizFigure(ExportEEAContent):
                     "file", None)
             if image and item["preview_image"] and "filename" in item["preview_image"]:
                 item["preview_image"]["filename"] = image.get("id", None)
-        if len(images) > 1:
-            items.append(item)
-            itemTitle = item.get("title", "")
-            itemId = item.get("id", "")
-            for i in images[1:]:
-                image = None
-                imageObj = None
-                imageName = i.get('name', "")
-                if imageName:
-                    imageObj = obj.get(
-                        imageName + '.svg') or obj.get(imageName + '.png')
-                if imageObj:
-                    try:
-                        serializer = getMultiAdapter(
-                            (imageObj, self.request), ISerializeToJson)
-                        image = serializer()
-                    except Exception:
-                        print("Error getting image for {}".format(
-                            item['@id'] + "-" + imageName))
-                        image = None
-                if image:
-                    imageTitle = i.get('title', "")
-                    newItem = item.copy()
-                    newItem["@id"] = item["@id"] + "-" + imageName
-                    newItem["id"] = itemId + "-" + imageName
-                    newItem["title"] = itemTitle + " - " + imageTitle
-                    newItem["preview_image"] = image.get(
-                        "image", None) or image.get(
-                        "file", None)
-                    newItem["UID"] = image.get("UID", None) or item.get(
-                        "UID", None)
-                    if newItem["preview_image"]:
-                        newItem["preview_image"]["filename"] = image.get(
-                            "id", None)
-                    items.append(newItem)
-            if len(items) > 1:
-                for item in items:
-                    item["relatedItems"] = [
-                        {
-                            "@id": _item["@id"],
-                            "@type": _item["@type"],
-                            "UID": _item["UID"],
-                            "id": _item["id"],
-                            "title": item["title"]
-                        }
-                        for _item in items
-                        if _item["@id"] != item["@id"]
-                    ]
-                return items
         return item
 
 

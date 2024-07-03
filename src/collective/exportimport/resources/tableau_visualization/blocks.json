@@ -1,0 +1,806 @@
+{
+  "4f27ce61-3449-4e72-ae73-1733942ab339": {
+    "@layout": "feeef919-edc0-4bd0-a2de-10a517b75fcc",
+    "@type": "group",
+    "as": "div",
+    "block": "3711f373-a1c3-4ed1-9461-eae76261e199",
+    "data": {
+      "blocks": {
+        "d08627f6-3334-4e15-85bd-c9eb831cbc28": {
+          "@type": "tabs_block",
+          "data": {
+            "assetPosition": "top",
+            "blocks": {
+              "265e2bee-7de3-46e8-b6ee-76005f3f434f": {
+                "@type": "tab",
+                "assetPosition": "top",
+                "blocks": {
+                  "undefined": {
+                    "@type": "slate",
+                    "plaintext": "",
+                    "value": [
+                      {
+                        "children": [
+                          {
+                            "text": ""
+                          }
+                        ],
+                        "type": "p"
+                      }
+                    ]
+                  }
+                },
+                "blocks_layout": {
+                  "items": []
+                },
+                "iconSize": "small",
+                "imageSize": "icon",
+                "title": "More info"
+              },
+              "570bee2d-1316-48cf-adde-4b640f92119b": {
+                "@type": "tab",
+                "blocks": {
+                  "7501d382-990c-4709-9768-56fc26c0341f": {
+                    "@type": "metadata",
+                    "data": {
+                      "id": "data_provenance",
+                      "widget": "data_provenance"
+                    },
+                    "readOnly": false
+                  },
+                  "undefined": {
+                    "@type": "metadata",
+                    "data": {
+                      "id": "data_provenance",
+                      "widget": "data_provenance"
+                    },
+                    "readOnly": true
+                  }
+                },
+                "blocks_layout": {
+                  "items": ["7501d382-990c-4709-9768-56fc26c0341f"]
+                },
+                "title": "Data sources"
+              },
+              "658e2886-cfbf-4c2f-a603-061e1627a515": {
+                "@type": "tab",
+                "blocks": {
+                  "8ce96a49-be90-4696-97a4-2629807e4379": {
+                    "@type": "slate",
+                    "placeholder": "Write here an assessment that explain the main finding from the figure.",
+                    "plaintext": "",
+                    "value": [
+                      {
+                        "children": [
+                          {
+                            "text": ""
+                          }
+                        ],
+                        "type": "p"
+                      }
+                    ]
+                  },
+                  "undefined": {
+                    "@type": "slate",
+                    "placeholder": "Write here an assessment that explain the main finding from the figure.",
+                    "plaintext": "",
+                    "value": [
+                      {
+                        "children": [
+                          {
+                            "text": ""
+                          }
+                        ],
+                        "type": "p"
+                      }
+                    ]
+                  }
+                },
+                "blocks_layout": {
+                  "items": ["8ce96a49-be90-4696-97a4-2629807e4379"]
+                },
+                "title": "Assessment"
+              },
+              "8a280073-bf94-4717-b3e2-1374b57ca99d": {
+                "@type": "tab",
+                "blocks": {
+                  "d8a0a984-0b69-4a27-af09-97338a3b41a4": {
+                    "@type": "metadataSection",
+                    "disableNewBlocks": true,
+                    "fields": [
+                      {
+                        "@id": "18f523b1-8cce-4cc1-a5e9-4caccf4231c5",
+                        "field": {
+                          "id": "topics",
+                          "title": "Topics",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "949bc72a-1d26-41d5-ba10-d92bedd3575b",
+                        "field": {
+                          "id": "geo_coverage",
+                          "title": "Geographical coverage",
+                          "widget": "geolocation"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "67cd36c7-16fd-42ac-a945-eb39c8a54c32",
+                        "field": {
+                          "id": "temporal_coverage",
+                          "title": "Temporal coverage",
+                          "widget": "temporal"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "5cf00740-8ab4-4d70-bed4-184c2cc2ecfb",
+                        "field": {
+                          "id": "publisher",
+                          "title": "Publisher",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "d3388432-6e62-4e43-8f6a-c0e983f70cef",
+                        "field": {
+                          "id": "rights",
+                          "title": "Rights",
+                          "widget": "string"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "ff3ad66f-c062-49e9-9edc-61c9fbffa2e0",
+                        "field": {
+                          "id": "other_organisations",
+                          "title": "Other organisations involved",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      }
+                    ],
+                    "fixed": true,
+                    "fixedLayout": true,
+                    "readOnly": false,
+                    "readOnlySettings": true,
+                    "required": true,
+                    "variation": "default"
+                  },
+                  "undefined": {
+                    "@type": "metadataSection",
+                    "disableNewBlocks": true,
+                    "fields": [
+                      {
+                        "@id": "18f523b1-8cce-4cc1-a5e9-4caccf4231c5",
+                        "field": {
+                          "id": "topics",
+                          "title": "Topics",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "949bc72a-1d26-41d5-ba10-d92bedd3575b",
+                        "field": {
+                          "id": "geo_coverage",
+                          "title": "Geographical coverage",
+                          "widget": "geolocation"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "67cd36c7-16fd-42ac-a945-eb39c8a54c32",
+                        "field": {
+                          "id": "temporal_coverage",
+                          "title": "Temporal coverage",
+                          "widget": "temporal"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "5cf00740-8ab4-4d70-bed4-184c2cc2ecfb",
+                        "field": {
+                          "id": "publisher",
+                          "title": "Publisher",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "d3388432-6e62-4e43-8f6a-c0e983f70cef",
+                        "field": {
+                          "id": "rights",
+                          "title": "Rights",
+                          "widget": "string"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "ff3ad66f-c062-49e9-9edc-61c9fbffa2e0",
+                        "field": {
+                          "id": "other_organisations",
+                          "title": "Other organisations involved",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      }
+                    ],
+                    "fixed": true,
+                    "fixedLayout": true,
+                    "readOnly": false,
+                    "readOnlySettings": false,
+                    "required": true,
+                    "variation": "default"
+                  }
+                },
+                "blocks_layout": {
+                  "items": ["d8a0a984-0b69-4a27-af09-97338a3b41a4"]
+                },
+                "title": "Metadata"
+              }
+            },
+            "blocks_layout": {
+              "items": [
+                "658e2886-cfbf-4c2f-a603-061e1627a515",
+                "570bee2d-1316-48cf-adde-4b640f92119b",
+                "8a280073-bf94-4717-b3e2-1374b57ca99d",
+                "265e2bee-7de3-46e8-b6ee-76005f3f434f"
+              ]
+            },
+            "iconSize": "small",
+            "imageSize": "icon"
+          },
+          "disableNewBlocks": true,
+          "fixed": true,
+          "menuCompact": true,
+          "menuFluid": true,
+          "menuPointing": true,
+          "menuSecondary": true,
+          "menuText": true,
+          "required": true,
+          "template": "default",
+          "variation": "accordion",
+          "verticalAlign": "flex-start"
+        },
+        "undefined": {
+          "@type": "tabs_block",
+          "data": {
+            "assetPosition": "top",
+            "blocks": {
+              "265e2bee-7de3-46e8-b6ee-76005f3f434f": {
+                "@type": "tab",
+                "assetPosition": "top",
+                "blocks": {
+                  "2c4799e2-a521-4f44-b4ca-f64255f13247": {
+                    "@type": "slate",
+                    "instructions": {
+                      "data": "<p>Any additional information goes here, like methodology or links to other supporting information</p>"
+                    },
+                    "placeholder": "Type optional extra information",
+                    "plaintext": "",
+                    "value": [
+                      {
+                        "children": [
+                          {
+                            "text": ""
+                          }
+                        ],
+                        "type": "p"
+                      }
+                    ]
+                  },
+                  "undefined": {
+                    "@type": "slate",
+                    "plaintext": "",
+                    "value": [
+                      {
+                        "children": [
+                          {
+                            "text": ""
+                          }
+                        ],
+                        "type": "p"
+                      }
+                    ]
+                  }
+                },
+                "blocks_layout": {
+                  "items": ["2c4799e2-a521-4f44-b4ca-f64255f13247"]
+                },
+                "iconSize": "small",
+                "imageSize": "icon",
+                "title": "More info"
+              },
+              "570bee2d-1316-48cf-adde-4b640f92119b": {
+                "@type": "tab",
+                "blocks": {
+                  "7501d382-990c-4709-9768-56fc26c0341f": {
+                    "@type": "metadata",
+                    "data": {
+                      "id": "data_provenance",
+                      "widget": "data_provenance"
+                    },
+                    "readOnly": true
+                  },
+                  "undefined": {
+                    "@type": "slate",
+                    "plaintext": "",
+                    "value": [
+                      {
+                        "children": [
+                          {
+                            "text": ""
+                          }
+                        ],
+                        "type": "p"
+                      }
+                    ]
+                  }
+                },
+                "blocks_layout": {
+                  "items": ["7501d382-990c-4709-9768-56fc26c0341f"]
+                },
+                "title": "Data sources"
+              },
+              "658e2886-cfbf-4c2f-a603-061e1627a515": {
+                "@type": "tab",
+                "blocks": {
+                  "8ce96a49-be90-4696-97a4-2629807e4379": {
+                    "@type": "slate",
+                    "placeholder": "Write here an assessment that explain the main finding from the figure.",
+                    "plaintext": "",
+                    "value": [
+                      {
+                        "children": [
+                          {
+                            "text": ""
+                          }
+                        ],
+                        "type": "p"
+                      }
+                    ]
+                  },
+                  "undefined": {
+                    "@type": "slate",
+                    "placeholder": "Write here an assessment that explain the main finding from the figure.",
+                    "plaintext": "",
+                    "value": [
+                      {
+                        "children": [
+                          {
+                            "text": ""
+                          }
+                        ],
+                        "type": "p"
+                      }
+                    ]
+                  }
+                },
+                "blocks_layout": {
+                  "items": ["8ce96a49-be90-4696-97a4-2629807e4379"]
+                },
+                "title": "Assessment"
+              },
+              "8a280073-bf94-4717-b3e2-1374b57ca99d": {
+                "@type": "tab",
+                "blocks": {
+                  "d8a0a984-0b69-4a27-af09-97338a3b41a4": {
+                    "@type": "metadataSection",
+                    "disableNewBlocks": true,
+                    "fields": [
+                      {
+                        "@id": "18f523b1-8cce-4cc1-a5e9-4caccf4231c5",
+                        "field": {
+                          "id": "topics",
+                          "title": "Topics",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "949bc72a-1d26-41d5-ba10-d92bedd3575b",
+                        "field": {
+                          "id": "geo_coverage",
+                          "title": "Geographical coverage",
+                          "widget": "geolocation"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "67cd36c7-16fd-42ac-a945-eb39c8a54c32",
+                        "field": {
+                          "id": "temporal_coverage",
+                          "title": "Temporal coverage",
+                          "widget": "temporal"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "5cf00740-8ab4-4d70-bed4-184c2cc2ecfb",
+                        "field": {
+                          "id": "publisher",
+                          "title": "Publisher",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "d3388432-6e62-4e43-8f6a-c0e983f70cef",
+                        "field": {
+                          "id": "rights",
+                          "title": "Rights",
+                          "widget": "string"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "ff3ad66f-c062-49e9-9edc-61c9fbffa2e0",
+                        "field": {
+                          "id": "other_organisations",
+                          "title": "Other organisations involved",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      }
+                    ],
+                    "fixed": true,
+                    "fixedLayout": true,
+                    "readOnly": true,
+                    "readOnlySettings": true,
+                    "required": true,
+                    "variation": "default"
+                  },
+                  "undefined": {
+                    "@type": "metadataSection",
+                    "disableNewBlocks": true,
+                    "fields": [
+                      {
+                        "@id": "18f523b1-8cce-4cc1-a5e9-4caccf4231c5",
+                        "field": {
+                          "id": "topics",
+                          "title": "Topics",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "949bc72a-1d26-41d5-ba10-d92bedd3575b",
+                        "field": {
+                          "id": "geo_coverage",
+                          "title": "Geographical coverage",
+                          "widget": "geolocation"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "67cd36c7-16fd-42ac-a945-eb39c8a54c32",
+                        "field": {
+                          "id": "temporal_coverage",
+                          "title": "Temporal coverage",
+                          "widget": "temporal"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "5cf00740-8ab4-4d70-bed4-184c2cc2ecfb",
+                        "field": {
+                          "id": "publisher",
+                          "title": "Publisher",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "d3388432-6e62-4e43-8f6a-c0e983f70cef",
+                        "field": {
+                          "id": "rights",
+                          "title": "Rights",
+                          "widget": "string"
+                        },
+                        "showLabel": true
+                      },
+                      {
+                        "@id": "ff3ad66f-c062-49e9-9edc-61c9fbffa2e0",
+                        "field": {
+                          "id": "other_organisations",
+                          "title": "Other organisations involved",
+                          "widget": "array"
+                        },
+                        "showLabel": true
+                      }
+                    ],
+                    "fixed": true,
+                    "fixedLayout": true,
+                    "readOnly": true,
+                    "readOnlySettings": true,
+                    "required": true,
+                    "variation": "default"
+                  }
+                },
+                "blocks_layout": {
+                  "items": ["d8a0a984-0b69-4a27-af09-97338a3b41a4"]
+                },
+                "title": "Metadata"
+              }
+            },
+            "blocks_layout": {
+              "items": [
+                "658e2886-cfbf-4c2f-a603-061e1627a515",
+                "570bee2d-1316-48cf-adde-4b640f92119b",
+                "8a280073-bf94-4717-b3e2-1374b57ca99d",
+                "265e2bee-7de3-46e8-b6ee-76005f3f434f"
+              ]
+            },
+            "iconSize": "small",
+            "imageSize": "icon"
+          },
+          "disableNewBlocks": true,
+          "fixed": true,
+          "menuCompact": true,
+          "menuFluid": true,
+          "menuPointing": true,
+          "menuSecondary": true,
+          "menuText": true,
+          "required": true,
+          "template": "default",
+          "variation": "accordion",
+          "verticalAlign": "flex-start"
+        }
+      },
+      "blocks_layout": {
+        "items": ["d08627f6-3334-4e15-85bd-c9eb831cbc28"]
+      }
+    },
+    "disableNewBlocks": true,
+    "fixed": true,
+    "fixedLayout": true,
+    "required": true,
+    "styles": {
+      "size": "container_width"
+    },
+    "title": "Metadata section",
+    "variation": "default"
+  },
+  "4f998df4-b3a7-40c3-9876-280d8d4ac33d": {
+    "@layout": "1b16722f-286a-481e-81c7-6952d843d2a7",
+    "@type": "group",
+    "as": "div",
+    "block": "7cec9193-4cc5-4254-a51a-805ab8ee6866",
+    "data": {
+      "blocks": {
+        "b08303fe-99a2-4e20-b072-2efd128c650c": {
+          "@type": "description",
+          "disableNewBlocks": true,
+          "fixed": true,
+          "required": true
+        },
+        "undefined": {
+          "@type": "description",
+          "disableNewBlocks": true,
+          "fixed": true,
+          "required": true
+        }
+      },
+      "blocks_layout": {
+        "items": ["b08303fe-99a2-4e20-b072-2efd128c650c"]
+      }
+    },
+    "disableNewBlocks": true,
+    "fixed": true,
+    "fixedLayout": true,
+    "required": true,
+    "styles": {},
+    "title": "Descriptionsection",
+    "variation": "default"
+  },
+  "567e9277-cb70-4e3d-b2d1-0e940d15f1bd": {
+    "@layout": "c8433815-534d-4023-a67f-37536c777387",
+    "@type": "title",
+    "block": "ad41edc6-6ef7-4d9a-aac5-47f7e699c0e0",
+    "copyrightIcon": "ri-copyright-line",
+    "hideCreationDate": true,
+    "hideDownloadButton": true,
+    "styles": {}
+  },
+  "697614e9-3fe7-4392-90c7-ebd34dc8c365": {
+    "@layout": "10a00097-a5a5-4da3-8775-c7bceeb51825",
+    "@type": "slate",
+    "block": "48667553-3cb5-4236-9e06-60dc570fd720",
+    "plaintext": "",
+    "value": [
+      {
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "type": "p"
+      }
+    ]
+  },
+  "6d22ec5d-8230-4566-b978-c645a2b7c34d": {
+    "@layout": "a7743a50-0bc9-4db7-9d1b-823a81e51d9d",
+    "@type": "group",
+    "as": "div",
+    "block": "9f19321e-4693-409a-96cf-9755c1f1804b",
+    "data": {
+      "blocks": {
+        "3ae712a9-2551-4348-9ffb-e9f1ab79ce06": {
+          "@type": "metadata",
+          "data": {
+            "id": "tableau_visualization",
+            "widget": "json"
+          }
+        },
+        "d9b9830a-d990-45c9-96fd-6dc81c022c72": {
+          "@type": "metadata",
+          "data": {
+            "id": "figure_note",
+            "widget": "slate"
+          },
+          "disableNewBlocks": true,
+          "fixed": true,
+          "required": true
+        },
+        "undefined": {
+          "@type": "metadata",
+          "data": {
+            "id": "figure_note",
+            "widget": "slate"
+          }
+        }
+      },
+      "blocks_layout": {
+        "items": [
+          "3ae712a9-2551-4348-9ffb-e9f1ab79ce06",
+          "d9b9830a-d990-45c9-96fd-6dc81c022c72"
+        ]
+      }
+    },
+    "disableNewBlocks": true,
+    "fixed": true,
+    "fixedLayout": true,
+    "required": true,
+    "styles": {
+      "size": "container_width"
+    },
+    "title": "Figure section",
+    "variation": "default"
+  },
+  "74a215a2-6d88-414f-90b3-0866dd63b818": {
+    "@layout": "7d151e78-3bd5-4895-b894-22cedd4886ba",
+    "@type": "gridBlock",
+    "block": "3b094f69-ceed-4f08-a192-401ffdd2a7a3",
+    "blocks": {
+      "76c89d98-7d15-464d-b057-f90b72a99bc8": {
+        "@type": "teaser",
+        "id": "76c89d98-7d15-464d-b057-f90b72a99bc8"
+      },
+      "a5f98454-19a9-4e39-a5ec-45f6cd2fd0aa": {
+        "@type": "teaser",
+        "id": "a5f98454-19a9-4e39-a5ec-45f6cd2fd0aa"
+      },
+      "d8177bed-0213-461d-9c8f-c982688f5bfd": {
+        "@type": "teaser",
+        "id": "d8177bed-0213-461d-9c8f-c982688f5bfd"
+      }
+    },
+    "blocks_layout": {
+      "items": [
+        "76c89d98-7d15-464d-b057-f90b72a99bc8",
+        "d8177bed-0213-461d-9c8f-c982688f5bfd",
+        "a5f98454-19a9-4e39-a5ec-45f6cd2fd0aa"
+      ]
+    }
+  },
+  "f60a0788-e2d0-4e29-9b92-d3a5c7c0561c": {
+    "@layout": "1ffc5620-6056-4a5a-9b4f-23e79c55ec5f",
+    "@type": "dividerBlock",
+    "block": "97d00838-b21d-4ab3-82bb-cc5a946d8f87",
+    "disableNewBlocks": true,
+    "fixed": true,
+    "hidden": true,
+    "required": true,
+    "section": true
+  },
+  "f83f621c-08a3-459c-b8bf-d22036f990ef": {
+    "@layout": "7dfa3ad6-494d-464e-8896-1f50e2129b50",
+    "@type": "group",
+    "as": "section",
+    "block": "bcf9f63a-cb3c-4a11-8cd4-94184950d074",
+    "data": {
+      "blocks": {
+        "3bf29d75-d662-411d-b15c-e3ad06eccbf7": {
+          "@type": "slate",
+          "placeholder": "References and footnotes",
+          "plaintext": "References and footnotes",
+          "value": [
+            {
+              "children": [
+                {
+                  "text": "References and footnotes"
+                }
+              ],
+              "type": "h2"
+            }
+          ]
+        },
+        "d40ccc34-9279-4d23-b2ad-43149649cf79": {
+          "@type": "slateFootnotes",
+          "fixed": true,
+          "global": true,
+          "required": false
+        },
+        "undefined": {
+          "@type": "slate",
+          "plaintext": "References and footnotes",
+          "value": [
+            {
+              "children": [
+                {
+                  "text": "References and footnotes"
+                }
+              ],
+              "type": "h2"
+            }
+          ]
+        }
+      },
+      "blocks_layout": {
+        "items": [
+          "3bf29d75-d662-411d-b15c-e3ad06eccbf7",
+          "d40ccc34-9279-4d23-b2ad-43149649cf79"
+        ]
+      }
+    },
+    "styles": {}
+  },
+  "f913943e-1f50-4b87-bc84-9829b2a68d0b": {
+    "@layout": "489f8168-0687-4bbe-98b6-fd16cb2b035d",
+    "@type": "slate",
+    "block": "a54c6e57-5f7e-4600-b71d-0ed694439ef1",
+    "plaintext": "Related content",
+    "value": [
+      {
+        "children": [
+          {
+            "text": "Related content"
+          }
+        ],
+        "type": "h2"
+      }
+    ]
+  },
+  "undefined": {
+    "@type": "group",
+    "as": "div",
+    "data": {
+      "blocks": {
+        "041a0949-ebe9-4e36-9750-652ebcf17e4b": {
+          "@type": "slate",
+          "plaintext": "",
+          "value": [
+            {
+              "children": [
+                {
+                  "text": ""
+                }
+              ],
+              "type": "p"
+            }
+          ]
+        },
+        "undefined": {
+          "@type": "slate"
+        }
+      },
+      "blocks_layout": {
+        "items": ["041a0949-ebe9-4e36-9750-652ebcf17e4b"]
+      }
+    }
+  }
+}
