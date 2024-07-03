@@ -50,8 +50,8 @@ import base64
 import uuid
 import requests
 
-SLATE_CONVERTER = "http://10.110.30.12:6060/html"
-BLOCKS_CONVERTER = "http://10.110.30.12:6060/toblocks"
+SLATE_CONVERTER = "volto-convertor:8000/html"
+BLOCKS_CONVERTER = "volto-convertor:8000/toblocks"
 
 try:
     pkg_resources.get_distribution("Products.Archetypes")
@@ -1059,12 +1059,17 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_more_info(self, item):
-        blocks = []
+        data = []
+        blocks = {}
+        blocks_layout = {
+            "items": []
+        }
         if "body" in item and item["body"]["data"]:
-            [blocks.append(block)
+            [data.append(block)
              for block in self.convert_to_blocks(item["body"]["data"])]
 
-        print(blocks)
+        import pdb
+        pdb.set_trace()
 
         return item
 
