@@ -1057,7 +1057,7 @@ class ExportEEAContent(ExportContent):
 
         return item
 
-    def convert_to_blocks(text):
+    def convert_to_blocks(self, text):
         data = {"html": text}
         headers = {"Content-type": "application/json",
                    "Accept": "application/json"}
@@ -1071,7 +1071,7 @@ class ExportEEAContent(ExportContent):
         blocks = req.json()["data"]
         return blocks
 
-    def text_to_slate(text):
+    def text_to_slate(self, text):
         data = {"html": text}
         headers = {"Content-type": "application/json",
                    "Accept": "application/json"}
