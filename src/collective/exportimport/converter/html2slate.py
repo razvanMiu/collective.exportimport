@@ -507,7 +507,7 @@ def tostr(s):
         return s.decode("utf-8")
 
 
-def text_to_slate(text: str):
+def text_to_slate(text):
     # first we cleanup the broken html
     e = lxml.html.document_fromstring(text)
     children = e.find("body").getchildren()
