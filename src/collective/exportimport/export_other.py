@@ -4,7 +4,6 @@ from App.config import getConfiguration
 from collective.exportimport import _
 from collective.exportimport import config
 from collective.exportimport.export_content import ExportContent
-from collective.exportimport.converter.html2blocks import text_to_blocks
 from OFS.interfaces import IOrderedContainer
 from operator import itemgetter
 from plone import api

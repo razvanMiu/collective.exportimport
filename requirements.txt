@@ -3,6 +3,3 @@
 zc.buildout==3.0.1
 # setuptools 67 is too strict with versions
 setuptools<67
-
-lxml==5.1.0
-litestar==2.5.4
