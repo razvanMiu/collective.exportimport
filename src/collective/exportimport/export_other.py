@@ -885,18 +885,24 @@ class ExportEEAContent(ExportContent):
         (e.g. force a specific language in the request)."""
         self.portal_type = self.PORTAL_TYPE
 
-    def add_blocks(self, item):
+    def load_blocks(self, item):
+        if not self.type:
+            return item
         with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
             self.blocks = json.load(file)
         with open(os.path.dirname(__file__) + '/resources/%s/blocks_layout.json' % self.type) as file:
             self.blocks_layout = json.load(file)
-        item = self.migrate_more_info(item)
+        item["blocks"] = self.blocks
+        item["blocks_layout"] = self.blocks_layout
+        return item
 
     def global_dict_hook(self, item, obj):
         item = json.loads(json.dumps(item).replace('\\r\\n', '\\n'))
 
         if self.type:
             item["@type"] = self.type
+
+        item = self.load_blocks(item)
 
         item = self.migrate_related_items(item, obj)
         item = self.migrate_image(item, 'image')
@@ -905,6 +911,7 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_data_provenance(item, "provenances")
         item = self.migrate_introduction(item, "introduction")
         item = self.migrate_geo_coverage(item, obj)
+        item = self.migrate_more_info(item)
 
         if item["id"] in self.parsed_ids:
             parts = item["@id"].split('/')
@@ -1060,17 +1067,31 @@ class ExportEEAContent(ExportContent):
 
     def migrate_more_info(self, item):
         data = []
-        blocks = {}
-        blocks_layout = {
-            "items": []
-        }
-
-        result = self.convert_to_blocks(item["body"]["data"])
-        import pdb
-        pdb.set_trace()
 
         if "body" in item and item["body"]["data"]:
+            result = self.convert_to_blocks(item["body"]["data"])
             [data.append(block) for block in result]
+
+        for block_id in self.blocks:
+            if block_id and self.blocks[block_id]['title'] == 'Metadata section':
+                tabs_block_id = self.blocks[block_id]['data'][
+                    'blocks_layout']['items'][0]
+                tabs_blocks = self.blocks[block_id]['data']['blocks'][
+                    tabs_block_id]['data']['blocks']
+
+                for _tab_block_id in tabs_blocks:
+                    if _tab_block_id and tabs_blocks[_tab_block_id]['title'] == 'More info':
+                        for item in data:
+                            _block_id = item[0]
+                            _block = item[1]
+                            self.blocks[block_id]['data']['blocks'][
+                                tabs_block_id]['data']['blocks'][
+                                _tab_block_id]['blocks'][_block_id] = _block
+                            self.blocks[block_id]['data']['blocks'][tabs_block_id]['data']['blocks'][_tab_block_id]['blocks_layout']['items'].append(
+                                _block_id)
+
+        item["blocks"] = self.blocks
+        item["blocks_layout"] = self.blocks_layout
 
         return item
 
@@ -1137,8 +1158,6 @@ class ExportDashboard(ExportEEAContent):
         """
         item = super(ExportDashboard, self).global_dict_hook(item, obj)
 
-        self.add_blocks(item)
-
         return item
 
 
@@ -1163,8 +1182,6 @@ class ExportGisMapApplication(ExportEEAContent):
         }
         item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
 
-        self.add_blocks(item)
-
         return item
 
 
@@ -1187,8 +1204,6 @@ class ExportDavizFigure(ExportEEAContent):
         self.DISSALLOWED_FIELDS.append("spreadsheet")
 
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
-
-        self.add_blocks(item)
 
         mutator = queryAdapter(obj, IVisualizationConfig)
 
@@ -1274,8 +1289,6 @@ class ExportEEAFigure(ExportEEAContent):
         item["@type"] = self.type
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
-
-        self.add_blocks(item)
 
         figures = obj.values()
 
