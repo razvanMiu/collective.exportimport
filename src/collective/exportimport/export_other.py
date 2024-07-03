@@ -885,11 +885,12 @@ class ExportEEAContent(ExportContent):
         (e.g. force a specific language in the request)."""
         self.portal_type = self.PORTAL_TYPE
 
-    def add_blocks(self):
+    def add_blocks(self, item):
         with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
             self.blocks = json.load(file)
         with open(os.path.dirname(__file__) + '/resources/%s/blocks_layout.json' % self.type) as file:
             self.blocks_layout = json.load(file)
+        item = self.migrate_more_info(item)
 
     def global_dict_hook(self, item, obj):
         item = json.loads(json.dumps(item).replace('\\r\\n', '\\n'))
@@ -1057,6 +1058,16 @@ class ExportEEAContent(ExportContent):
 
         return item
 
+    def migrate_more_info(self, item):
+        blocks = []
+        if "body" in item:
+            [blocks.append(block)
+             for block in self.convert_to_blocks(item["body"])]
+        import pdb
+        pdb.set_trace()
+
+        return item
+
     def convert_to_blocks(self, text):
         data = {"html": text}
         headers = {"Content-type": "application/json",
@@ -1120,7 +1131,7 @@ class ExportDashboard(ExportEEAContent):
         """
         item = super(ExportDashboard, self).global_dict_hook(item, obj)
 
-        self.add_blocks()
+        self.add_blocks(item)
 
         return item
 
@@ -1146,10 +1157,7 @@ class ExportGisMapApplication(ExportEEAContent):
         }
         item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
 
-        self.add_blocks()
-
-        import pdb
-        pdb.set_trace()
+        self.add_blocks(item)
 
         return item
 
@@ -1174,7 +1182,7 @@ class ExportDavizFigure(ExportEEAContent):
 
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
 
-        self.add_blocks()
+        self.add_blocks(item)
 
         mutator = queryAdapter(obj, IVisualizationConfig)
 
@@ -1261,7 +1269,7 @@ class ExportEEAFigure(ExportEEAContent):
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
-        self.add_blocks()
+        self.add_blocks(item)
 
         figures = obj.values()
 
