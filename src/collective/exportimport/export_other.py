@@ -951,7 +951,7 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_data_provenance(item, "provenances")
         item = self.migrate_introduction(item, "introduction")
         item = self.migrate_geo_coverage(item, obj)
-        item = self.migrate_more_info(item)
+        # item = self.migrate_more_info(item)
 
         if item["id"] in self.parsed_ids:
             parts = item["@id"].split('/')
@@ -964,9 +964,9 @@ class ExportEEAContent(ExportContent):
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
 
-        for field in self.DISSALLOWED_FIELDS:
-            if field in item:
-                del item[field]
+        # for field in self.DISSALLOWED_FIELDS:
+        #     if field in item:
+        #         del item[field]
 
         return item
 
