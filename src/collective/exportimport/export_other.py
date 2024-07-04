@@ -40,6 +40,7 @@ from zope.component import getUtility
 from zope.component import queryMultiAdapter, queryAdapter
 from zope.component import queryUtility
 from zope.interface import providedBy
+from uuid import uuid4
 
 import json
 import logging
@@ -96,6 +97,42 @@ with open(os.path.dirname(__file__) + '/resources/geo_coverage.json') as file:
 
 with open(os.path.dirname(__file__) + '/resources/related_items.json') as file:
     related_items = json.load(file)
+
+
+def make_uid():
+    return str(uuid4())
+
+
+def make_group_block(title, blocks):
+    _blocks = {}
+    _blocks_layout = {
+        "items": []
+    }
+
+    for block in blocks.extend([[make_uid(), {
+        "@type": "slate",
+        "value": [
+            {
+                "type": "h3",
+                        "children": [
+                            {
+                                "text": title
+                            }
+                        ]
+            }
+        ],
+        "plaintext": title
+    }]]):
+        _blocks[block[0]] = block[1]
+        _blocks_layout["items"].append(block[0])
+
+    data = {
+        "@type": "group",
+        "data": {"blocks": _blocks, "blocks_layout": _blocks_layout},
+        "styles": {},
+        "title": title
+    }
+    return [make_uid(), data]
 
 
 class BaseExport(BrowserView):
@@ -838,16 +875,16 @@ class ExportEEAContent(ExportContent):
     QUERY = {}
     PORTAL_TYPE = []
     DISSALLOWED_FIELDS = [
-        # "body", # should be handled in frontend
+        "body",  # handled by migrate_more_info
         "constrainTypesMode",
         "coverImage",
         "dataLink",
-        "dataOwner",  # should be mapped to publisher
+        # "dataOwner",  # TODO: should be mapped to publisher
         "dataSource",
         "dataTitle",
         "dataWarning",
         "disableProgressTrailViewlet",
-        "eeaManagementPlan",
+        # "eeaManagementPlan", # TODO: add to more info
         "external",
         "forcedisableautolinks",
         "geographicCoverage",
@@ -855,21 +892,21 @@ class ExportEEAContent(ExportContent):
         "image",  # handled by migrate_image
         "layout",
         "location",  # handled by migrate_geo_coverage
-        # "methodology", # should be handled in frontend
-        # "moreInfo", # should be handled in frontend
+        "methodology",  # handled by migrate_more_info
+        "moreInfo",  # handled by migrate_more_info
         "pdfMaxBreadth",
         "pdfMaxDepth",
         "pdfMaxItems",
         "pdfStatic",
         "pdfTheme",
         "provenances",  # handled by migrate_data_provenance
-        "processor",  # should be mapped to other organisations involved
+        # "processor",  # TODO: add to more info
         "quickUpload",
         "temporalCoverage",  # handled by migrate_temporal_coverage
         "themes",  # handled by migrate_topics
         "tocExclude",
         "tocdepth",
-        # "units", # should be handled in frontend
+        "units",  # handled by migrate_more_info
         "workflow_history",
     ]
 
@@ -1032,10 +1069,9 @@ class ExportEEAContent(ExportContent):
 
     def migrate_introduction(self, item, field):
         if field in item:
-            item["text"] = item.get(field, {})
-            if not item["text"]:
-                item["text"] = {}
-            item["text"]["encoding"] = "utf8"
+            item["text"] = item.get(field, None)
+            if item["text"]:
+                item["text"]["encoding"] = "utf8"
 
         return item
 
@@ -1066,11 +1102,32 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_more_info(self, item):
-        data = []
+        blocks = []
 
-        if "body" in item and item["body"]["data"]:
+        html = self.get_html(item, 'methodology')
+        if html:
+            blocks.append(make_group_block(
+                "Methodology", self.convert_to_blocks(html)))
+
+        html = self.get_html(item, 'units')
+        if html:
+            blocks.append(make_group_block(
+                "Units", self.convert_to_blocks(html)))
+
+        html = self.get_html(item, 'contact')
+        if html:
+            blocks.append(make_group_block(
+                "Contact references at EEA", self.convert_to_blocks(html)))
+
+        html = self.get_html(item, 'body') + self.get_html(item, 'moreInfo')
+
+        if html:
             result = self.convert_to_blocks(item["body"]["data"])
-            [data.append(block) for block in result]
+            if len(blocks) > 0:
+                blocks.append(make_group_block(
+                    "Additional information", result))
+            else:
+                [blocks.append(block) for block in result]
 
         for block_id in self.blocks:
             if block_id and self.blocks[block_id].get('title') == 'Metadata section':
@@ -1082,7 +1139,7 @@ class ExportEEAContent(ExportContent):
                 for _tab_block_id in tabs_blocks:
                     if _tab_block_id and tabs_blocks[_tab_block_id].get(
                             'title') == 'More info':
-                        for b in data:
+                        for b in blocks:
                             _block_id = b[0]
                             _block = b[1]
                             self.blocks[block_id]['data']['blocks'][
@@ -1097,6 +1154,12 @@ class ExportEEAContent(ExportContent):
         item["blocks_layout"] = self.blocks_layout
 
         return item
+
+    def get_html(self, item, field):
+        if field in item and item[field]["content-type"] == 'text/html':
+            return item[field].get("data", "")
+        else:
+            return ""
 
     def convert_to_blocks(self, text):
         data = {"html": text}
@@ -1247,17 +1310,15 @@ class ExportDavizFigure(ExportEEAContent):
 
                 # Get figure note
                 if "notes" in views[0].get("chartsconfig", {}):
-                    if "figure_notes" not in item or not item["figure_notes"]:
-                        item["figure_notes"] = {
-                            "content-type": "text/html",
-                            "data": ""
-                        }
+                    html = ''
                     for note in views[0].get(
                             "chartsconfig", {}).get(
                             "notes", []):
-                        item["figure_notes"]["data"] += note.get("text", "")
-                        if note.get("text", ""):
-                            item["figure_notes"]["data"] += "<br/>"
+                        html += note.get("text", "")
+                    if html:
+                        import pdb
+                        pdb.set_trace()
+                        item["figure_notes"] = self.text_to_slate(html)
 
                 item["preview_image"] = image.get("image", None) or image.get(
                     "file", None)
