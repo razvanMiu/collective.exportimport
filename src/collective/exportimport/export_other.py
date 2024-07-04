@@ -111,7 +111,7 @@ def make_group_block(title, blocks):
         "items": []
     }
 
-    for block in blocks.extend([[make_uid(), {
+    blocks.extend([[make_uid(), {
         "@type": "slate",
         "value": [
             {
@@ -124,7 +124,9 @@ def make_group_block(title, blocks):
             }
         ],
         "plaintext": title
-    }]]):
+    }]])
+
+    for block in blocks:
         _blocks[block[0]] = block[1]
         _blocks_layout["items"].append(block[0])
 
