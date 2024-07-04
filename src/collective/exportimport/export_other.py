@@ -1072,17 +1072,16 @@ class ExportEEAContent(ExportContent):
             result = self.convert_to_blocks(item["body"]["data"])
             [data.append(block) for block in result]
 
-        import pdb
-        pdb.set_trace()
         for block_id in self.blocks:
-            if block_id and self.blocks[block_id]['title'] == 'Metadata section':
+            if block_id and self.blocks[block_id].get('title') == 'Metadata section':
                 tabs_block_id = self.blocks[block_id]['data'][
                     'blocks_layout']['items'][0]
                 tabs_blocks = self.blocks[block_id]['data']['blocks'][
                     tabs_block_id]['data']['blocks']
 
                 for _tab_block_id in tabs_blocks:
-                    if _tab_block_id and tabs_blocks[_tab_block_id]['title'] == 'More info':
+                    if _tab_block_id and tabs_blocks[_tab_block_id].get(
+                            'title') == 'More info':
                         for item in data:
                             _block_id = item[0]
                             _block = item[1]
@@ -1092,6 +1091,8 @@ class ExportEEAContent(ExportContent):
                             self.blocks[block_id]['data']['blocks'][tabs_block_id]['data']['blocks'][_tab_block_id]['blocks_layout']['items'].append(
                                 _block_id)
 
+        import pdb
+        pdb.set_trace()
         item["blocks"] = self.blocks
         item["blocks_layout"] = self.blocks_layout
 
