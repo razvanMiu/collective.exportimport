@@ -951,7 +951,7 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_data_provenance(item, "provenances")
         item = self.migrate_introduction(item, "introduction")
         item = self.migrate_geo_coverage(item, obj)
-        # item = self.migrate_more_info(item)
+        item = self.migrate_more_info(item)
 
         if item["id"] in self.parsed_ids:
             parts = item["@id"].split('/')
@@ -1159,10 +1159,12 @@ class ExportEEAContent(ExportContent):
         return item
 
     def get_html(self, item, field):
-        if item.get(field) and item[field].get("content-type") == 'text/html':
-            return item[field].get("data", "")
-        else:
-            return ""
+        value = item.get(field)
+        if isinstance(value, str):
+            return value
+        if value and value.get("content-type") == 'text/html':
+            return value.get("data", "")
+        return ""
 
     def convert_to_blocks(self, text):
         data = {"html": text}
