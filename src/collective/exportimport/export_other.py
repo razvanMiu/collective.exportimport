@@ -920,8 +920,6 @@ class ExportEEAContent(ExportContent):
     locations = []
     parsed_ids = {}
 
-    dataOwners = []
-
     def update(self):
         """Use this to override stuff before the export starts
         (e.g. force a specific language in the request)."""
@@ -944,10 +942,11 @@ class ExportEEAContent(ExportContent):
         if self.type:
             item["@type"] = self.type
 
-        if "dataOwner" in item and item["dataOwner"] and isinstance(
-                item["dataOwner"],
-                list):
-            [self.dataOwners.append(i) for i in item["dataOwner"]]
+        if "processor" in item and item["processor"] and isinstance(
+                item["processor"],
+                list) and len(item["processor"]) == 1:
+            import pdb
+            pdb.set_trace()
 
         # item = self.load_blocks(item)
 
@@ -1209,8 +1208,6 @@ class ExportEEAContent(ExportContent):
     def finish(self):
         print("===> Locations <===")
         print(self.locations)
-        print("===> Data owners <===")
-        print(self.dataOwners)
 
 
 class ExportInfographic(ExportEEAContent):
