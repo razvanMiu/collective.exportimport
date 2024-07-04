@@ -135,6 +135,9 @@ def make_group_block(title, blocks):
         }]
     ])
 
+    import pdb
+    pdb.set_trace()
+
     for block in blocks:
         _blocks[block[0]] = block[1]
         _blocks_layout["items"].append(block[0])
@@ -1120,8 +1123,6 @@ class ExportEEAContent(ExportContent):
 
     def migrate_more_info(self, item, obj):
         blocks = []
-        import pdb
-        pdb.set_trace()
 
         # Migrate "methodology" field
         html = self.get_html(item, 'methodology')
