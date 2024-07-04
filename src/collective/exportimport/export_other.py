@@ -104,8 +104,6 @@ def make_uid():
 
 
 def make_group_block(title, blocks):
-    import pdb
-    pdb.set_trace()
     _blocks = {}
     _blocks_layout = {
         "items": []
