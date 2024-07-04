@@ -1130,7 +1130,7 @@ class ExportEEAContent(ExportContent):
                 item['dataOwner']):
             html = ''
             for url in item['dataOwner']:
-                organization = obj.getOrganizationName(url)
+                organization = obj.getOrganisationName(url)
                 title = organization.Title if organization else url
                 html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
                     url, title)
@@ -1145,7 +1145,7 @@ class ExportEEAContent(ExportContent):
                 item['processor']):
             html = ''
             for url in item['processor']:
-                organization = obj.getOrganizationName(url)
+                organization = obj.getOrganisationName(url)
                 title = organization.Title if organization else url
                 html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
                     url, title)
