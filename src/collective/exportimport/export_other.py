@@ -126,6 +126,15 @@ def make_group_block(title, blocks):
         }]
     ]
 
+    blocks.append([
+        [make_uid(), {
+            "@type": "dividerBlock",
+            "hidden": True,
+            "spacing": "s",
+            "styles": {}
+        }]
+    ])
+
     for block in blocks:
         _blocks[block[0]] = block[1]
         _blocks_layout["items"].append(block[0])
@@ -882,6 +891,7 @@ class ExportEEAContent(ExportContent):
         "body",  # handled by migrate_more_info
         "constrainTypesMode",
         "coverImage",
+        "contact",  # handled by migrate_more_info
         "dataLink",
         "dataOwner",  # handled by migrate_more_info
         "dataSource",
@@ -946,31 +956,31 @@ class ExportEEAContent(ExportContent):
         if self.type:
             item["@type"] = self.type
 
-        item = self.load_blocks(item)
+        # item = self.load_blocks(item)
 
-        item = self.migrate_related_items(item, obj)
-        item = self.migrate_image(item, 'image')
-        item = self.migrate_temporal_coverage(item, "temporalCoverage")
-        item = self.migrate_topics(item, "themes")
-        item = self.migrate_data_provenance(item, "provenances")
-        item = self.migrate_introduction(item, "introduction")
-        item = self.migrate_geo_coverage(item, obj)
-        item = self.migrate_more_info(item, obj)
+        # item = self.migrate_related_items(item, obj)
+        # item = self.migrate_image(item, 'image')
+        # item = self.migrate_temporal_coverage(item, "temporalCoverage")
+        # item = self.migrate_topics(item, "themes")
+        # item = self.migrate_data_provenance(item, "provenances")
+        # item = self.migrate_introduction(item, "introduction")
+        # item = self.migrate_geo_coverage(item, obj)
+        # item = self.migrate_more_info(item, obj)
 
-        if "rights" in item and item["rights"]:
-            item["rights"] = item["rights"].replace("\n", " ")
+        # if "rights" in item and item["rights"]:
+        #     item["rights"] = item["rights"].replace("\n", " ")
 
-        if item["id"] in self.parsed_ids:
-            parts = item["@id"].split('/')
-            [parentId, id] = parts[-2:]
-            item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
-            item["id"] = '%s-%s' % (id, parentId)
-        else:
-            self.parsed_ids[item["id"]] = True
+        # if item["id"] in self.parsed_ids:
+        #     parts = item["@id"].split('/')
+        #     [parentId, id] = parts[-2:]
+        #     item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
+        #     item["id"] = '%s-%s' % (id, parentId)
+        # else:
+        #     self.parsed_ids[item["id"]] = True
 
-        for field in self.DISSALLOWED_FIELDS:
-            if field in item:
-                del item[field]
+        # for field in self.DISSALLOWED_FIELDS:
+        #     if field in item:
+        #         del item[field]
 
         return item
 
@@ -1415,25 +1425,25 @@ class ExportEEAFigure(ExportEEAContent):
                 item["externalRelations"]) > 0:
             self.externalRelations.append(item["@id"])
 
-        figures = obj.values()
+        # figures = obj.values()
 
-        for figure in figures:
-            figureFiles = figure.values()
-            for figureFile in figureFiles:
-                try:
-                    serializer = getMultiAdapter(
-                        (figureFile,
-                         self.request),
-                        ISerializeToJson)
-                    file = serializer()
-                except Exception:
-                    file = None
-                if file and self.IMAGE_FORMAT in file.get("id", ''):
-                    item["preview_image"] = file.get("image", {}) or file.get(
-                        "file", {})
-                    if item["preview_image"]:
-                        item["preview_image"]["filename"] = file.get(
-                            "id", None)
+        # for figure in figures:
+        #     figureFiles = figure.values()
+        #     for figureFile in figureFiles:
+        #         try:
+        #             serializer = getMultiAdapter(
+        #                 (figureFile,
+        #                  self.request),
+        #                 ISerializeToJson)
+        #             file = serializer()
+        #         except Exception:
+        #             file = None
+        #         if file and self.IMAGE_FORMAT in file.get("id", ''):
+        #             item["preview_image"] = file.get("image", {}) or file.get(
+        #                 "file", {})
+        #             if item["preview_image"]:
+        #                 item["preview_image"]["filename"] = file.get(
+        #                     "id", None)
 
         return item
 
