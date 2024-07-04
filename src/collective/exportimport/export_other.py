@@ -1184,6 +1184,19 @@ class ExportEEAContent(ExportContent):
             blocks.append(make_group_block(
                 "Contact references at EEA", self.convert_to_blocks(html)))
 
+        # Migrate "externalRelations" field
+        if 'externalRelations' in item and isinstance(
+                item['externalRelations'],
+                list) and len(
+                item['externalRelations']):
+            html = ''
+            for url in item['externalRelations']:
+                html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
+                    url, url)
+            if html:
+                blocks.append(make_group_block(
+                    "External links, non EEA websites", self.convert_to_blocks(html)))
+
         # Migrate "moreInfo" field
         html = self.get_html(item, 'body') + self.get_html(item, 'moreInfo')
         if html:
@@ -1401,7 +1414,6 @@ class ExportEEAFigure(ExportEEAContent):
     }
     PORTAL_TYPE = ["EEAFigure"]
     IMAGE_FORMAT = '.75dpi.png'
-    externalRelations = []
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
@@ -1442,7 +1454,3 @@ class ExportEEAFigure(ExportEEAContent):
                             "id", None)
 
         return item
-
-    def finish(self):
-        print("===> externalRelations <===")
-        print(self.externalRelations)
