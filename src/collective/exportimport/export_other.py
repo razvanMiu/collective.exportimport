@@ -1378,23 +1378,23 @@ class ExportEEAFigure(ExportEEAContent):
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
-        figures = obj.values()
+        # figures = obj.values()
 
-        for figure in figures:
-            figureFiles = figure.values()
-            for figureFile in figureFiles:
-                try:
-                    serializer = getMultiAdapter(
-                        (figureFile,
-                         self.request),
-                        ISerializeToJson)
-                    file = serializer()
-                except Exception:
-                    file = None
-                if file and self.IMAGE_FORMAT in file.get("id", ''):
-                    item["preview_image"] = file.get("image", {}) or file.get(
-                        "file", {})
-                    if item["preview_image"]:
-                        item["preview_image"]["filename"] = file.get(
-                            "id", None)
+        # for figure in figures:
+        #     figureFiles = figure.values()
+        #     for figureFile in figureFiles:
+        #         try:
+        #             serializer = getMultiAdapter(
+        #                 (figureFile,
+        #                  self.request),
+        #                 ISerializeToJson)
+        #             file = serializer()
+        #         except Exception:
+        #             file = None
+        #         if file and self.IMAGE_FORMAT in file.get("id", ''):
+        #             item["preview_image"] = file.get("image", {}) or file.get(
+        #                 "file", {})
+        #             if item["preview_image"]:
+        #                 item["preview_image"]["filename"] = file.get(
+        #                     "id", None)
         return item
