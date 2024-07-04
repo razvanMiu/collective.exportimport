@@ -109,20 +109,22 @@ def make_group_block(title, blocks):
         "items": []
     }
 
-    blocks.extend([[make_uid(), {
-        "@type": "slate",
-        "value": [
-            {
-                "type": "h3",
-                        "children": [
-                            {
-                                "text": title
-                            }
-                        ]
-            }
-        ],
-        "plaintext": title
-    }]])
+    blocks[:0] = [
+        [make_uid(), {
+            "@type": "slate",
+            "value": [
+                {
+                    "type": "h3",
+                    "children": [
+                        {
+                            "text": title
+                        }
+                    ]
+                }
+            ],
+            "plaintext": title
+        }]
+    ]
 
     for block in blocks:
         _blocks[block[0]] = block[1]
@@ -881,13 +883,14 @@ class ExportEEAContent(ExportContent):
         "constrainTypesMode",
         "coverImage",
         "dataLink",
-        # "dataOwner",  # TODO: should be mapped to publisher
+        "dataOwner",  # handled by migrate_more_info
         "dataSource",
         "dataTitle",
         "dataWarning",
         "disableProgressTrailViewlet",
-        # "eeaManagementPlan", # TODO: add to more info
+        "eeaManagementPlan",  # handled by migrate_more_info
         "external",
+        "externalRelations",  # handled by migrate_more_info
         "forcedisableautolinks",
         "geographicCoverage",
         "inheritedprovenance",
@@ -903,7 +906,7 @@ class ExportEEAContent(ExportContent):
         "pdfStatic",
         "pdfTheme",
         "provenances",  # handled by migrate_data_provenance
-        # "processor",  # TODO: add to more info
+        "processor",  # handled by migrate_more_info
         "quickUpload",
         "temporalCoverage",  # handled by migrate_temporal_coverage
         "themes",  # handled by migrate_topics
@@ -937,42 +940,37 @@ class ExportEEAContent(ExportContent):
         return item
 
     def global_dict_hook(self, item, obj):
-        item = json.loads(json.dumps(item).replace('\\r\\n', '\\n'))
+        item = json.dumps(item).replace('\\r\\n', '\\n')
+        item = json.loads(item)
 
         if self.type:
             item["@type"] = self.type
 
-        if "processor" in item and item["processor"] and isinstance(
-                item["processor"],
-                list) and len(item["processor"]) == 1:
-            import pdb
-            pdb.set_trace()
+        item = self.load_blocks(item)
 
-        # item = self.load_blocks(item)
+        item = self.migrate_related_items(item, obj)
+        item = self.migrate_image(item, 'image')
+        item = self.migrate_temporal_coverage(item, "temporalCoverage")
+        item = self.migrate_topics(item, "themes")
+        item = self.migrate_data_provenance(item, "provenances")
+        item = self.migrate_introduction(item, "introduction")
+        item = self.migrate_geo_coverage(item, obj)
+        item = self.migrate_more_info(item, obj)
 
-        # item = self.migrate_related_items(item, obj)
-        # item = self.migrate_image(item, 'image')
-        # item = self.migrate_temporal_coverage(item, "temporalCoverage")
-        # item = self.migrate_topics(item, "themes")
-        # item = self.migrate_data_provenance(item, "provenances")
-        # item = self.migrate_introduction(item, "introduction")
-        # item = self.migrate_geo_coverage(item, obj)
-        # item = self.migrate_more_info(item)
+        if "rights" in item and item["rights"]:
+            item["rights"] = item["rights"].replace("\n", " ")
 
-        # if item["id"] in self.parsed_ids:
-        #     parts = item["@id"].split('/')
-        #     [parentId, id] = parts[-2:]
-        #     item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
-        #     item["id"] = '%s-%s' % (id, parentId)
-        # else:
-        #     self.parsed_ids[item["id"]] = True
+        if item["id"] in self.parsed_ids:
+            parts = item["@id"].split('/')
+            [parentId, id] = parts[-2:]
+            item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
+            item["id"] = '%s-%s' % (id, parentId)
+        else:
+            self.parsed_ids[item["id"]] = True
 
-        # if "rights" in item and item["rights"]:
-        #     item["rights"] = item["rights"].replace("\n", " ")
-
-        # for field in self.DISSALLOWED_FIELDS:
-        #     if field in item:
-        #         del item[field]
+        for field in self.DISSALLOWED_FIELDS:
+            if field in item:
+                del item[field]
 
         return item
 
@@ -1110,37 +1108,72 @@ class ExportEEAContent(ExportContent):
 
         return item
 
-    def migrate_more_info(self, item):
+    def migrate_more_info(self, item, obj):
         blocks = []
 
+        # Migrate "methodology" field
         html = self.get_html(item, 'methodology')
         if html:
             blocks.append(make_group_block(
                 "Methodology", self.convert_to_blocks(html)))
 
+        # Migrate "units" field
         html = self.get_html(item, 'units')
         if html:
             blocks.append(make_group_block(
                 "Units", self.convert_to_blocks(html)))
 
+        # Migrate "dataOwner" field
+        if 'dataOwner' in item and isinstance(
+                item['dataOwner'],
+                list) and len(
+                item['dataOwner']):
+            html = ''
+            for url in item['dataOwner']:
+                organization = obj.getOrganizationName(url)
+                title = organization.Title if organization else url
+                html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
+                    url, title)
+            if html:
+                blocks.append(make_group_block(
+                    "Owners", self.convert_to_blocks(html)))
+
+        # Migrate "processor" field
+        if 'processor' in item and isinstance(
+                item['processor'],
+                list) and len(
+                item['processor']):
+            html = ''
+            for url in item['processor']:
+                organization = obj.getOrganizationName(url)
+                title = organization.Title if organization else url
+                html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
+                    url, title)
+            if html:
+                blocks.append(make_group_block(
+                    "Processors", self.convert_to_blocks(html)))
+
+        # Migrate "eeaManagementPlan" field
         if isinstance(
                 item.get('eeaManagementPlan'),
-                list) and len(
-                item["eeaManagementPlan"]) == 2:
+                list):
             html = "year: %s, code: %s" % (
-                item["eeaManagementPlan"][0],
-                item["eeaManagementPlan"][1])
+                item["eeaManagementPlan"][0]
+                if len(item["eeaManagementPlan"]) > 0 else "",
+                item["eeaManagementPlan"][1]
+                if len(item["eeaManagementPlan"]) > 1 else "")
         if html:
             blocks.append(make_group_block(
                 "EEA management plan code", self.convert_to_blocks(html)))
 
+        # Migrate "contact" field
         html = self.get_html(item, 'contact')
         if html:
             blocks.append(make_group_block(
                 "Contact references at EEA", self.convert_to_blocks(html)))
 
+        # Migrate "moreInfo" field
         html = self.get_html(item, 'body') + self.get_html(item, 'moreInfo')
-
         if html:
             result = self.convert_to_blocks(html)
             if len(blocks) > 0:
@@ -1356,6 +1389,7 @@ class ExportEEAFigure(ExportEEAContent):
     }
     PORTAL_TYPE = ["EEAFigure"]
     IMAGE_FORMAT = '.75dpi.png'
+    externalRelations = []
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
@@ -1375,23 +1409,34 @@ class ExportEEAFigure(ExportEEAContent):
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
-        # figures = obj.values()
+        if 'externalRelations' in item and isinstance(
+                item["externalRelations"],
+                list) and len(
+                item["externalRelations"]) > 0:
+            self.externalRelations.append(item["@id"])
 
-        # for figure in figures:
-        #     figureFiles = figure.values()
-        #     for figureFile in figureFiles:
-        #         try:
-        #             serializer = getMultiAdapter(
-        #                 (figureFile,
-        #                  self.request),
-        #                 ISerializeToJson)
-        #             file = serializer()
-        #         except Exception:
-        #             file = None
-        #         if file and self.IMAGE_FORMAT in file.get("id", ''):
-        #             item["preview_image"] = file.get("image", {}) or file.get(
-        #                 "file", {})
-        #             if item["preview_image"]:
-        #                 item["preview_image"]["filename"] = file.get(
-        #                     "id", None)
+        figures = obj.values()
+
+        for figure in figures:
+            figureFiles = figure.values()
+            for figureFile in figureFiles:
+                try:
+                    serializer = getMultiAdapter(
+                        (figureFile,
+                         self.request),
+                        ISerializeToJson)
+                    file = serializer()
+                except Exception:
+                    file = None
+                if file and self.IMAGE_FORMAT in file.get("id", ''):
+                    item["preview_image"] = file.get("image", {}) or file.get(
+                        "file", {})
+                    if item["preview_image"]:
+                        item["preview_image"]["filename"] = file.get(
+                            "id", None)
+
         return item
+
+    def finish(self):
+        print("===> externalRelations <===")
+        print(self.externalRelations)
