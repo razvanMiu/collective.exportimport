@@ -127,16 +127,13 @@ def make_group_block(title, blocks):
     ]
 
     blocks.append([
-        [make_uid(), {
+        make_uid(), {
             "@type": "dividerBlock",
             "hidden": True,
             "spacing": "s",
             "styles": {}
-        }]
+        }
     ])
-
-    import pdb
-    pdb.set_trace()
 
     for block in blocks:
         _blocks[block[0]] = block[1]
