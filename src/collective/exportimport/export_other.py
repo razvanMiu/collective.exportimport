@@ -1423,6 +1423,7 @@ class ExportEEAFigure(ExportEEAContent):
                 item["externalRelations"],
                 list) and len(
                 item["externalRelations"]) > 0:
+            print(item["@id"])
             self.externalRelations.append(item["@id"])
 
         # figures = obj.values()
