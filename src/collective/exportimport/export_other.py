@@ -1082,9 +1082,9 @@ class ExportEEAContent(ExportContent):
                 for _tab_block_id in tabs_blocks:
                     if _tab_block_id and tabs_blocks[_tab_block_id].get(
                             'title') == 'More info':
-                        for item in data:
-                            _block_id = item[0]
-                            _block = item[1]
+                        for b in data:
+                            _block_id = b[0]
+                            _block = b[1]
                             self.blocks[block_id]['data']['blocks'][
                                 tabs_block_id]['data']['blocks'][
                                 _tab_block_id]['blocks'][_block_id] = _block
