@@ -1125,7 +1125,7 @@ class ExportEEAContent(ExportContent):
         html = self.get_html(item, 'body') + self.get_html(item, 'moreInfo')
 
         if html:
-            result = self.convert_to_blocks(item["body"]["data"])
+            result = self.convert_to_blocks(html)
             if len(blocks) > 0:
                 blocks.append(make_group_block(
                     "Additional information", result))
