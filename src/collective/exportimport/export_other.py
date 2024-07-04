@@ -1160,7 +1160,7 @@ class ExportEEAContent(ExportContent):
 
     def get_html(self, item, field):
         value = item.get(field)
-        if isinstance(value, str):
+        if isinstance(value, basestring):
             return value
         if value and value.get("content-type") == 'text/html':
             return value.get("data", "")
