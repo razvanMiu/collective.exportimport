@@ -920,6 +920,8 @@ class ExportEEAContent(ExportContent):
     locations = []
     parsed_ids = {}
 
+    dataOwners = []
+
     def update(self):
         """Use this to override stuff before the export starts
         (e.g. force a specific language in the request)."""
@@ -942,27 +944,32 @@ class ExportEEAContent(ExportContent):
         if self.type:
             item["@type"] = self.type
 
-        item = self.load_blocks(item)
+        if "dataOwner" in item and item["dataOwner"] and isinstance(
+                item["dataOwner"],
+                list):
+            [self.dataOwners.append(i) for i in item["dataOwner"]]
 
-        item = self.migrate_related_items(item, obj)
-        item = self.migrate_image(item, 'image')
-        item = self.migrate_temporal_coverage(item, "temporalCoverage")
-        item = self.migrate_topics(item, "themes")
-        item = self.migrate_data_provenance(item, "provenances")
-        item = self.migrate_introduction(item, "introduction")
-        item = self.migrate_geo_coverage(item, obj)
-        item = self.migrate_more_info(item)
+        # item = self.load_blocks(item)
 
-        if item["id"] in self.parsed_ids:
-            parts = item["@id"].split('/')
-            [parentId, id] = parts[-2:]
-            item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
-            item["id"] = '%s-%s' % (id, parentId)
-        else:
-            self.parsed_ids[item["id"]] = True
+        # item = self.migrate_related_items(item, obj)
+        # item = self.migrate_image(item, 'image')
+        # item = self.migrate_temporal_coverage(item, "temporalCoverage")
+        # item = self.migrate_topics(item, "themes")
+        # item = self.migrate_data_provenance(item, "provenances")
+        # item = self.migrate_introduction(item, "introduction")
+        # item = self.migrate_geo_coverage(item, obj)
+        # item = self.migrate_more_info(item)
 
-        if "rights" in item and item["rights"]:
-            item["rights"] = item["rights"].replace("\n", " ")
+        # if item["id"] in self.parsed_ids:
+        #     parts = item["@id"].split('/')
+        #     [parentId, id] = parts[-2:]
+        #     item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
+        #     item["id"] = '%s-%s' % (id, parentId)
+        # else:
+        #     self.parsed_ids[item["id"]] = True
+
+        # if "rights" in item and item["rights"]:
+        #     item["rights"] = item["rights"].replace("\n", " ")
 
         # for field in self.DISSALLOWED_FIELDS:
         #     if field in item:
@@ -1117,6 +1124,17 @@ class ExportEEAContent(ExportContent):
             blocks.append(make_group_block(
                 "Units", self.convert_to_blocks(html)))
 
+        if isinstance(
+                item.get('eeaManagementPlan'),
+                list) and len(
+                item["eeaManagementPlan"]) == 2:
+            html = "year: %s, code: %s" % (
+                item["eeaManagementPlan"][0],
+                item["eeaManagementPlan"][1])
+        if html:
+            blocks.append(make_group_block(
+                "EEA management plan code", self.convert_to_blocks(html)))
+
         html = self.get_html(item, 'contact')
         if html:
             blocks.append(make_group_block(
@@ -1151,8 +1169,6 @@ class ExportEEAContent(ExportContent):
                             self.blocks[block_id]['data']['blocks'][tabs_block_id]['data']['blocks'][_tab_block_id]['blocks_layout']['items'].append(
                                 _block_id)
 
-        import pdb
-        pdb.set_trace()
         item["blocks"] = self.blocks
         item["blocks_layout"] = self.blocks_layout
 
@@ -1191,7 +1207,10 @@ class ExportEEAContent(ExportContent):
         return slate
 
     def finish(self):
+        print("===> Locations <===")
         print(self.locations)
+        print("===> Data owners <===")
+        print(self.dataOwners)
 
 
 class ExportInfographic(ExportEEAContent):
