@@ -889,6 +889,7 @@ class ExportEEAContent(ExportContent):
         "forcedisableautolinks",
         "geographicCoverage",
         "inheritedprovenance",
+        "introduction",  # handled by migrate_introduction
         "image",  # handled by migrate_image
         "layout",
         "location",  # handled by migrate_geo_coverage
@@ -1156,7 +1157,7 @@ class ExportEEAContent(ExportContent):
         return item
 
     def get_html(self, item, field):
-        if field in item and item[field]["content-type"] == 'text/html':
+        if item.get(field, {}).get("content-type") == 'text/html':
             return item[field].get("data", "")
         else:
             return ""
