@@ -931,7 +931,7 @@ class ExportEEAContent(ExportContent):
     blocks = None
     blocks_layout = None
 
-    images_uids = []
+    images_ids = []
     locations = []
     parsed_ids = {}
 
@@ -960,11 +960,9 @@ class ExportEEAContent(ExportContent):
         # Find all matches
         matches = pattern.findall(item)
 
-        # Print all found IDs
-        import pdb
-        pdb.set_trace()
+        # Save all found ids
         for match in matches:
-            self.images_uids.append(match)
+            self.images_ids.append(match)
 
         # Regex pattern to match hrefs starting with ./ or ../
         pattern = re.compile(r'href="(\.\/|\.\.\/)+([^"]*)"')
@@ -1307,9 +1305,9 @@ class ExportEEAContent(ExportContent):
         print("===> Locations <===")
         print(self.locations)
         print("===> Images uids <===")
-        print(self.images_uids)
+        print(self.images_ids)
         f = open(os.path.dirname(__file__) + '/resources/images_ids.json', "w")
-        f.write(json.dumps(self.images_uids))
+        f.write(json.dumps(list(set(self.images_ids))))
         f.close()
 
 
