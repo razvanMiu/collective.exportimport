@@ -972,7 +972,7 @@ class ExportEEAContent(ExportContent):
             # Extract the path after the ./ or ../
             path = match.group(2)
             # Return the replacement string
-            return f'href="https://www.eea.europa.eu/{path}"'
+            return 'href="https://www.eea.europa.eu/%s"' % path
 
         item = pattern.sub(replace_href, item)
 
@@ -984,7 +984,7 @@ class ExportEEAContent(ExportContent):
             # Extract the unique part after resolveuid/
             unique_id = match.group(1)
             # Return the replacement string
-            return f'href="https://www.eea.europa.eu/resolveuid/{unique_id}"'
+            return 'href="https://www.eea.europa.eu/resolveuid/%s"' % unique_id
 
         # Use re.sub with the replacement function
         item = pattern.sub(replace_href, item)
