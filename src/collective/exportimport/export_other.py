@@ -50,6 +50,7 @@ import six
 import base64
 import uuid
 import requests
+import re
 
 SLATE_CONVERTER = "http://volto-convertor:8000/html"
 BLOCKS_CONVERTER = "http://volto-convertor:8000/toblocks"
@@ -930,6 +931,7 @@ class ExportEEAContent(ExportContent):
     blocks = None
     blocks_layout = None
 
+    images_uids = []
     locations = []
     parsed_ids = {}
 
@@ -951,6 +953,41 @@ class ExportEEAContent(ExportContent):
 
     def global_dict_hook(self, item, obj):
         item = json.dumps(item).replace('\\r\\n', '\\n')
+
+        # Regex pattern to match resolveuid and extract the ID
+        pattern = re.compile(r'resolveuid\/([a-zA-Z0-9]{32})')
+
+        # Find all matches
+        matches = pattern.findall(item)
+
+        # Print all found IDs
+        for match in matches:
+            self.images_uids.append(match)
+
+        # Regex pattern to match hrefs starting with ./ or ../
+        pattern = re.compile(r'href="(\.\/|\.\.\/)+([^"]*)"')
+
+        # Function to replace the matched pattern
+        def replace_href(match):
+            # Extract the path after the ./ or ../
+            path = match.group(2)
+            # Return the replacement string
+            return f'href="https://www.eea.europa.eu/{path}"'
+
+        item = pattern.sub(replace_href, item)
+
+        # Regex pattern to match hrefs starting with resolveuid/
+        pattern = re.compile(r'href="resolveuid/([^"]+)"')
+
+        # Function to replace the matched pattern
+        def replace_href(match):
+            # Extract the unique part after resolveuid/
+            unique_id = match.group(1)
+            # Return the replacement string
+            return f'href="https://www.eea.europa.eu/resolveuid/{unique_id}"'
+
+        # Use re.sub with the replacement function
+        item = pattern.sub(replace_href, item)
 
         item = json.loads(item)
 
@@ -1267,6 +1304,11 @@ class ExportEEAContent(ExportContent):
     def finish(self):
         print("===> Locations <===")
         print(self.locations)
+        print("===> Images uids <===")
+        print(self.images_uids)
+        f = open(os.path.dirname(__file__) + '/resources/images_ids.json', "w")
+        f.write(json.dumps(self.images_uids))
+        f.close()
 
 
 class ExportInfographic(ExportEEAContent):
