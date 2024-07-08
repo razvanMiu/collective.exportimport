@@ -1016,9 +1016,9 @@ class ExportEEAContent(ExportContent):
         else:
             self.parsed_ids[item["id"]] = True
 
-        # for field in self.DISSALLOWED_FIELDS:
-        #     if field in item:
-        #         del item[field]
+        for field in self.DISSALLOWED_FIELDS:
+            if field in item:
+                del item[field]
 
         return item
 
