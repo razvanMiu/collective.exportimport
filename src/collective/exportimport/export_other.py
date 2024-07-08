@@ -977,7 +977,7 @@ class ExportEEAContent(ExportContent):
         item = pattern.sub(replace_href, item)
 
         # Regex pattern to match hrefs starting with resolveuid/
-        pattern = re.compile(r'href="resolveuid/([^"]+)"')
+        pattern = re.compile(r'href="resolveuid\/([^"]+)"')
 
         # Function to replace the matched pattern
         def replace_href(match):
