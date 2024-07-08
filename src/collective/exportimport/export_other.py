@@ -955,7 +955,7 @@ class ExportEEAContent(ExportContent):
         item = json.dumps(item).replace('\\r\\n', '\\n')
 
         # Regex pattern to match resolveuid and extract the ID
-        pattern = re.compile(r'resolveuid\/([a-zA-Z0-9]{32})')
+        pattern = re.compile(r'src=\"resolveuid\/([a-zA-Z0-9]{32})')
 
         # Find all matches
         matches = pattern.findall(item)
