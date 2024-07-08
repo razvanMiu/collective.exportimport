@@ -941,6 +941,8 @@ class ExportEEAContent(ExportContent):
         self.portal_type = self.PORTAL_TYPE
 
     def load_blocks(self, item):
+        import pdb
+        pdb.set_trace()
         if not self.type:
             return item
         with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
