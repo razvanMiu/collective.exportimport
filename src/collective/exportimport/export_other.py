@@ -961,6 +961,8 @@ class ExportEEAContent(ExportContent):
         matches = pattern.findall(item)
 
         # Print all found IDs
+        import pdb
+        pdb.set_trace()
         for match in matches:
             self.images_uids.append(match)
 
