@@ -118,6 +118,10 @@
           "data": {
             "assetPosition": "top",
             "blocks": {
+              "265e2bee-7de3-46e8-b6ee-76005f3f434f": {
+                "@type": "tab",
+                "assetPosition": "top",
+                "blocks": {
                   "undefined": {
                     "@type": "slate",
                     "instructions": {
