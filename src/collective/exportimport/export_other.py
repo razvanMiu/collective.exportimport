@@ -55,6 +55,9 @@ import re
 SLATE_CONVERTER = "http://volto-convertor:8000/html"
 BLOCKS_CONVERTER = "http://volto-convertor:8000/toblocks"
 
+blocks = {}
+blocks_layout = {}
+
 try:
     pkg_resources.get_distribution("Products.Archetypes")
 except pkg_resources.DistributionNotFound:
@@ -941,14 +944,20 @@ class ExportEEAContent(ExportContent):
         self.portal_type = self.PORTAL_TYPE
 
     def load_blocks(self, item):
-        import pdb
-        pdb.set_trace()
         if not self.type:
             return item
-        with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
-            self.blocks = json.load(file)
-        with open(os.path.dirname(__file__) + '/resources/%s/blocks_layout.json' % self.type) as file:
-            self.blocks_layout = json.load(file)
+        if self.type in blocks:
+            self.blocks = blocks[self.type]
+        else:
+            with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
+                self.blocks = json.load(file)
+                blocks[self.type] = self.blocks
+        if self.type in blocks_layout:
+            self.blocks_layout = blocks_layout[self.type]
+        else:
+            with open(os.path.dirname(__file__) + '/resources/%s/blocks_layout.json' % self.type) as file:
+                self.blocks_layout = json.load(file)
+                blocks_layout[self.type] = self.blocks_layout
         item["blocks"] = self.blocks
         item["blocks_layout"] = self.blocks_layout
         return item
