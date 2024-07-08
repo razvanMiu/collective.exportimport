@@ -951,6 +951,7 @@ class ExportEEAContent(ExportContent):
 
     def global_dict_hook(self, item, obj):
         item = json.dumps(item).replace('\\r\\n', '\\n')
+
         item = json.loads(item)
 
         if self.type:
@@ -978,9 +979,9 @@ class ExportEEAContent(ExportContent):
         else:
             self.parsed_ids[item["id"]] = True
 
-        for field in self.DISSALLOWED_FIELDS:
-            if field in item:
-                del item[field]
+        # for field in self.DISSALLOWED_FIELDS:
+        #     if field in item:
+        #         del item[field]
 
         return item
 
@@ -1177,7 +1178,9 @@ class ExportEEAContent(ExportContent):
                 "EEA management plan code", self.convert_to_blocks(html)))
 
         # Migrate "contact" field
-        html = self.get_html(item, 'contact')
+        html = ''
+        for contact in self.get_html(item, 'contact').split("\n"):
+            html += "<p>%s<p/>" % (contact)
         if html:
             blocks.append(make_group_block(
                 "Contact references at EEA", self.convert_to_blocks(html)))
