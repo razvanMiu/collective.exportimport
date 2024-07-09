@@ -1051,9 +1051,9 @@ class ExportEEAContent(ExportContent):
                 continue
             if not IGetVersions(relatedItem).isLatest():
                 continue
-            import pdb
-            pdb.set_trace()
-            # Check if published
+            if api.content.get_state(
+                    obj=relatedItem, default="unknown") != "published":
+                continue
             ok = True
             _item = getMultiAdapter(
                 (relatedItem, self.request),
