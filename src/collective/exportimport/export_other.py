@@ -1300,8 +1300,10 @@ class ExportEEAContent(ExportContent):
         req = requests.post(
             BLOCKS_CONVERTER, data=json.dumps(data), headers=headers)
         if req.status_code != 200:
+            import pdb
+            pdb.set_trace()
             logger.debug(req.text)
-            raise ValueError
+            # raise ValueError
 
         blocks = req.json()["data"]
         return blocks
