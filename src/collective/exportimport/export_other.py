@@ -1051,6 +1051,9 @@ class ExportEEAContent(ExportContent):
                 continue
             if not IGetVersions(relatedItem).isLatest():
                 continue
+            import pdb
+            pdb.set_trace()
+            # Check if published
             ok = True
             _item = getMultiAdapter(
                 (relatedItem, self.request),
@@ -1064,7 +1067,8 @@ class ExportEEAContent(ExportContent):
             if _item['@type'] == 'Data':
                 versionId = IGetVersions(relatedItem).versionId
                 if versionId not in related_items:
-                    ok = False
+                    print("related item %s not found" % versionId)
+                    continue
                 data["link"] = "/datahub/datahubitem-view/%s" % related_items[versionId]
             for data_provenance in item["data_provenance"]["data"]:
                 if data_provenance["title"] == _item["title"]:
