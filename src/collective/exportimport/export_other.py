@@ -1214,8 +1214,6 @@ class ExportEEAContent(ExportContent):
                 item['processor']):
             html = ''
             for url in item['processor']:
-                import pdb
-                pdb.set_trace()
                 organisation = obj.getOrganisationName(url)
                 title = organisation.Title if organisation else url
                 html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
