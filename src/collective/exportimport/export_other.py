@@ -1172,6 +1172,8 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_more_info(self, item, obj):
+        import pdb
+        pdb.set_trace()
         blocks = []
 
         # Migrate "methodology" field
