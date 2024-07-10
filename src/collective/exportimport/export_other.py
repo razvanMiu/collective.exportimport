@@ -1172,8 +1172,6 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_more_info(self, item, obj):
-        import pdb
-        pdb.set_trace()
         blocks = []
 
         # Migrate "methodology" field
@@ -1210,6 +1208,8 @@ class ExportEEAContent(ExportContent):
                 item['processor']):
             html = ''
             for url in item['processor']:
+                import pdb
+                pdb.set_trace()
                 organization = obj.getOrganisationName(url)
                 title = organization.Title if organization else url
                 html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
