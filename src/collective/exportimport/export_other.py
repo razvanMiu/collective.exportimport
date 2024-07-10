@@ -55,7 +55,7 @@ import sys
 
 
 if (sys.getdefaultencoding() != 'utf-8'):
-    sys.reload()
+    reload(sys)
     sys.setdefaultencoding('utf-8')
 
 SLATE_CONVERTER = "http://volto-convertor:8000/html"
