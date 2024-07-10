@@ -51,6 +51,12 @@ import base64
 import uuid
 import requests
 import re
+import sys
+
+
+if (sys.getdefaultencoding() != 'utf-8'):
+    sys.reload()
+    sys.setdefaultencoding('utf-8')
 
 SLATE_CONVERTER = "http://volto-convertor:8000/html"
 BLOCKS_CONVERTER = "http://volto-convertor:8000/toblocks"
@@ -1133,7 +1139,7 @@ class ExportEEAContent(ExportContent):
                     "@id": str(uuid.uuid4()),
                     "link": provenance.get("link", None),
                     "title": provenance.get("title", None),
-                    "organization": provenance.get("owner", None),
+                    "organisation": provenance.get("owner", None),
                 })
         return item
 
@@ -1193,8 +1199,8 @@ class ExportEEAContent(ExportContent):
                 item['dataOwner']):
             html = ''
             for url in item['dataOwner']:
-                organization = obj.getOrganisationName(url)
-                title = organization.Title if organization else url
+                organisation = obj.getOrganisationName(url)
+                title = organisation.Title if organisation else url
                 html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
                     url, title)
             if html:
@@ -1210,8 +1216,8 @@ class ExportEEAContent(ExportContent):
             for url in item['processor']:
                 import pdb
                 pdb.set_trace()
-                organization = obj.getOrganisationName(url)
-                title = organization.Title if organization else url
+                organisation = obj.getOrganisationName(url)
+                title = organisation.Title if organisation else url
                 html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
                     url, title)
             if html:
