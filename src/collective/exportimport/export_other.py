@@ -1461,8 +1461,6 @@ class ExportDavizFigure(ExportEEAContent):
                             "notes", []):
                         html += note.get("text", "")
                     if html:
-                        import pdb
-                        pdb.set_trace()
                         item["figure_notes"] = self.text_to_slate(html)
 
                 item["preview_image"] = image.get("image", None) or image.get(
