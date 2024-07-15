@@ -1223,17 +1223,17 @@ class ExportEEAContent(ExportContent):
                     "Processors", self.convert_to_blocks(html)))
 
         # Migrate "eeaManagementPlan" field
-        if isinstance(
-                item.get('eeaManagementPlan'),
-                list):
-            html = "year: %s, code: %s" % (
-                item["eeaManagementPlan"][0]
-                if len(item["eeaManagementPlan"]) > 0 else "",
-                item["eeaManagementPlan"][1]
-                if len(item["eeaManagementPlan"]) > 1 else "")
-        if html:
-            blocks.append(make_group_block(
-                "EEA management plan code", self.convert_to_blocks(html)))
+        # if isinstance(
+        #         item.get('eeaManagementPlan'),
+        #         list):
+        #     html = "year: %s, code: %s" % (
+        #         item["eeaManagementPlan"][0]
+        #         if len(item["eeaManagementPlan"]) > 0 else "",
+        #         item["eeaManagementPlan"][1]
+        #         if len(item["eeaManagementPlan"]) > 1 else "")
+        # if html:
+        #     blocks.append(make_group_block(
+        #         "EEA management plan code", self.convert_to_blocks(html)))
 
         # Migrate "contact" field
         html = ''
