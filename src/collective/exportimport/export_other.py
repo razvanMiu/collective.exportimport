@@ -980,6 +980,8 @@ class ExportEEAContent(ExportContent):
 
     def global_dict_hook(self, item, obj):
         self.catalog = getToolByName(self, "portal_catalog")
+        import pdb
+        pdb.set_trace()
 
         item = json.dumps(item).replace('\\r\\n', '\\n')
 
