@@ -1199,6 +1199,10 @@ class ExportEEAContent(ExportContent):
                 item['dataOwner']):
             html = ''
             for url in item['dataOwner']:
+                if 'getOrganisationName' not in obj:
+                    import pdb
+                    pdb.set_trace()
+                    continue
                 organisation = obj.getOrganisationName(url)
                 title = organisation.Title if organisation else url
                 html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
@@ -1441,7 +1445,7 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
 
-        if images[0]:
+        if len(images) == 1 and images[0]:
             image = None
             imageObj = None
             imageName = images[0].get('name', None)
@@ -1467,6 +1471,9 @@ class ExportDavizFigure(ExportEEAContent):
                     "file", None)
             if image and item["preview_image"] and "filename" in item["preview_image"]:
                 item["preview_image"]["filename"] = image.get("id", None)
+        else:
+            import pdb
+            pdb.set_trace()
         return item
 
 
