@@ -980,8 +980,6 @@ class ExportEEAContent(ExportContent):
 
     def global_dict_hook(self, item, obj):
         self.catalog = getToolByName(self, "portal_catalog")
-        import pdb
-        pdb.set_trace()
 
         item = json.dumps(item).replace('\\r\\n', '\\n')
 
@@ -1005,10 +1003,10 @@ class ExportEEAContent(ExportContent):
             # Extract the path after the ./ or ../
             path = match.group(2)
             # Return the replacement string
-            return 'href=\"https://www.eea.europa.eu/%s' % path
+            return 'href=\\"https://www.eea.europa.eu/%s' % path
 
-        # item = pattern1.sub(replace_href, item)
-        # item = pattern2.sub(replace_href, item)
+        item = pattern1.sub(replace_href, item)
+        item = pattern2.sub(replace_href, item)
 
         # Regex pattern to match hrefs starting with resolveuid/
         pattern1 = re.compile(r'href=\"resolveuid\/([^"]+)')
@@ -1019,11 +1017,11 @@ class ExportEEAContent(ExportContent):
             # Extract the unique part after resolveuid/
             unique_id = match.group(1)
             # Return the replacement string
-            return 'href=\"https://www.eea.europa.eu/resolveuid/%s' % unique_id
+            return 'href=\\"https://www.eea.europa.eu/resolveuid/%s' % unique_id
 
         # Use re.sub with the replacement function
-        # item = pattern1.sub(replace_href, item)
-        # item = pattern2.sub(replace_href, item)
+        item = pattern1.sub(replace_href, item)
+        item = pattern2.sub(replace_href, item)
 
         item = json.loads(item)
 
