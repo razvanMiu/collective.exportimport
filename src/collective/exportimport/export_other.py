@@ -52,6 +52,7 @@ import uuid
 import requests
 import re
 import sys
+import copy
 
 
 if (sys.getdefaultencoding() != 'utf-8'):
@@ -954,13 +955,13 @@ class ExportEEAContent(ExportContent):
         if not self.type:
             return item
         if self.type in blocks:
-            self.blocks = blocks[self.type]
+            self.blocks = copy.deepcopy(blocks[self.type])
         else:
             with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
                 self.blocks = json.load(file)
                 blocks[self.type] = self.blocks
         if self.type in blocks_layout:
-            self.blocks_layout = blocks_layout[self.type]
+            self.blocks_layout = copy.deepcopy(blocks_layout[self.type])
         else:
             with open(os.path.dirname(__file__) + '/resources/%s/blocks_layout.json' % self.type) as file:
                 self.blocks_layout = json.load(file)
@@ -1190,8 +1191,6 @@ class ExportEEAContent(ExportContent):
 
     def migrate_more_info(self, item, obj):
         blocks = []
-        import pdb
-        pdb.set_trace()
 
         # Migrate "methodology" field
         html = self.get_html(item, 'methodology')
@@ -1253,12 +1252,17 @@ class ExportEEAContent(ExportContent):
         #         "EEA management plan code", self.convert_to_blocks(html)))
 
         # Migrate "contact" field
-        html = ''
-        for contact in self.get_html(item, 'contact').split("\n"):
-            html += "<p>%s<p/>" % (contact)
+        html = self.get_html(item, 'contact')
         if html:
-            blocks.append(make_group_block(
-                "Contact references at EEA", self.convert_to_blocks(html)))
+            contacts = html.split("\n")
+            html = ''
+            for contact in contacts:
+                if not contact:
+                    continue
+                html += "<p>%s<p/>" % (contact)
+            if html:
+                blocks.append(make_group_block(
+                    "Contact references at EEA", self.convert_to_blocks(html)))
 
         # Migrate "externalRelations" field
         if 'externalRelations' in item and isinstance(
