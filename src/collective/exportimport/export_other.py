@@ -1190,6 +1190,8 @@ class ExportEEAContent(ExportContent):
 
     def migrate_more_info(self, item, obj):
         blocks = []
+        import pdb
+        pdb.set_trace()
 
         # Migrate "methodology" field
         html = self.get_html(item, 'methodology')
