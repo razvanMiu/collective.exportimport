@@ -983,9 +983,6 @@ class ExportEEAContent(ExportContent):
 
         item = json.dumps(item).replace('\\r\\n', '\\n')
 
-        import pdb
-        pdb.set_trace()
-
         # Regex pattern to match resolveuid and extract the ID
         pattern = re.compile(r'src=\"resolveuid\/([a-zA-Z0-9]{32})')
 
@@ -1048,9 +1045,9 @@ class ExportEEAContent(ExportContent):
         else:
             self.parsed_ids[item["id"]] = True
 
-        for field in self.DISSALLOWED_FIELDS:
-            if field in item:
-                del item[field]
+        # for field in self.DISSALLOWED_FIELDS:
+        #     if field in item:
+        #         del item[field]
 
         return item
 
