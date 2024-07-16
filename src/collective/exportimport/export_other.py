@@ -984,36 +984,39 @@ class ExportEEAContent(ExportContent):
         item = json.dumps(item).replace('\\r\\n', '\\n')
 
         # Regex pattern to match resolveuid and extract the ID
-        pattern = re.compile(r'src=\"resolveuid\/([a-zA-Z0-9]{32})')
+        pattern = re.compile(
+            r'src=\"resolveuid\/([a-zA-Z0-9]{32})|src=\\"resolveuid\/([a-zA-Z0-9]{32})')
 
         # Find all matches
         matches = pattern.findall(item)
 
         # Save all found ids
         for match in matches:
-            self.images_ids.append(match)
+            self.images_ids.append(match[1])
 
         # Regex pattern to match hrefs starting with ./ or ../
-        pattern = re.compile(r'href="(\.\/|\.\.\/)+([^"]*)"')
+        pattern = re.compile(
+            r'href=\"(\.\/|\.\.\/)+([^"]*)|href=\\"(\.\/|\.\.\/)+([^"]*)')
 
         # Function to replace the matched pattern
         def replace_href(match):
             # Extract the path after the ./ or ../
             path = match.group(2)
             # Return the replacement string
-            return 'href="https://www.eea.europa.eu/%s"' % path
+            return 'href="https://www.eea.europa.eu/%s' % path
 
         item = pattern.sub(replace_href, item)
 
         # Regex pattern to match hrefs starting with resolveuid/
-        pattern = re.compile(r'href="resolveuid\/([^"]+)"')
+        pattern = re.compile(
+            r'href=\"resolveuid\/([^"]+)|href=\\"resolveuid\/([^"]+)')
 
         # Function to replace the matched pattern
         def replace_href(match):
             # Extract the unique part after resolveuid/
             unique_id = match.group(1)
             # Return the replacement string
-            return 'href="https://www.eea.europa.eu/resolveuid/%s"' % unique_id
+            return 'href="https://www.eea.europa.eu/resolveuid/%s' % unique_id
 
         # Use re.sub with the replacement function
         item = pattern.sub(replace_href, item)
