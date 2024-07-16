@@ -997,8 +997,8 @@ class ExportEEAContent(ExportContent):
             self.images_ids.append(match[1])
 
         # Regex pattern to match hrefs starting with ./ or ../
-        pattern = re.compile(
-            r'href=\"(\.\/|\.\.\/)+([^"]*)|href=\\"(\.\/|\.\.\/)+([^"]*)')
+        pattern1 = re.compile(r'href=\"(\.\/|\.\.\/)+([^"]*)')
+        pattern2 = re.compile(r'href=\\"(\.\/|\.\.\/)+([^"]*)')
 
         # Function to replace the matched pattern
         def replace_href(match):
@@ -1007,11 +1007,12 @@ class ExportEEAContent(ExportContent):
             # Return the replacement string
             return 'href=\"https://www.eea.europa.eu/%s' % path
 
-        item = pattern.sub(replace_href, item)
+        item = pattern1.sub(replace_href, item)
+        item = pattern2.sub(replace_href, item)
 
         # Regex pattern to match hrefs starting with resolveuid/
-        pattern = re.compile(
-            r'href=\"resolveuid\/([^"]+)|href=\\"resolveuid\/([^"]+)')
+        pattern1 = re.compile(r'href=\"resolveuid\/([^"]+)')
+        pattern2 = re.compile(r'href=\\"resolveuid\/([^"]+)')
 
         # Function to replace the matched pattern
         def replace_href(match):
@@ -1021,7 +1022,8 @@ class ExportEEAContent(ExportContent):
             return 'href=\"https://www.eea.europa.eu/resolveuid/%s' % unique_id
 
         # Use re.sub with the replacement function
-        item = pattern.sub(replace_href, item)
+        item = pattern1.sub(replace_href, item)
+        item = pattern2.sub(replace_href, item)
 
         item = json.loads(item)
 
