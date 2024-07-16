@@ -974,8 +974,8 @@ class ExportEEAContent(ExportContent):
         brains = self.catalog.searchResults({'portal_type': 'Organisation',
                                              'getUrl': url})
         if brains:
-            res = brains[0]
-        return res
+            return brains[0]
+        return None
 
     def global_dict_hook(self, item, obj):
         self.catalog = getToolByName(self, "portal_catalog")
