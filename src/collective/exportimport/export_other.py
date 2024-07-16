@@ -939,6 +939,7 @@ class ExportEEAContent(ExportContent):
     type = None
     blocks = None
     blocks_layout = None
+    catalog = None
 
     images_ids = []
     locations = []
@@ -968,7 +969,17 @@ class ExportEEAContent(ExportContent):
         item["blocks_layout"] = self.blocks_layout
         return item
 
+    def getOrganisationName(self, url):
+        """ Return an organisation based on its URL """
+        brains = self.catalog.searchResults({'portal_type': 'Organisation',
+                                             'getUrl': url})
+        if brains:
+            res = brains[0]
+        return res
+
     def global_dict_hook(self, item, obj):
+        self.catalog = getToolByName(self, "portal_catalog")
+
         item = json.dumps(item).replace('\\r\\n', '\\n')
 
         # Regex pattern to match resolveuid and extract the ID
@@ -1199,11 +1210,9 @@ class ExportEEAContent(ExportContent):
                 item['dataOwner']):
             html = ''
             for url in item['dataOwner']:
-                if 'getOrganisationName' not in obj:
-                    import pdb
-                    pdb.set_trace()
+                organisation = self.getOrganisationName(url)
+                if not organisation:
                     continue
-                organisation = obj.getOrganisationName(url)
                 title = organisation.Title if organisation else url
                 html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
                     url, title)
@@ -1218,7 +1227,9 @@ class ExportEEAContent(ExportContent):
                 item['processor']):
             html = ''
             for url in item['processor']:
-                organisation = obj.getOrganisationName(url)
+                organisation = self.getOrganisationName(url)
+                if not organisation:
+                    continue
                 title = organisation.Title if organisation else url
                 html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
                     url, title)
@@ -1471,9 +1482,6 @@ class ExportDavizFigure(ExportEEAContent):
                     "file", None)
             if image and item["preview_image"] and "filename" in item["preview_image"]:
                 item["preview_image"]["filename"] = image.get("id", None)
-        else:
-            import pdb
-            pdb.set_trace()
         return item
 
 
