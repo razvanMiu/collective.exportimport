@@ -955,19 +955,17 @@ class ExportEEAContent(ExportContent):
         if not self.type:
             return item
         if self.type in blocks:
-            self.blocks = copy.deepcopy(blocks[self.type])
+            item["blocks"] = copy.deepcopy(blocks[self.type])
         else:
             with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
-                self.blocks = json.load(file)
-                blocks[self.type] = self.blocks
+                item["blocks"] = json.load(file)
+                blocks[self.type] = copy.deepcopy(self.blocks)
         if self.type in blocks_layout:
-            self.blocks_layout = copy.deepcopy(blocks_layout[self.type])
+            item["blocks_layout"] = copy.deepcopy(blocks_layout[self.type])
         else:
             with open(os.path.dirname(__file__) + '/resources/%s/blocks_layout.json' % self.type) as file:
-                self.blocks_layout = json.load(file)
-                blocks_layout[self.type] = self.blocks_layout
-        item["blocks"] = self.blocks
-        item["blocks_layout"] = self.blocks_layout
+                item["blocks_layout"] = json.load(file)
+                blocks_layout[self.type] = copy.deepcopy(item["blocks_layout"])
         return item
 
     def getOrganisationName(self, url):
@@ -1292,11 +1290,11 @@ class ExportEEAContent(ExportContent):
             else:
                 [blocks.append(block) for block in result]
 
-        for block_id in self.blocks:
-            if block_id and self.blocks[block_id].get('title') == 'Metadata section':
-                tabs_block_id = self.blocks[block_id]['data'][
+        for block_id in item["blocks"]:
+            if block_id and item["blocks"][block_id].get('title') == 'Metadata section':
+                tabs_block_id = item["blocks"][block_id]['data'][
                     'blocks_layout']['items'][0]
-                tabs_blocks = self.blocks[block_id]['data']['blocks'][
+                tabs_blocks = item["blocks"][block_id]['data']['blocks'][
                     tabs_block_id]['data']['blocks']
 
                 for _tab_block_id in tabs_blocks:
@@ -1305,14 +1303,11 @@ class ExportEEAContent(ExportContent):
                         for b in blocks:
                             _block_id = b[0]
                             _block = b[1]
-                            self.blocks[block_id]['data']['blocks'][
+                            item["blocks"][block_id]['data']['blocks'][
                                 tabs_block_id]['data']['blocks'][
                                 _tab_block_id]['blocks'][_block_id] = _block
-                            self.blocks[block_id]['data']['blocks'][tabs_block_id]['data']['blocks'][_tab_block_id]['blocks_layout']['items'].append(
+                            item["blocks"][block_id]['data']['blocks'][tabs_block_id]['data']['blocks'][_tab_block_id]['blocks_layout']['items'].append(
                                 _block_id)
-
-        item["blocks"] = self.blocks
-        item["blocks_layout"] = self.blocks_layout
 
         return item
 
