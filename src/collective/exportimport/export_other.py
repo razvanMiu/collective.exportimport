@@ -1477,7 +1477,7 @@ class ExportDavizFigure(ExportEEAContent):
             imageObj = None
             imageName = images[0].get('name', None)
             chartsConfig = views[0].get(
-                'chartsconfig', None) if len(views) == 0 else None
+                'chartsconfig', None) if len(views) == 0 and views[0] else None
             if imageName:
                 imageObj = obj.get(
                     imageName + '.svg') or obj.get(imageName + '.png')
@@ -1516,10 +1516,8 @@ class ExportDavizFigure(ExportEEAContent):
                 image = None
                 imageObj = None
                 imageName = img.get('name', "")
-                import pdb
-                pdb.set_trace()
-                chartsConfig = views[index + 1].get(
-                    'chartsconfig', None) if (index + 1) < len(views) else None
+                chartsConfig = views[index + 1].get('chartsconfig', None) if (
+                    index + 1) < len(views) and views[index + 1] else None
                 if imageName:
                     imageObj = obj.get(
                         imageName + '.svg') or obj.get(imageName + '.png')
