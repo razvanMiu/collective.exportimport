@@ -1516,8 +1516,10 @@ class ExportDavizFigure(ExportEEAContent):
                 image = None
                 imageObj = None
                 imageName = img.get('name', "")
+                import pdb
+                pdb.set_trace()
                 chartsConfig = views[index + 1].get(
-                    'chartsconfig', None) if index + 1 < len(views) else None
+                    'chartsconfig', None) if (index + 1) < len(views) else None
                 if imageName:
                     imageObj = obj.get(
                         imageName + '.svg') or obj.get(imageName + '.png')
@@ -1543,6 +1545,13 @@ class ExportDavizFigure(ExportEEAContent):
                     if newItem["preview_image"] and "filename" in newItem["preview_image"]:
                         newItem["preview_image"]["filename"] = image.get(
                             "id", None)
+                    # Get figure note
+                    if chartsConfig and "notes" in chartsConfig:
+                        html = ''
+                        for note in chartsConfig.get("notes", []):
+                            html += note.get("text", "")
+                        if html:
+                            newItem["figure_notes"] = self.text_to_slate(html)
                     items.append(newItem)
             if len(items) >= 1:
                 for item in items:
