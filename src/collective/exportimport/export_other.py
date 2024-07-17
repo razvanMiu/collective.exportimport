@@ -1472,9 +1472,7 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
 
-        import pdb
-        pdb.set_trace()
-        if len(images) == 1 and images[0]:
+        if len(images) > 0 and images[0]:
             image = None
             imageObj = None
             imageName = images[0].get('name', None)
@@ -1492,18 +1490,24 @@ class ExportDavizFigure(ExportEEAContent):
                     print("Error getting image for {}".format(
                         item['@id'] + "-" + imageName))
             if image:
-                item["preview_image"] = image.get("image", None) or image.get(
+                newItem = item.copy()
+                newItem["preview_image"] = image.get(
+                    "image", None) or image.get(
                     "file", None)
 
-                if item["preview_image"] and "filename" in item["preview_image"]:
-                    item["preview_image"]["filename"] = image.get("id", None)
-            # Get figure note
-            if "notes" in chartsConfig:
-                html = ''
-                for note in chartsConfig.get("notes", []):
-                    html += note.get("text", "")
-                if html:
-                    item["figure_notes"] = self.text_to_slate(html)
+                if newItem["preview_image"] and "filename" in newItem["preview_image"]:
+                    newItem["preview_image"]["filename"] = image.get(
+                        "id", None)
+
+                # Get figure note
+                if "notes" in chartsConfig:
+                    html = ''
+                    for note in chartsConfig.get("notes", []):
+                        html += note.get("text", "")
+                    if html:
+                        newItem["figure_notes"] = self.text_to_slate(html)
+
+                items.append(newItem)
 
         if len(images) > 1:
             itemTitle = item.get("title", "")
@@ -1538,7 +1542,7 @@ class ExportDavizFigure(ExportEEAContent):
                         newItem["preview_image"]["filename"] = image.get(
                             "id", None)
                     items.append(newItem)
-            if len(items) > 1:
+            if len(items) >= 1:
                 for item in items:
                     item["relatedItems"] = [
                         {
@@ -1551,8 +1555,7 @@ class ExportDavizFigure(ExportEEAContent):
                         for _item in items
                         if _item["@id"] != item["@id"]
                     ]
-                return items
-        return item
+        return items if len(items) > 0 else item
 
 
 class ExportEEAFigure(ExportEEAContent):
