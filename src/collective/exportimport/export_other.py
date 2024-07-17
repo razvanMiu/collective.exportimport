@@ -1506,9 +1506,7 @@ class ExportDavizFigure(ExportEEAContent):
         if len(images) > 1:
             itemTitle = item.get("title", "")
             itemId = item.get("id", "")
-            import pdb
-            pdb.set_trace()
-            for index, img in images[1:]:
+            for index, img in enumerate(images[1:]):
                 image = None
                 imageObj = None
                 imageName = img.get('name', "")
