@@ -899,6 +899,7 @@ class ExportEEAContent(ExportContent):
     QUERY = {}
     PORTAL_TYPE = []
     DISSALLOWED_FIELDS = [
+        "arcgis_url",
         "body",  # handled by migrate_more_info
         "constrainTypesMode",
         "coverImage",
@@ -913,6 +914,7 @@ class ExportEEAContent(ExportContent):
         "external",
         "externalRelations",  # handled by migrate_more_info
         "forcedisableautolinks",
+        "figureType",
         "geographicCoverage",
         "inheritedprovenance",
         "introduction",  # handled by migrate_introduction
@@ -928,6 +930,7 @@ class ExportEEAContent(ExportContent):
         "pdfTheme",
         "provenances",  # handled by migrate_data_provenance
         "processor",  # handled by migrate_more_info
+        "spreadsheet",
         "quickUpload",
         "temporalCoverage",  # handled by migrate_temporal_coverage
         "themes",  # handled by migrate_topics
@@ -1406,8 +1409,6 @@ class ExportGisMapApplication(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        self.DISSALLOWED_FIELDS.append("arcgis_url")
-
         item["maps"] = {
             "dataprotection": {},
             "url": item.get("arcgis_url", None),
@@ -1430,10 +1431,10 @@ class ExportDavizFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        import pdb
+        pdb.set_trace()
         images = []
         views = []
-
-        self.DISSALLOWED_FIELDS.append("spreadsheet")
 
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
 
@@ -1504,8 +1505,6 @@ class ExportEEAFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        self.DISSALLOWED_FIELDS.append("figureType")
-
         figure_type = item.get("figureType", "")
 
         if figure_type == 'map':
