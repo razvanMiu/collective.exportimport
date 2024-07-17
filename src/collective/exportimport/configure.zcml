@@ -301,7 +301,7 @@
     name="import_deferred"
     for="zope.interface.Interface"
     class=".import_content.ImportDeferred"
-    template="templates/export_other.pt"
+    template="templates/import_content.pt"
     permission="cmf.ManagePortal"
     />
 
