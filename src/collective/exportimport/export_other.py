@@ -959,7 +959,7 @@ class ExportEEAContent(ExportContent):
         else:
             with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
                 item["blocks"] = json.load(file)
-                blocks[self.type] = copy.deepcopy(self.blocks)
+                blocks[self.type] = copy.deepcopy(item["blocks"])
         if self.type in blocks_layout:
             item["blocks_layout"] = copy.deepcopy(blocks_layout[self.type])
         else:
