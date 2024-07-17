@@ -1135,6 +1135,8 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_data_provenance(self, item, field):
+        import pdb
+        pdb.set_trace()
         if "data_provenance" not in item or not item["data_provenance"] or "data" not in item["data_provenance"]:
             item["data_provenance"] = {
                 "data": []
@@ -1431,8 +1433,7 @@ class ExportDavizFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-        import pdb
-        pdb.set_trace()
+        items = []
         images = []
         views = []
 
@@ -1447,9 +1448,14 @@ class ExportDavizFigure(ExportEEAContent):
         tabs = davizView.tabs
 
         for index, view in enumerate(mutator.views):
+            tab = tabs[index]
+            if tab["css"] == 'googlechart_class_Table':
+                continue
+            images.append(tab)
             if 'chartsconfig' in view and index < len(tabs) - 1:
-                images.append(tabs[index])
                 views.append(view)
+            else:
+                views.append(None)
 
         csv = queryMultiAdapter((obj, self.request), name='download.csv')
 
@@ -1467,28 +1473,80 @@ class ExportDavizFigure(ExportEEAContent):
             image = None
             imageObj = None
             imageName = images[0].get('name', None)
+            chartsConfig = views[0].get(
+                'chartsconfig', None) if len(views) == 0 else None
             if imageName:
                 imageObj = obj.get(
                     imageName + '.svg') or obj.get(imageName + '.png')
             if imageObj:
-                serializer = getMultiAdapter(
-                    (imageObj, self.request), ISerializeToJson)
-                image = serializer()
-
-                # Get figure note
-                if "notes" in views[0].get("chartsconfig", {}):
-                    html = ''
-                    for note in views[0].get(
-                            "chartsconfig", {}).get(
-                            "notes", []):
-                        html += note.get("text", "")
-                    if html:
-                        item["figure_notes"] = self.text_to_slate(html)
-
+                try:
+                    serializer = getMultiAdapter(
+                        (imageObj, self.request), ISerializeToJson)
+                    image = serializer()
+                except Exception:
+                    print("Error getting image for {}".format(
+                        item['@id'] + "-" + imageName))
+            if image:
                 item["preview_image"] = image.get("image", None) or image.get(
                     "file", None)
-            if image and item["preview_image"] and "filename" in item["preview_image"]:
-                item["preview_image"]["filename"] = image.get("id", None)
+
+                if item["preview_image"] and "filename" in item["preview_image"]:
+                    item["preview_image"]["filename"] = image.get("id", None)
+            # Get figure note
+            if "notes" in chartsConfig:
+                html = ''
+                for note in chartsConfig.get("notes", []):
+                    html += note.get("text", "")
+                if html:
+                    item["figure_notes"] = self.text_to_slate(html)
+
+        if len(images) > 1:
+            itemTitle = item.get("title", "")
+            itemId = item.get("id", "")
+            for index, img in images[1:]:
+                image = None
+                imageObj = None
+                imageName = img.get('name', "")
+                if imageName:
+                    imageObj = obj.get(
+                        imageName + '.svg') or obj.get(imageName + '.png')
+                if imageObj:
+                    try:
+                        serializer = getMultiAdapter(
+                            (imageObj, self.request), ISerializeToJson)
+                        image = serializer()
+                    except Exception:
+                        print("Error getting image for {}".format(
+                            item['@id'] + "-" + imageName))
+                if image:
+                    imageTitle = img.get('title', "")
+                    newItem = item.copy()
+                    newItem["@id"] = item["@id"] + "-" + imageName
+                    newItem["id"] = itemId + "-" + imageName
+                    newItem["UID"] = image.get("UID", None) or item.get(
+                        "UID", None)
+                    newItem["title"] = itemTitle + " - " + imageTitle
+                    newItem["preview_image"] = image.get(
+                        "image", None) or image.get(
+                        "file", None)
+                    if newItem["preview_image"] and "filename" in newItem["preview_image"]:
+                        newItem["preview_image"]["filename"] = image.get(
+                            "id", None)
+                    items.append(newItem)
+            if len(items) > 1:
+                for item in items:
+                    item["relatedItems"] = [
+                        {
+                            "@id": _item["@id"],
+                            "@type": _item["@type"],
+                            "UID": _item["UID"],
+                            "id": _item["id"],
+                            "title": item["title"]
+                        }
+                        for _item in items
+                        if _item["@id"] != item["@id"]
+                    ]
+                return items
         return item
 
 
