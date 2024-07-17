@@ -1135,8 +1135,6 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_data_provenance(self, item, field):
-        import pdb
-        pdb.set_trace()
         if "data_provenance" not in item or not item["data_provenance"] or "data" not in item["data_provenance"]:
             item["data_provenance"] = {
                 "data": []
@@ -1154,6 +1152,11 @@ class ExportEEAContent(ExportContent):
 
                 if not ok:
                     continue
+
+                print(
+                    "%s - %s" %
+                    (provenance.get("title"),
+                     provenance.get("link", None)))
 
                 item["data_provenance"]["data"].append({
                     "@id": str(uuid.uuid4()),
@@ -1503,6 +1506,8 @@ class ExportDavizFigure(ExportEEAContent):
         if len(images) > 1:
             itemTitle = item.get("title", "")
             itemId = item.get("id", "")
+            import pdb
+            pdb.set_trace()
             for index, img in images[1:]:
                 image = None
                 imageObj = None
