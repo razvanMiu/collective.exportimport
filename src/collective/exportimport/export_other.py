@@ -973,6 +973,9 @@ class ExportEEAContent(ExportContent):
 
     def getOrganisationName(self, url):
         """ Return an organisation based on its URL """
+        if not url:
+            return None
+
         brains = self.catalog.searchResults({'portal_type': 'Organisation',
                                              'getUrl': url})
         if brains:
@@ -1153,17 +1156,15 @@ class ExportEEAContent(ExportContent):
                 if not ok:
                     continue
 
-                print(
-                    "[PROVENANCE] > %s --- %s" %
-                    (provenance.get("title"),
-                     provenance.get("link", None)))
+                organisation = self.getOrganisationName(
+                    provenance.get("link", None))
 
                 item["data_provenance"]["data"].append({
                     "@id": str(uuid.uuid4()),
                     "link": provenance.get("link", None),
                     "title": provenance.get("title", None),
-                    "organisation": provenance.get("owner", None),
-                })
+                    "organisation": organisation.Title
+                    if organisation else provenance.get("owner", None), })
         return item
 
     def migrate_introduction(self, item, field):
