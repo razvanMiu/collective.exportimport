@@ -297,4 +297,13 @@
       permission="cmf.ManagePortal"
       />
 
+  <browser:page
+    name="import_deferred"
+    for="zope.interface.Interface"
+    class=".import_content.ImportDeferred"
+    template="templates/export_other.pt"
+    permission="cmf.ManagePortal"
+    />
+
+
 </configure>

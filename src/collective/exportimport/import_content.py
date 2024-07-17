@@ -22,6 +22,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from six.moves.urllib.parse import unquote
 from six.moves.urllib.parse import urlparse
 from zExceptions import NotFound
+from zope.annotation.interfaces import IAnnotations
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import alsoProvides
@@ -50,6 +51,12 @@ else:
 
 logger = logging.getLogger(__name__)
 BLOB_HOME = os.getenv("COLLECTIVE_EXPORTIMPORT_BLOB_HOME", "")
+
+DEFERRED_KEY = "exportimport.deferred"
+DEFERRED_FIELD_MAPPING = {
+    "chart_static": ["relatedItems"],
+}
+SIMPLE_SETTER_FIELDS = {}
 
 
 def get_absolute_blob_path(obj, blob_path):
@@ -148,9 +155,11 @@ class ImportContent(BrowserView):
         request = self.request
         self.limit = limit
         self.commit = int(request["commit"]) if request.get("commit") else None
-        self.import_to_current_folder = request.get("import_to_current_folder", False)
+        self.import_to_current_folder = request.get(
+            "import_to_current_folder", False)
 
-        self.handle_existing_content = int(request.get("handle_existing_content", 0))
+        self.handle_existing_content = int(
+            request.get("handle_existing_content", 0))
         self.handle_existing_content_options = (
             ("0", _("Skip: Don't import at all")),
             ("1", _("Replace: Delete item and create new")),
@@ -201,7 +210,8 @@ class ImportContent(BrowserView):
                 elif isinstance(jsonfile, FileUpload) or hasattr(jsonfile, "read"):
                     data = ijson.items(jsonfile, "item")
                 else:
-                    raise RuntimeError("Data is neither text, file nor upload.")
+                    raise RuntimeError(
+                        "Data is neither text, file nor upload.")
             except Exception as e:
                 logger.error(str(e))
                 status = "error"
@@ -326,8 +336,8 @@ class ImportContent(BrowserView):
                 return False
             elif self.should_drop(item_path):
                 logger.info(
-                    u"Skipping %s, even though listed in INCLUDE_PATHS", item_path
-                )
+                    u"Skipping %s, even though listed in INCLUDE_PATHS",
+                    item_path)
                 return False
         else:
             if self.should_drop(item_path):
@@ -423,7 +433,9 @@ class ImportContent(BrowserView):
                             item["id"], item["@id"]
                         )
                     )
-                    api.content.delete(container[item["id"]], check_linkintegrity=False)
+                    api.content.delete(
+                        container[item["id"]],
+                        check_linkintegrity=False)
 
                 elif self.handle_existing_content == 2:
                     # Update existing item
@@ -438,7 +450,8 @@ class ImportContent(BrowserView):
                 else:
                     # Create with new id. Speed up by using random id.
                     duplicate = item["id"]
-                    item["id"] = "{}-{}".format(item["id"], random.randint(1000, 9999))
+                    item["id"] = "{}-{}".format(item["id"],
+                                                random.randint(1000, 9999))
                     logger.info(
                         u"{} ({}) already exists. Created as {}".format(
                             duplicate, item["@id"], item["id"]
@@ -472,8 +485,9 @@ class ImportContent(BrowserView):
                 container.manage_delObjects(item_id)
                 logger.warning(e)
                 logger.warning(
-                    "Didn't add %s %s", item["@type"], item["@id"], exc_info=True
-                )
+                    "Didn't add %s %s", item["@type"],
+                    item["@id"],
+                    exc_info=True)
                 continue
 
         return added
@@ -483,7 +497,9 @@ class ImportContent(BrowserView):
         new, item = self.global_obj_hook_before_deserializing(new, item)
 
         # import using plone.restapi deserializers
-        deserializer = getMultiAdapter((new, self.request), IDeserializeFromJson)
+        deserializer = getMultiAdapter(
+            (new, self.request),
+            IDeserializeFromJson)
         try:
             try:
                 new = deserializer(validate_all=False, data=item)
@@ -495,8 +511,9 @@ class ImportContent(BrowserView):
                     raise error
         except Exception:
             logger.warning(
-                "Cannot deserialize %s %s", item["@type"], item["@id"], exc_info=True
-            )
+                "Cannot deserialize %s %s", item["@type"],
+                item["@id"],
+                exc_info=True)
             raise
 
         # Blobs can be exported as only a path in the blob storage.
@@ -512,8 +529,8 @@ class ImportContent(BrowserView):
             # Happens only when we import content that doesn't have a UID
             # for instance when importing from non Plone systems.
             logger.info(
-                "Created new UID for item %s with type %s.", item["@id"], item["@type"]
-            )
+                "Created new UID for item %s with type %s.", item["@id"],
+                item["@type"])
             item["UID"] = uuid
 
         self.global_obj_hook(new, item)
@@ -538,8 +555,9 @@ class ImportContent(BrowserView):
             new.creation_date = creation_date
             new.aq_base.creation_date_migrated = creation_date
         logger.info(
-            "Created item #{}: {} {}".format(index, item["@type"], new.absolute_url())
-        )
+            "Created item #{}: {} {}".format(
+                index, item["@type"],
+                new.absolute_url()))
         return new
 
     def import_versions(self, container, item):
@@ -575,7 +593,8 @@ class ImportContent(BrowserView):
             policy = "at_edit_autoversion"
             repo_tool.removePolicyFromContentType(item["@type"], policy)
 
-        for index, version in enumerate(item["exportimport.versions"].values()):
+        for index, version in enumerate(
+                item["exportimport.versions"].values()):
             initial = index == 0
             version = self.global_dict_hook(version)
             if not version:
@@ -596,7 +615,9 @@ class ImportContent(BrowserView):
                 new = container.get(item["id"])
 
             # import using plone.restapi deserializers
-            deserializer = getMultiAdapter((new, self.request), IDeserializeFromJson)
+            deserializer = getMultiAdapter(
+                (new, self.request),
+                IDeserializeFromJson)
             try:
                 new = deserializer(validate_all=False, data=version)
             except Exception:
@@ -612,13 +633,16 @@ class ImportContent(BrowserView):
 
         # Finally create the current version
         new = container.get(item["id"])
-        deserializer = getMultiAdapter((new, self.request), IDeserializeFromJson)
+        deserializer = getMultiAdapter(
+            (new, self.request),
+            IDeserializeFromJson)
         try:
             new = deserializer(validate_all=False, data=item)
         except Exception:
             logger.warning(
-                "Cannot deserialize %s %s", item["@type"], item["@id"], exc_info=True
-            )
+                "Cannot deserialize %s %s", item["@type"],
+                item["@id"],
+                exc_info=True)
             return
 
         self.import_blob_paths(new, item)
@@ -629,7 +653,9 @@ class ImportContent(BrowserView):
         if item["review_state"] and item["review_state"] != "private":
             if portal_workflow.getChainFor(new):
                 try:
-                    api.content.transition(to_state=item["review_state"], obj=new)
+                    api.content.transition(
+                        to_state=item["review_state"],
+                        obj=new)
                 except InvalidParameterError as e:
                     logger.info(e)
 
@@ -652,9 +678,9 @@ class ImportContent(BrowserView):
         self.save_revision(new, item)
         logger.info(
             "Created item: {} {} with {} old versions".format(
-                item["@type"], new.absolute_url(), len(item["exportimport.versions"])
-            )
-        )
+                item["@type"],
+                new.absolute_url(),
+                len(item["exportimport.versions"])))
 
         if policy:
             repo_tool.addPolicyForContentType(item["@type"], policy)
@@ -680,7 +706,8 @@ class ImportContent(BrowserView):
         from plone.app.versioningbehavior import _ as PAV
 
         if initial:
-            comment = PAV(u"initial_version_changeNote", default=u"Initial version")
+            comment = PAV(u"initial_version_changeNote",
+                          default=u"Initial version")
         else:
             comment = item.get("changeNote")
         sys_metadata = {
@@ -730,7 +757,8 @@ class ImportContent(BrowserView):
             abs_blob_path = get_absolute_blob_path(new, blob_path)
             if not abs_blob_path:
                 __traceback_info__ = item
-                raise ValueError("Blob path {} does not exist!".format(blob_path))
+                raise ValueError(
+                    "Blob path {} does not exist!".format(blob_path))
 
             # Determine the class to use: file or image.
             filename = value["filename"]
@@ -768,13 +796,20 @@ class ImportContent(BrowserView):
         # drop layout property (we always use the type default view)
         item.pop('layout', None)
         """
+        # Move deferred values to a different key to not deserialize.
+        # This could also be done during export.
+        item[DEFERRED_KEY] = {}
+        for fieldname in DEFERRED_FIELD_MAPPING.get(item["@type"], []):
+            if item.get(fieldname):
+                item[DEFERRED_KEY][fieldname] = item.pop(fieldname)
         return item
 
     def custom_dict_hook(self, item):
         """Hook to inject dict-modifiers by type before deserializing.
         E.g.: dict_hook_document(self, item)
         """
-        modifier = getattr(self, "dict_hook_{}".format(self.safe_portal_type), None)
+        modifier = getattr(self, "dict_hook_{}".format(
+            self.safe_portal_type), None)
         if modifier and callable(modifier):
             item = modifier(item)
         return item
@@ -787,13 +822,14 @@ class ImportContent(BrowserView):
             return
         constrains.setConstrainTypesMode(ENABLED)
 
-        locally_allowed_types = item["exportimport.constrains"]["locally_allowed_types"]
+        locally_allowed_types = item["exportimport.constrains"][
+            "locally_allowed_types"]
         try:
             constrains.setLocallyAllowedTypes(locally_allowed_types)
         except ValueError:
             logger.warning(
-                "Cannot setLocallyAllowedTypes on %s", item["@id"], exc_info=True
-            )
+                "Cannot setLocallyAllowedTypes on %s", item["@id"],
+                exc_info=True)
 
         immediately_addable_types = item["exportimport.constrains"][
             "immediately_addable_types"
@@ -802,8 +838,8 @@ class ImportContent(BrowserView):
             constrains.setImmediatelyAddableTypes(immediately_addable_types)
         except ValueError:
             logger.warning(
-                "Cannot setImmediatelyAddableTypes on %s", item["@id"], exc_info=True
-            )
+                "Cannot setImmediatelyAddableTypes on %s", item["@id"],
+                exc_info=True)
 
     def import_review_state(self, obj, item):
         """Try to set the original review_state. Overwrite to customize or skip."""
@@ -811,7 +847,9 @@ class ImportContent(BrowserView):
             portal_workflow = api.portal.get_tool("portal_workflow")
             if portal_workflow.getChainFor(obj):
                 try:
-                    api.content.transition(to_state=item["review_state"], obj=obj)
+                    api.content.transition(
+                        to_state=item["review_state"],
+                        obj=obj)
                 except InvalidParameterError as e:
                     logger.info(e)
 
@@ -839,6 +877,13 @@ class ImportContent(BrowserView):
                 alsoProvides(obj, iface)
         return obj, item
         """
+        # Store deferred data in an annotation.
+        deferred = item.get(DEFERRED_KEY, {})
+        if deferred:
+            annotations = IAnnotations(obj)
+            annotations[DEFERRED_KEY] = {}
+            for key, value in deferred.items():
+                annotations[DEFERRED_KEY][key] = value
         return obj, item
 
     def global_obj_hook(self, obj, item):
@@ -849,7 +894,8 @@ class ImportContent(BrowserView):
         """Hook to inject modifiers of the imported item by type.
         E.g.: obj_hook_newsitem(self, obj, item)
         """
-        modifier = getattr(self, "obj_hook_{}".format(self.safe_portal_type), None)
+        modifier = getattr(self, "obj_hook_{}".format(
+            self.safe_portal_type), None)
         if modifier and callable(modifier):
             modifier(obj, item)
 
@@ -976,8 +1022,8 @@ class ImportContent(BrowserView):
             if found_path.startswith(nav_path):
                 return parent
             logger.info(
-                "Ignoring existing container outside of navigation root: %s", found_path
-            )
+                "Ignoring existing container outside of navigation root: %s",
+                found_path)
         # As a final fallback we create the folder-structure required by the path
         return self.create_container(item)
 
@@ -1063,7 +1109,8 @@ class ResetModifiedAndCreatedDate(BrowserView):
 
         portal = api.portal.get()
 
-        portal.ZopeFindAndApply(portal, search_sub=True, apply_func=reset_dates)
+        portal.ZopeFindAndApply(portal, search_sub=True,
+                                apply_func=reset_dates)
         msg = _(u"Finished resetting creation and modification dates.")
         logger.info(msg)
         api.portal.show_message(msg, self.request)
@@ -1108,3 +1155,45 @@ class FixCollectionQueries(BrowserView):
         msg = _("Finished fixing collection queries.")
         api.portal.show_message(msg, self.request)
         return self.index()
+
+
+class ImportDeferred(BrowserView):
+    def __call__(self):
+        # This example reuses the form export_other.pt from collective.exportimport
+        self.title = "Import deferred data"
+        if not self.request.form.get("form.submitted", False):
+            return self.index()
+        self.results = []
+        for brain in api.content.find(DEFERRED_FIELD_MAPPING.keys()):
+            obj = brain.getObject()
+            self.import_deferred(obj)
+        api.portal.show_message(
+            f"Imported deferred data for {len(self.results)} items!",
+            self.request)
+
+    def import_deferred(self, obj):
+        annotations = IAnnotations(obj, {})
+        deferred = annotations.get(DEFERRED_KEY, None)
+        if not deferred:
+            return
+        # Shortcut for simple fields (e.g. storing strings, uuids etc.)
+        for fieldname in SIMPLE_SETTER_FIELDS.get(obj.portal_type, []):
+            value = deferred.pop(fieldname, None)
+            if value:
+                setattr(obj, fieldname, value)
+        if not deferred:
+            return
+        # This approach validates the values and converts more complex data
+        deserializer = getMultiAdapter(
+            (obj, self.request),
+            IDeserializeFromJson)
+        try:
+            obj = deserializer(validate_all=False, data=deferred)
+        except Exception as e:
+            logger.info("Error while importing deferred data for %s",
+                        obj.absolute_url(), exc_info=True)
+            logger.info("Data: %s", deferred)
+        else:
+            self.results.append(obj.absolute_url())
+        # cleanup
+        del annotations[DEFERRED_KEY]
