@@ -1154,7 +1154,7 @@ class ExportEEAContent(ExportContent):
                     continue
 
                 print(
-                    "%s - %s" %
+                    "[PROVENANCE] > %s --- %s" %
                     (provenance.get("title"),
                      provenance.get("link", None)))
 
@@ -1472,6 +1472,8 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
 
+        import pdb
+        pdb.set_trace()
         if len(images) == 1 and images[0]:
             image = None
             imageObj = None
