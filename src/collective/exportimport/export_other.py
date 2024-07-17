@@ -1500,7 +1500,7 @@ class ExportDavizFigure(ExportEEAContent):
                         "id", None)
 
                 # Get figure note
-                if "notes" in chartsConfig:
+                if chartsConfig and "notes" in chartsConfig:
                     html = ''
                     for note in chartsConfig.get("notes", []):
                         html += note.get("text", "")
@@ -1516,6 +1516,8 @@ class ExportDavizFigure(ExportEEAContent):
                 image = None
                 imageObj = None
                 imageName = img.get('name', "")
+                chartsConfig = views[index + 1].get(
+                    'chartsconfig', None) if index + 1 < len(views) else None
                 if imageName:
                     imageObj = obj.get(
                         imageName + '.svg') or obj.get(imageName + '.png')
