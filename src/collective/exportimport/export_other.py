@@ -124,6 +124,9 @@ with open(os.path.dirname(__file__) + '/resources/geo_coverage.json') as file:
 with open(os.path.dirname(__file__) + '/resources/related_items.json') as file:
     related_items = json.load(file)
 
+with open(os.path.dirname(__file__) + '/resources/images_ids.json') as file:
+    images_ids = json.load(file)
+
 
 def make_uid():
     return str(uuid4())
@@ -960,7 +963,7 @@ class ExportEEAContent(ExportContent):
     blocks_layout = None
     catalog = None
 
-    images_ids = []
+    images_ids = images_ids
     locations = []
     parsed_ids = {}
 
@@ -1483,6 +1486,8 @@ class ExportDavizFigure(ExportEEAContent):
     PORTAL_TYPE = ["DavizVisualization"]
     type = 'chart_static'
 
+    multipleCharts = 0
+
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
@@ -1605,6 +1610,7 @@ class ExportDavizFigure(ExportEEAContent):
                         if html:
                             newItem["figure_notes"] = self.text_to_slate(html)
                     items.append(newItem)
+                    self.multipleCharts += 1
             if len(items) >= 1:
                 for item in items:
                     item["relatedItems"] = [
@@ -1613,6 +1619,10 @@ class ExportDavizFigure(ExportEEAContent):
                         if _item["@id"] != item["@id"]
                     ]
         return items if len(items) > 0 else item
+
+    def finish(self):
+        print("===> Exported %s charts <===" % self.multipleCharts)
+        return super().finish()
 
 
 class ExportEEAFigure(ExportEEAContent):
