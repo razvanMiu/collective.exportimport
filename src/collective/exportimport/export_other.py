@@ -28,11 +28,9 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFPlone.utils import isExpired
 from Products.Five import BrowserView
-from eea.versions.interfaces import IGetVersions
 from eea.workflow.interfaces import IObjectArchived
 from eea.geotags.interfaces import IGeoTags
 from eea.app.visualization.interfaces import IVisualizationConfig
-from eea.versions.interfaces import IGetVersions
 from zope.component import getAdapter
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
@@ -53,6 +51,11 @@ import requests
 import re
 import sys
 import copy
+
+try:
+    from eea.versions.interfaces import IGetVersions
+except ImportError:
+    IGetVersions = None
 
 
 if (sys.getdefaultencoding() != 'utf-8'):
@@ -1076,7 +1079,7 @@ class ExportEEAContent(ExportContent):
                 continue
             if isExpired(relatedItem):
                 continue
-            if not IGetVersions(relatedItem).isLatest():
+            if IGetVersions and not IGetVersions(relatedItem).isLatest():
                 continue
             if api.content.get_state(
                     obj=relatedItem, default="unknown") != "published":

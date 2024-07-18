@@ -20,7 +20,6 @@ from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
 from Products.CMFPlone.utils import safe_unicode, isExpired
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from eea.versions.interfaces import IGetVersions
 from eea.workflow.interfaces import IObjectArchived
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -35,6 +34,11 @@ import os
 import pkg_resources
 import six
 import tempfile
+
+try:
+    from eea.versions.interfaces import IGetVersions
+except ImportError:
+    IGetVersions = None
 
 try:
     pkg_resources.get_distribution("Products.Archetypes")
@@ -374,10 +378,7 @@ class ExportContent(BrowserView):
                     continue
                 if isExpired(obj):
                     continue
-                try:
-                    if not IGetVersions(obj).isLatest():
-                        continue
-                except Exception:
+                if IGetVersions and not IGetVersions(obj).isLatest():
                     continue
                 if obj.getLanguage() != 'en':
                     continue
