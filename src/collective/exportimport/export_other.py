@@ -1509,6 +1509,10 @@ class ExportDavizFigure(ExportEEAContent):
 
         for index, view in (enumerate(mutator.views)
                             if mutator else enumerate([])):
+            if index >= len(tabs):
+                import pdb
+                pdb.set_trace()
+                break
             tab = tabs[index]
             if tab["css"] == 'googlechart_class_Table':
                 continue
