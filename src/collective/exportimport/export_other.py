@@ -1020,83 +1020,83 @@ class ExportEEAContent(ExportContent):
     def global_dict_hook(self, item, obj):
         self.catalog = getToolByName(self, "portal_catalog")
 
-        # item = json.dumps(item).replace('\\r\\n', '\\n')
+        item = json.dumps(item).replace('\\r\\n', '\\n')
 
-        # # Regex pattern to match resolveuid and extract the ID
-        # pattern = re.compile(
-        #     r'src=\"resolveuid\/([a-zA-Z0-9]{32})|src=\\"resolveuid\/([a-zA-Z0-9]{32})')
+        # Regex pattern to match resolveuid and extract the ID
+        pattern = re.compile(
+            r'src=\"resolveuid\/([a-zA-Z0-9]{32})|src=\\"resolveuid\/([a-zA-Z0-9]{32})')
 
-        # # Find all matches
-        # matches = pattern.findall(item)
+        # Find all matches
+        matches = pattern.findall(item)
 
-        # # Save all found ids
-        # for match in matches:
-        #     self.images_ids.append(match[1])
+        # Save all found ids
+        for match in matches:
+            self.images_ids.append(match[1])
 
-        # # Regex pattern to match hrefs starting with ./ or ../
-        # pattern1 = re.compile(r'href=\"(\.\/|\.\.\/)+([^"]*)')
-        # pattern2 = re.compile(r'href=\\"(\.\/|\.\.\/)+([^"]*)')
+        # Regex pattern to match hrefs starting with ./ or ../
+        pattern1 = re.compile(r'href=\"(\.\/|\.\.\/)+([^"]*)')
+        pattern2 = re.compile(r'href=\\"(\.\/|\.\.\/)+([^"]*)')
 
-        # # Function to replace the matched pattern
-        # def replace_href(match):
-        #     # Extract the path after the ./ or ../
-        #     path = match.group(2)
-        #     # Return the replacement string
-        #     return 'href=\\"https://www.eea.europa.eu/%s' % path
+        # Function to replace the matched pattern
+        def replace_href(match):
+            # Extract the path after the ./ or ../
+            path = match.group(2)
+            # Return the replacement string
+            return 'href=\\"https://www.eea.europa.eu/%s' % path
 
-        # item = pattern1.sub(replace_href, item)
-        # item = pattern2.sub(replace_href, item)
+        item = pattern1.sub(replace_href, item)
+        item = pattern2.sub(replace_href, item)
 
-        # # Regex pattern to match hrefs starting with resolveuid/
-        # pattern1 = re.compile(r'href=\"resolveuid\/([^"]+)')
-        # pattern2 = re.compile(r'href=\\"resolveuid\/([^"]+)')
+        # Regex pattern to match hrefs starting with resolveuid/
+        pattern1 = re.compile(r'href=\"resolveuid\/([^"]+)')
+        pattern2 = re.compile(r'href=\\"resolveuid\/([^"]+)')
 
-        # # Function to replace the matched pattern
-        # def replace_href(match):
-        #     # Extract the unique part after resolveuid/
-        #     unique_id = match.group(1)
-        #     # Return the replacement string
-        #     return 'href=\\"https://www.eea.europa.eu/resolveuid/%s' % unique_id
+        # Function to replace the matched pattern
+        def replace_href(match):
+            # Extract the unique part after resolveuid/
+            unique_id = match.group(1)
+            # Return the replacement string
+            return 'href=\\"https://www.eea.europa.eu/resolveuid/%s' % unique_id
 
-        # # Use re.sub with the replacement function
-        # item = pattern1.sub(replace_href, item)
-        # item = pattern2.sub(replace_href, item)
+        # Use re.sub with the replacement function
+        item = pattern1.sub(replace_href, item)
+        item = pattern2.sub(replace_href, item)
 
-        # item = json.loads(item)
+        item = json.loads(item)
 
         if self.type:
             item["@type"] = self.type
 
-        # item = self.load_blocks(item)
+        item = self.load_blocks(item)
 
-        # item["versionId"] = IGetVersions(
-        #     obj).versionId if IGetVersions else None
-        # item["relatedItems_unmapped"] = []
-        # item["relatedItems_backward"] = []
+        item["versionId"] = IGetVersions(
+            obj).versionId if IGetVersions else None
+        item["relatedItems_unmapped"] = []
+        item["relatedItems_backward"] = []
 
-        # item = self.migrate_related_items(item, obj)
-        # item = self.migrate_image(item, 'image')
-        # item = self.migrate_temporal_coverage(item, "temporalCoverage")
-        # item = self.migrate_topics(item, "themes")
-        # item = self.migrate_data_provenance(item, "provenances")
-        # item = self.migrate_introduction(item, "introduction")
-        # item = self.migrate_geo_coverage(item, obj)
-        # item = self.migrate_more_info(item, obj)
+        item = self.migrate_related_items(item, obj)
+        item = self.migrate_image(item, 'image')
+        item = self.migrate_temporal_coverage(item, "temporalCoverage")
+        item = self.migrate_topics(item, "themes")
+        item = self.migrate_data_provenance(item, "provenances")
+        item = self.migrate_introduction(item, "introduction")
+        item = self.migrate_geo_coverage(item, obj)
+        item = self.migrate_more_info(item, obj)
 
-        # if "rights" in item and item["rights"]:
-        #     item["rights"] = item["rights"].replace("\n", " ")
+        if "rights" in item and item["rights"]:
+            item["rights"] = item["rights"].replace("\n", " ")
 
-        # if item["id"] in self.parsed_ids:
-        #     parts = item["@id"].split('/')
-        #     [parentId, id] = parts[-2:]
-        #     item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
-        #     item["id"] = '%s-%s' % (id, parentId)
-        # else:
-        #     self.parsed_ids[item["id"]] = True
+        if item["id"] in self.parsed_ids:
+            parts = item["@id"].split('/')
+            [parentId, id] = parts[-2:]
+            item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
+            item["id"] = '%s-%s' % (id, parentId)
+        else:
+            self.parsed_ids[item["id"]] = True
 
-        # for field in self.DISSALLOWED_FIELDS:
-        #     if field in item:
-        #         del item[field]
+        for field in self.DISSALLOWED_FIELDS:
+            if field in item:
+                del item[field]
 
         return item
 
@@ -1507,8 +1507,8 @@ class ExportDavizFigure(ExportEEAContent):
 
         tabs = davizView.tabs
 
-        import pdb
-        pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
 
         # for index, tab in enumerate(tabs if tabs else []):
         #     if tab["css"] == 'googlechart_class_Table':
