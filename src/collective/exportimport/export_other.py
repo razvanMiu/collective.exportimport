@@ -1098,6 +1098,8 @@ class ExportEEAContent(ExportContent):
 
     def migrate_related_items(self, item, obj):
         relatedItems = obj.getRelatedItems()
+        import pdb
+        pdb.set_trace()
 
         if not relatedItems:
             return item
@@ -1126,8 +1128,6 @@ class ExportEEAContent(ExportContent):
                 "title": _item["title"],
             }
             if _item['@type'] not in ['Data', 'ExternalDataSpec']:
-                import pdb
-                pdb.set_trace()
                 item["relatedItems_unmapped"].append(_item["UID"])
                 continue
             if _item['@type'] == 'Data':
