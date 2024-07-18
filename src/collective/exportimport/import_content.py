@@ -1167,7 +1167,7 @@ class ImportDeferred(BrowserView):
             obj = brain.getObject()
             self.import_deferred(obj)
         api.portal.show_message(
-            "Imported deferred data for {len(self.results)} items!",
+            "Imported deferred data for %s items!" % len(self.results),
             self.request)
 
     def import_deferred(self, obj):
