@@ -1146,7 +1146,7 @@ class ExportEEAContent(ExportContent):
                 if versionId not in related_items:
                     print("related item %s not found" % versionId)
                     continue
-                data["link"] = "/datahub/datahubitem-view/%s" % related_items[versionId]
+                data["link"] = "/en/datahub/datahubitem-view/%s" % related_items[versionId]
             for data_provenance in item["data_provenance"]["data"]:
                 if data_provenance["title"] == relatedItem.Title():
                     ok = False
