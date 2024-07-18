@@ -1103,9 +1103,6 @@ class ExportEEAContent(ExportContent):
                 "data": []
             }
 
-        import pdb
-        pdb.set_trace()
-
         for relatedItem in relatedItems:
             if IObjectArchived and IObjectArchived.providedBy(relatedItem):
                 continue
@@ -1138,10 +1135,7 @@ class ExportEEAContent(ExportContent):
                     break
             if not ok:
                 continue
-            item["data_provenance"]["data"].append({
-                "@id": str(uuid.uuid4()),
-                "title": _item["title"],
-            })
+            item["data_provenance"]["data"].append(data)
         return item
 
     def migrate_image(self, item, field):
