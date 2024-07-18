@@ -1198,5 +1198,5 @@ class ImportDeferred(BrowserView):
             logger.info("Data: %s", deferred)
         else:
             self.results.append(obj.absolute_url())
-        # cleanup
-        del annotations[DEFERRED_KEY]
+            # cleanup
+            del annotations[DEFERRED_KEY]
