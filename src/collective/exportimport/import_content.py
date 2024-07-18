@@ -1164,7 +1164,8 @@ class ImportDeferred(BrowserView):
         pdb.set_trace()
         self.title = "Import deferred data"
         self.results = []
-        for brain in api.content.find(DEFERRED_FIELD_MAPPING.keys()):
+        for brain in api.content.find(
+                portal_type=DEFERRED_FIELD_MAPPING.keys()):
             obj = brain.getObject()
             self.import_deferred(obj)
         api.portal.show_message(
