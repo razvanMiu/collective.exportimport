@@ -1574,13 +1574,7 @@ class ExportDavizFigure(ExportEEAContent):
             if len(items) >= 1:
                 for item in items:
                     item["relatedItems"] = [
-                        {
-                            "@id": _item["@id"],
-                            "@type": _item["@type"],
-                            "UID": _item["UID"],
-                            "id": _item["id"],
-                            "title": item["title"]
-                        }
+                        _item["UID"]
                         for _item in items
                         if _item["@id"] != item["@id"]
                     ]

@@ -11,6 +11,7 @@ from plone import api
 from plone.api.exc import InvalidParameterError
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.i18n.normalizer.interfaces import IIDNormalizer
+from plone.protect.interfaces import IDisableCSRFProtection
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -1175,6 +1176,7 @@ class ImportDeferred(BrowserView):
             self.request)
 
     def import_deferred(self, obj):
+        alsoProvides(self.request, IDisableCSRFProtection)
         annotations = IAnnotations(obj, {})
         deferred = annotations.get(DEFERRED_KEY, None)
         if not deferred:
