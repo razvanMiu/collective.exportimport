@@ -1492,6 +1492,9 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
 
+        import pdb
+        pdb.set_trace()
+
         if len(images) > 0 and images[0]:
             image = None
             imageObj = None
