@@ -1066,6 +1066,10 @@ class ExportEEAContent(ExportContent):
 
         item = self.load_blocks(item)
 
+        item["versionId"] = IGetVersions(
+            obj).versionId if IGetVersions else None
+        item["relatedItems_unmapped"] = []
+
         item = self.migrate_related_items(item, obj)
         item = self.migrate_image(item, 'image')
         item = self.migrate_temporal_coverage(item, "temporalCoverage")
@@ -1122,6 +1126,9 @@ class ExportEEAContent(ExportContent):
                 "title": _item["title"],
             }
             if _item['@type'] not in ['Data', 'ExternalDataSpec']:
+                import pdb
+                pdb.set_trace()
+                item["relatedItems_unmapped"].append(_item["UID"])
                 continue
             if _item['@type'] == 'Data':
                 versionId = IGetVersions(relatedItem).versionId

@@ -53,11 +53,15 @@ else:
 logger = logging.getLogger(__name__)
 BLOB_HOME = os.getenv("COLLECTIVE_EXPORTIMPORT_BLOB_HOME", "")
 
+PLONE4_KEY = 'plone4.metadata'
+PLONE4_FIELDS = ['versionId', 'relatedItems_unmapped', '']
 DEFERRED_KEY = "exportimport.deferred"
 DEFERRED_FIELD_MAPPING = {
     "chart_static": ["relatedItems"],
 }
 SIMPLE_SETTER_FIELDS = {}
+
+#
 
 
 def get_absolute_blob_path(obj, blob_path):
@@ -799,9 +803,11 @@ class ImportContent(BrowserView):
         """
         # Move deferred values to a different key to not deserialize.
         # This could also be done during export.
-        import pdb
-        pdb.set_trace()
         item[DEFERRED_KEY] = {}
+        item[PLONE4_KEY] = {}
+        for fieldname in PLONE4_FIELDS:
+            if item.get(fieldname):
+                item[PLONE4_KEY][fieldname] = item.pop(fieldname)
         for fieldname in DEFERRED_FIELD_MAPPING.get(item["@type"], []):
             if item.get(fieldname):
                 item[DEFERRED_KEY][fieldname] = item.pop(fieldname)
@@ -885,14 +891,18 @@ class ImportContent(BrowserView):
     def global_obj_hook(self, obj, item):
         """Override hook to modify each imported content after deserializing."""
         # Store deferred data in an annotation.
-        import pdb
-        pdb.set_trace()
+        plone4 = item.get(PLONE4_KEY, {})
         deferred = item.get(DEFERRED_KEY, {})
-        if deferred:
+        if deferred or plone4:
             annotations = IAnnotations(obj)
+        if deferred:
             annotations[DEFERRED_KEY] = {}
             for key, value in deferred.items():
                 annotations[DEFERRED_KEY][key] = value
+        if plone4:
+            annotations[PLONE4_KEY] = {}
+            for key, value in plone4.items():
+                annotations[PLONE4_KEY][key] = value
         return obj
 
     def custom_obj_hook(self, obj, item):
