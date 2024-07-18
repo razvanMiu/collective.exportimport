@@ -1507,12 +1507,23 @@ class ExportDavizFigure(ExportEEAContent):
 
         tabs = davizView.tabs
 
+        import pdb
+        pdb.set_trace()
+
+        # for index, tab in enumerate(tabs if tabs else []):
+        #     if tab["css"] == 'googlechart_class_Table':
+        #         continue
+        #     images.append(tab)
+
+        #     if 'chartsconfig' in mutator.views[index]:
+        #         views.append(mutator.views[index])
+        #         self.multipleCharts += 1
+        #         if index >= len(tabs) - 1:
+        #             break
+        #         continue
+
         for index, view in (enumerate(mutator.views)
                             if mutator else enumerate([])):
-            if index >= len(tabs):
-                import pdb
-                pdb.set_trace()
-                break
             tab = tabs[index]
             if tab["css"] == 'googlechart_class_Table':
                 continue
