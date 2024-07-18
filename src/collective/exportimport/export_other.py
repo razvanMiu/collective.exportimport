@@ -1103,6 +1103,9 @@ class ExportEEAContent(ExportContent):
                 "data": []
             }
 
+        import pdb
+        pdb.set_trace()
+
         for relatedItem in relatedItems:
             if IObjectArchived and IObjectArchived.providedBy(relatedItem):
                 continue
