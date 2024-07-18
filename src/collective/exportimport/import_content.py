@@ -1161,8 +1161,6 @@ class ImportDeferred(BrowserView):
     def __call__(self):
         # This example reuses the form export_other.pt from collective.exportimport
         self.title = "Import deferred data"
-        if not self.request.form.get("form.submitted", False):
-            return self.index()
         self.results = []
         for brain in api.content.find(DEFERRED_FIELD_MAPPING.keys()):
             obj = brain.getObject()
