@@ -1165,7 +1165,7 @@ class ImportDeferred(BrowserView):
         self.title = "Import deferred data"
         self.results = []
         for brain in api.content.find(
-                portal_type=DEFERRED_FIELD_MAPPING.keys()):
+                portal_type=[x for x in DEFERRED_FIELD_MAPPING.keys()]):
             obj = brain.getObject()
             self.import_deferred(obj)
         api.portal.show_message(
