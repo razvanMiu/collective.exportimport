@@ -1069,6 +1069,7 @@ class ExportEEAContent(ExportContent):
         item["versionId"] = IGetVersions(
             obj).versionId if IGetVersions else None
         item["relatedItems_unmapped"] = []
+        item["relatedItems_backward"] = []
 
         item = self.migrate_related_items(item, obj)
         item = self.migrate_image(item, 'image')
@@ -1098,8 +1099,6 @@ class ExportEEAContent(ExportContent):
 
     def migrate_related_items(self, item, obj):
         relatedItems = obj.getRelatedItems()
-        import pdb
-        pdb.set_trace()
 
         if not relatedItems:
             return item
@@ -1108,6 +1107,21 @@ class ExportEEAContent(ExportContent):
             item["data_provenance"] = {
                 "data": []
             }
+
+        for macro in obj.unrestrictedTraverse('@@eea.relations.macro').backward():
+            if len(macro) < 2:
+                continue
+            for relatedItem in macro[1]:
+                if IObjectArchived and IObjectArchived.providedBy(relatedItem):
+                    continue
+                if isExpired(relatedItem):
+                    continue
+                if IGetVersions and not IGetVersions(relatedItem).isLatest():
+                    continue
+                if api.content.get_state(
+                        obj=relatedItem, default="unknown") != "published":
+                    continue
+                item["relatedItems_backward"].append(relatedItem.UID())
 
         for relatedItem in relatedItems:
             if IObjectArchived and IObjectArchived.providedBy(relatedItem):
@@ -1120,24 +1134,21 @@ class ExportEEAContent(ExportContent):
                     obj=relatedItem, default="unknown") != "published":
                 continue
             ok = True
-            _item = getMultiAdapter(
-                (relatedItem, self.request),
-                ISerializeToJson)()
             data = {
                 "@id": str(uuid.uuid4()),
-                "title": _item["title"],
+                "title": relatedItem.Title(),
             }
-            if _item['@type'] not in ['Data', 'ExternalDataSpec']:
-                item["relatedItems_unmapped"].append(_item["UID"])
+            if relatedItem.meta_type not in ['Data', 'ExternalDataSpec']:
+                item["relatedItems_unmapped"].append(relatedItem.UID())
                 continue
-            if _item['@type'] == 'Data':
+            if relatedItem.meta_type == 'Data':
                 versionId = IGetVersions(relatedItem).versionId
                 if versionId not in related_items:
                     print("related item %s not found" % versionId)
                     continue
                 data["link"] = "/datahub/datahubitem-view/%s" % related_items[versionId]
             for data_provenance in item["data_provenance"]["data"]:
-                if data_provenance["title"] == _item["title"]:
+                if data_provenance["title"] == relatedItem.Title():
                     ok = False
                     break
             if not ok:
