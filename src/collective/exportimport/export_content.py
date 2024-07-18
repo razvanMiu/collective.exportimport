@@ -374,7 +374,10 @@ class ExportContent(BrowserView):
                     continue
                 if isExpired(obj):
                     continue
-                if not IGetVersions(obj).isLatest():
+                try:
+                    if not IGetVersions(obj).isLatest():
+                        continue
+                except Exception:
                     continue
                 if obj.getLanguage() != 'en':
                     continue
