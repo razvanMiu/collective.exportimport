@@ -48,6 +48,7 @@ import requests
 import re
 import sys
 import copy
+import base64
 
 try:
     from eea.versions.interfaces import IGetVersions
@@ -1492,9 +1493,6 @@ class ExportDavizFigure(ExportEEAContent):
                 "encoding": "base64"
             }
 
-        import pdb
-        pdb.set_trace()
-
         if len(images) > 0 and images[0]:
             image = None
             imageObj = None
@@ -1514,9 +1512,9 @@ class ExportDavizFigure(ExportEEAContent):
                         item['@id'] + "-" + imageName))
             if image:
                 newItem = item.copy()
-                newItem["preview_image"] = image.get(
-                    "image", None) or image.get(
-                    "file", None)
+                newItem["preview_image"] = self.getImage(
+                    image.get("image", None) or image.get("file", None)
+                )
 
                 if newItem["preview_image"] and "filename" in newItem["preview_image"]:
                     newItem["preview_image"]["filename"] = image.get(
@@ -1547,7 +1545,8 @@ class ExportDavizFigure(ExportEEAContent):
                 if imageObj:
                     try:
                         serializer = getMultiAdapter(
-                            (imageObj, self.request), ISerializeToJson)
+                            (imageObj, self.request),
+                            ISerializeToJson)
                         image = serializer()
                     except Exception:
                         print("Error getting image for {}".format(
@@ -1560,9 +1559,9 @@ class ExportDavizFigure(ExportEEAContent):
                     newItem["UID"] = image.get("UID", None) or item.get(
                         "UID", None)
                     newItem["title"] = itemTitle + " - " + imageTitle
-                    newItem["preview_image"] = image.get(
-                        "image", None) or image.get(
-                        "file", None)
+                    newItem["preview_image"] = self.getImage(
+                        image.get("image", None) or image.get("file", None)
+                    )
                     if newItem["preview_image"] and "filename" in newItem["preview_image"]:
                         newItem["preview_image"]["filename"] = image.get(
                             "id", None)
@@ -1582,6 +1581,13 @@ class ExportDavizFigure(ExportEEAContent):
                         if _item["@id"] != item["@id"]
                     ]
         return items if len(items) > 0 else item
+
+    def getImage(self, file):
+        import pdb
+        pdb.set_trace()
+        # base64.b64encode(file)
+        # base64.b64decode(file)
+        return file
 
 
 class ExportEEAFigure(ExportEEAContent):
