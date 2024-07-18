@@ -28,9 +28,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFPlone.utils import isExpired
 from Products.Five import BrowserView
-from eea.workflow.interfaces import IObjectArchived
-from eea.geotags.interfaces import IGeoTags
-from eea.app.visualization.interfaces import IVisualizationConfig
 from zope.component import getAdapter
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
@@ -57,6 +54,20 @@ try:
 except ImportError:
     IGetVersions = None
 
+try:
+    from eea.workflow.interfaces import IObjectArchived
+except ImportError:
+    IObjectArchived = None
+
+try:
+    from eea.geotags.interfaces import IGeoTags
+except ImportError:
+    IGeoTags = None
+
+try:
+    from eea.app.visualization.interfaces import IVisualizationConfig
+except ImportError:
+    IVisualizationConfig = None
 
 if (sys.getdefaultencoding() != 'utf-8'):
     reload(sys)
@@ -1075,7 +1086,7 @@ class ExportEEAContent(ExportContent):
             }
 
         for relatedItem in relatedItems:
-            if IObjectArchived.providedBy(relatedItem):
+            if IObjectArchived and IObjectArchived.providedBy(relatedItem):
                 continue
             if isExpired(relatedItem):
                 continue
@@ -1184,7 +1195,10 @@ class ExportEEAContent(ExportContent):
             "geolocation": []
         }
 
-        geo = getAdapter(obj, IGeoTags)
+        geo = getAdapter(obj, IGeoTags) if IGeoTags else None
+
+        if not geo:
+            return item
 
         for feature in geo.getFeatures():
             other = feature['properties'].get('other', {})
@@ -1446,7 +1460,8 @@ class ExportDavizFigure(ExportEEAContent):
 
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
 
-        mutator = queryAdapter(obj, IVisualizationConfig)
+        mutator = queryAdapter(
+            obj, IVisualizationConfig) if IVisualizationConfig else None
 
         davizView = queryMultiAdapter(
             (obj, self.request),
@@ -1454,7 +1469,8 @@ class ExportDavizFigure(ExportEEAContent):
 
         tabs = davizView.tabs
 
-        for index, view in enumerate(mutator.views):
+        for index, view in (enumerate(mutator.views)
+                            if mutator else enumerate([])):
             tab = tabs[index]
             if tab["css"] == 'googlechart_class_Table':
                 continue

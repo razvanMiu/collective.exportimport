@@ -20,7 +20,6 @@ from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
 from Products.CMFPlone.utils import safe_unicode, isExpired
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from eea.workflow.interfaces import IObjectArchived
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.i18n import translate
@@ -39,6 +38,11 @@ try:
     from eea.versions.interfaces import IGetVersions
 except ImportError:
     IGetVersions = None
+
+try:
+    from eea.workflow.interfaces import IObjectArchived
+except ImportError:
+    IObjectArchived = None
 
 try:
     pkg_resources.get_distribution("Products.Archetypes")
@@ -374,7 +378,7 @@ class ExportContent(BrowserView):
 
             try:
                 obj = brain.getObject()
-                if IObjectArchived.providedBy(obj):
+                if IObjectArchived and IObjectArchived.providedBy(obj):
                     continue
                 if isExpired(obj):
                     continue
