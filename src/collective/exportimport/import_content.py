@@ -798,6 +798,8 @@ class ImportContent(BrowserView):
         """
         # Move deferred values to a different key to not deserialize.
         # This could also be done during export.
+        import pdb
+        pdb.set_trace()
         item[DEFERRED_KEY] = {}
         for fieldname in DEFERRED_FIELD_MAPPING.get(item["@type"], []):
             if item.get(fieldname):
@@ -877,17 +879,19 @@ class ImportContent(BrowserView):
                 alsoProvides(obj, iface)
         return obj, item
         """
+        return obj, item
+
+    def global_obj_hook(self, obj, item):
+        """Override hook to modify each imported content after deserializing."""
         # Store deferred data in an annotation.
+        import pdb
+        pdb.set_trace()
         deferred = item.get(DEFERRED_KEY, {})
         if deferred:
             annotations = IAnnotations(obj)
             annotations[DEFERRED_KEY] = {}
             for key, value in deferred.items():
                 annotations[DEFERRED_KEY][key] = value
-        return obj, item
-
-    def global_obj_hook(self, obj, item):
-        """Override hook to modify each imported content after deserializing."""
         return obj
 
     def custom_obj_hook(self, obj, item):
