@@ -1160,8 +1160,6 @@ class FixCollectionQueries(BrowserView):
 class ImportDeferred(BrowserView):
     def __call__(self):
         # This example reuses the form export_other.pt from collective.exportimport
-        import pdb
-        pdb.set_trace()
         self.title = "Import deferred data"
         self.results = []
         for brain in api.content.find(
