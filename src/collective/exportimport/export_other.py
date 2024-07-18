@@ -997,6 +997,23 @@ class ExportEEAContent(ExportContent):
             return brains[0]
         return None
 
+    def getImage(self, file):
+        if not file or file.get("content-type") != 'image/svg+xml':
+            return file
+        data = file.get("data", None)
+        if not data:
+            return file
+        data = base64.b64decode(data)
+
+        if data.find('xmlns') > -1:
+            return file
+
+        data = data.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"')
+
+        file["data"] = base64.b64encode(data)
+
+        return file
+
     def global_dict_hook(self, item, obj):
         self.catalog = getToolByName(self, "portal_catalog")
 
@@ -1126,7 +1143,7 @@ class ExportEEAContent(ExportContent):
 
     def migrate_image(self, item, field):
         if field in item:
-            item["preview_image"] = item[field]
+            item["preview_image"] = self.getImage(item[field])
         return item
 
     def migrate_temporal_coverage(self, item, field):
@@ -1582,13 +1599,6 @@ class ExportDavizFigure(ExportEEAContent):
                     ]
         return items if len(items) > 0 else item
 
-    def getImage(self, file):
-        import pdb
-        pdb.set_trace()
-        # base64.b64encode(file)
-        # base64.b64decode(file)
-        return file
-
 
 class ExportEEAFigure(ExportEEAContent):
     QUERY = {
@@ -1629,8 +1639,8 @@ class ExportEEAFigure(ExportEEAContent):
                 except Exception:
                     file = None
                 if file and self.IMAGE_FORMAT in file.get("id", ''):
-                    item["preview_image"] = file.get("image", {}) or file.get(
-                        "file", {})
+                    item["preview_image"] = self.getImage(
+                        file.get("image", {}) or file.get("file", {}))
                     if item["preview_image"]:
                         item["preview_image"]["filename"] = file.get(
                             "id", None)
