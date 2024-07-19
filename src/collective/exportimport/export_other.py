@@ -1658,5 +1658,8 @@ class ExportEEAFigure(ExportEEAContent):
                 "content-type": "image/png",
                 "data": imageB64
             }
+        else:
+            import pdb
+            pdb.set_trace()
 
         return item
