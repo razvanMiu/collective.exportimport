@@ -1620,7 +1620,7 @@ class ExportDavizFigure(ExportEEAContent):
     def finish(self):
         print("===> Exported %s daviz figures with multiple charts <===" %
               self.multipleCharts)
-        return super().finish()
+        return super(ExportDavizFigure, self).finish()
 
 
 class ExportEEAFigure(ExportEEAContent):
