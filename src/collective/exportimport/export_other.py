@@ -1498,6 +1498,9 @@ class ExportDavizFigure(ExportEEAContent):
 
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
 
+        import pdb
+        pdb.set_trace()
+
         mutator = queryAdapter(
             obj, IVisualizationConfig) if IVisualizationConfig else None
 
