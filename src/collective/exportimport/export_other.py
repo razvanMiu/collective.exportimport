@@ -48,7 +48,6 @@ import requests
 import re
 import sys
 import copy
-import base64
 
 try:
     from eea.versions.interfaces import IGetVersions
@@ -1649,8 +1648,8 @@ class ExportEEAFigure(ExportEEAContent):
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
-        imageB64 = obj.unrestrictedTraverse(
-            "@@getSingleEEAFigureFile").singlefigure().unrestrictedTraverse("image_large").__call__()
+        imageB64 = base64.b64encode(obj.unrestrictedTraverse(
+            "@@getSingleEEAFigureFile").singlefigure().unrestrictedTraverse("image_large").__call__())
 
         if imageB64:
             item["preview_image"] = {
