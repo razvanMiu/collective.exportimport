@@ -1494,47 +1494,36 @@ class ExportDavizFigure(ExportEEAContent):
         """
         items = []
         images = []
-        views = []
+        notes = []
+        default_image = 0
 
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
 
         import pdb
         pdb.set_trace()
 
-        mutator = queryAdapter(
+        accessor = queryAdapter(
             obj, IVisualizationConfig) if IVisualizationConfig else None
 
-        davizView = queryMultiAdapter(
-            (obj, self.request),
-            name='daviz-view.html')
+        chartsConfig = accessor.view("googlechart.googlecharts")[
+            "chartsconfig"]
 
-        tabs = davizView.tabs
+        charts = chartsConfig.get('charts', [])
+        notes = chartsConfig.get('notes', [])
 
-        # import pdb
-        # pdb.set_trace()
-
-        # for index, tab in enumerate(tabs if tabs else []):
-        #     if tab["css"] == 'googlechart_class_Table':
-        #         continue
-        #     images.append(tab)
-
-        #     if 'chartsconfig' in mutator.views[index]:
-        #         views.append(mutator.views[index])
-        #         self.multipleCharts += 1
-        #         if index >= len(tabs) - 1:
-        #             break
-        #         continue
-
-        for index, view in (enumerate(mutator.views)
-                            if mutator else enumerate([])):
-            tab = tabs[index]
-            if tab["css"] == 'googlechart_class_Table':
+        for index, chart in enumerate(charts):
+            config = json.loads(chart["config"])
+            id = chart.get("id")
+            type = config.get('chartType', None)
+            if type == 'Table':
                 continue
-            images.append(tab)
-            if 'chartsconfig' in view and index < len(tabs) - 1:
-                views.append(view)
-            else:
-                views.append(None)
+            images.append(chart.get("id"))
+            cIndex = len(images) - 1
+            if config.get("isDefaultVisualization", False):
+                default_image = cIndex
+            for note in notes:
+                if id in note.get("charts", []):
+                    notes[cIndex] = note.get("text", "")
 
         csv = queryMultiAdapter((obj, self.request), name='download.csv')
 
@@ -1551,9 +1540,7 @@ class ExportDavizFigure(ExportEEAContent):
         if len(images) > 0 and images[0]:
             image = None
             imageObj = None
-            imageName = images[0].get('name', None)
-            chartsConfig = views[0].get(
-                'chartsconfig', None) if len(views) == 0 and views[0] else None
+            imageName = images[0]
             if imageName:
                 imageObj = obj.get(
                     imageName + '.svg') or obj.get(imageName + '.png')
@@ -1570,18 +1557,12 @@ class ExportDavizFigure(ExportEEAContent):
                 newItem["preview_image"] = self.getImage(
                     image.get("image", None) or image.get("file", None)
                 )
-
                 if newItem["preview_image"] and "filename" in newItem["preview_image"]:
                     newItem["preview_image"]["filename"] = image.get(
                         "id", None)
-
                 # Get figure note
-                if chartsConfig and "notes" in chartsConfig:
-                    html = ''
-                    for note in chartsConfig.get("notes", []):
-                        html += note.get("text", "")
-                    if html:
-                        newItem["figure_notes"] = self.text_to_slate(html)
+                if len(notes) > 0 and notes[0]:
+                    newItem["figure_notes"] = self.text_to_slate(notes[0])
 
                 items.append(newItem)
 
@@ -1591,9 +1572,7 @@ class ExportDavizFigure(ExportEEAContent):
             for index, img in enumerate(images[1:]):
                 image = None
                 imageObj = None
-                imageName = img.get('name', "")
-                chartsConfig = views[index + 1].get('chartsconfig', None) if (
-                    index + 1) < len(views) and views[index + 1] else None
+                imageName = img
                 if imageName:
                     imageObj = obj.get(
                         imageName + '.svg') or obj.get(imageName + '.png')
@@ -1607,7 +1586,7 @@ class ExportDavizFigure(ExportEEAContent):
                         print("Error getting image for {}".format(
                             item['@id'] + "-" + imageName))
                 if image:
-                    imageTitle = img.get('title', "")
+                    imageTitle = image.get('title', "")
                     newItem = item.copy()
                     newItem["@id"] = item["@id"] + "-" + imageName
                     newItem["id"] = itemId + "-" + imageName
@@ -1621,12 +1600,9 @@ class ExportDavizFigure(ExportEEAContent):
                         newItem["preview_image"]["filename"] = image.get(
                             "id", None)
                     # Get figure note
-                    if chartsConfig and "notes" in chartsConfig:
-                        html = ''
-                        for note in chartsConfig.get("notes", []):
-                            html += note.get("text", "")
-                        if html:
-                            newItem["figure_notes"] = self.text_to_slate(html)
+                    if index < len(notes) and notes[index]:
+                        newItem["figure_notes"] = self.text_to_slate(
+                            notes[index])
                     items.append(newItem)
             if len(items) >= 1:
                 self.multipleCharts += 1
@@ -1639,7 +1615,8 @@ class ExportDavizFigure(ExportEEAContent):
         return items if len(items) > 0 else item
 
     def finish(self):
-        print("===> Exported %s daviz figures with multiple charts <===" % self.multipleCharts)
+        print("===> Exported %s daviz figures with multiple charts <===" %
+              self.multipleCharts)
         return super().finish()
 
 
