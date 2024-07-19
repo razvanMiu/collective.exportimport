@@ -1206,8 +1206,6 @@ class ExportEEAContent(ExportContent):
                 if not ok:
                     continue
 
-                import pdb
-                pdb.set_trace()
                 organisation = self.getOrganisationName(
                     provenance.get("owner", None))
 
