@@ -1528,6 +1528,11 @@ class ExportDavizFigure(ExportEEAContent):
                 if id in note.get("charts", []):
                     notes[cIndex] = note.get("text", "")
 
+        if default_image > 0:
+            tmp = images[0]
+            images[0] = images[default_image]
+            images[default_image] = tmp
+
         csv = queryMultiAdapter((obj, self.request), name='download.csv')
 
         if csv:
