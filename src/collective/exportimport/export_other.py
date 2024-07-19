@@ -1648,8 +1648,10 @@ class ExportEEAFigure(ExportEEAContent):
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
-        imageB64 = base64.b64encode(obj.unrestrictedTraverse(
-            "@@getSingleEEAFigureFile").singlefigure().unrestrictedTraverse("image_large").__call__())
+        figure = obj.unrestrictedTraverse(
+            "@@getSingleEEAFigureFile").singlefigure()
+        image = figure.unrestrictedTraverse("image_large") if figure else None
+        imageB64 = base64.b64encode(image.__call__()) if image else None
 
         if imageB64:
             item["preview_image"] = {
@@ -1657,8 +1659,5 @@ class ExportEEAFigure(ExportEEAContent):
                 "content-type": "image/png",
                 "data": imageB64
             }
-        else:
-            import pdb
-            pdb.set_trace()
 
         return item
