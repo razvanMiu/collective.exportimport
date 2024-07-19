@@ -1402,9 +1402,9 @@ class ExportEEAContent(ExportContent):
         headers = {"Content-type": "application/json",
                    "Accept": "application/json"}
 
-        req = requests.post(
+        res = requests.post(
             SLATE_CONVERTER, data=json.dumps(data), headers=headers)
-        slate = req.json()["data"]
+        slate = res.json()["data"]
         return slate
 
     def finish(self):
@@ -1570,6 +1570,8 @@ class ExportDavizFigure(ExportEEAContent):
                         "id", None)
                 # Get figure note
                 if len(notes) > 0 and notes[0]:
+                    import pdb
+                    pdb.set_trace()
                     newItem["figure_notes"] = self.text_to_slate(notes[0])
 
                 items.append(newItem)
