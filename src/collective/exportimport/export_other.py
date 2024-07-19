@@ -1206,8 +1206,10 @@ class ExportEEAContent(ExportContent):
                 if not ok:
                     continue
 
+                import pdb
+                pdb.set_trace()
                 organisation = self.getOrganisationName(
-                    provenance.get("link", None))
+                    provenance.get("owner", None))
 
                 item["data_provenance"]["data"].append({
                     "@id": str(uuid.uuid4()),
