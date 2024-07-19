@@ -1517,7 +1517,10 @@ class ExportDavizFigure(ExportEEAContent):
             type = config.get('chartType', None)
             if type == 'Table':
                 continue
-            images.append(chart.get("id"))
+            images.append({
+                "id": chart.get("id"),
+                "title": chart.get("name"),
+            })
             cIndex = len(images) - 1
             if config.get("isDefaultVisualization", False):
                 default_image = cIndex
@@ -1540,10 +1543,10 @@ class ExportDavizFigure(ExportEEAContent):
         if len(images) > 0 and images[0]:
             image = None
             imageObj = None
-            imageName = images[0]
-            if imageName:
+            imageId = images[0].get("id")
+            if imageId:
                 imageObj = obj.get(
-                    imageName + '.svg') or obj.get(imageName + '.png')
+                    imageId + '.svg') or obj.get(imageId + '.png')
             if imageObj:
                 try:
                     serializer = getMultiAdapter(
@@ -1551,7 +1554,7 @@ class ExportDavizFigure(ExportEEAContent):
                     image = serializer()
                 except Exception:
                     print("Error getting image for {}".format(
-                        item['@id'] + "-" + imageName))
+                        item['@id'] + "-" + imageId))
             if image:
                 newItem = item.copy()
                 newItem["preview_image"] = self.getImage(
@@ -1572,10 +1575,10 @@ class ExportDavizFigure(ExportEEAContent):
             for index, img in enumerate(images[1:]):
                 image = None
                 imageObj = None
-                imageName = img
-                if imageName:
+                imageId = img.get("id")
+                if imageId:
                     imageObj = obj.get(
-                        imageName + '.svg') or obj.get(imageName + '.png')
+                        imageId + '.svg') or obj.get(imageId + '.png')
                 if imageObj:
                     try:
                         serializer = getMultiAdapter(
@@ -1584,12 +1587,12 @@ class ExportDavizFigure(ExportEEAContent):
                         image = serializer()
                     except Exception:
                         print("Error getting image for {}".format(
-                            item['@id'] + "-" + imageName))
+                            item['@id'] + "-" + imageId))
                 if image:
-                    imageTitle = image.get('title', "")
+                    imageTitle = img.get('title', "")
                     newItem = item.copy()
-                    newItem["@id"] = item["@id"] + "-" + imageName
-                    newItem["id"] = itemId + "-" + imageName
+                    newItem["@id"] = item["@id"] + "-" + imageId
+                    newItem["id"] = itemId + "-" + imageId
                     newItem["UID"] = image.get("UID", None) or item.get(
                         "UID", None)
                     newItem["title"] = itemTitle + " - " + imageTitle
