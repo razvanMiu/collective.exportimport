@@ -1494,13 +1494,9 @@ class ExportDavizFigure(ExportEEAContent):
         """
         items = []
         images = []
-        notes = []
         default_image = 0
 
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
-
-        import pdb
-        pdb.set_trace()
 
         accessor = queryAdapter(
             obj, IVisualizationConfig) if IVisualizationConfig else None
@@ -1510,6 +1506,9 @@ class ExportDavizFigure(ExportEEAContent):
 
         charts = chartsConfig.get('charts', [])
         notes = chartsConfig.get('notes', [])
+
+        import pdb
+        pdb.set_trace()
 
         for index, chart in enumerate(charts):
             config = json.loads(chart["config"])
@@ -1526,7 +1525,7 @@ class ExportDavizFigure(ExportEEAContent):
                 default_image = cIndex
             for note in notes:
                 if id in note.get("charts", []):
-                    notes[cIndex] = note.get("text", "")
+                    images[cIndex]["note"] = note.get("text", "")
 
         if default_image > 0:
             tmp = images[0]
@@ -1569,10 +1568,9 @@ class ExportDavizFigure(ExportEEAContent):
                     newItem["preview_image"]["filename"] = image.get(
                         "id", None)
                 # Get figure note
-                if len(notes) > 0 and notes[0]:
-                    import pdb
-                    pdb.set_trace()
-                    newItem["figure_notes"] = self.text_to_slate(notes[0])
+                if len(notes) > 0 and notes[0] and notes[0].get("text"):
+                    newItem["figure_notes"] = self.text_to_slate(
+                        notes[0].get("text"))
 
                 items.append(newItem)
 
@@ -1610,9 +1608,10 @@ class ExportDavizFigure(ExportEEAContent):
                         newItem["preview_image"]["filename"] = image.get(
                             "id", None)
                     # Get figure note
-                    if index < len(notes) and notes[index]:
+                    if index < len(notes) and notes[index] and notes[index].get(
+                            "text"):
                         newItem["figure_notes"] = self.text_to_slate(
-                            notes[index])
+                            notes[index].get("text"))
                     items.append(newItem)
             if len(items) >= 1:
                 self.multipleCharts += 1
