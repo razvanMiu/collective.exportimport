@@ -1638,8 +1638,6 @@ class ExportEEAFigure(ExportEEAContent):
         Return None if you want to skip this particular object.
         """
         figure_type = item.get("figureType", "")
-        import pdb
-        pdb.set_trace()
 
         if figure_type == 'map':
             self.type = 'map_static'
@@ -1651,24 +1649,14 @@ class ExportEEAFigure(ExportEEAContent):
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
-        figures = obj.values()
+        imageB64 = obj.unrestrictedTraverse(
+            "@@getSingleEEAFigureFile").singlefigure().unrestrictedTraverse("image_large").__call__()
 
-        for figure in figures:
-            figureFiles = figure.values()
-            for figureFile in figureFiles:
-                try:
-                    serializer = getMultiAdapter(
-                        (figureFile,
-                         self.request),
-                        ISerializeToJson)
-                    file = serializer()
-                except Exception:
-                    file = None
-                if file and self.IMAGE_FORMAT in file.get("id", ''):
-                    item["preview_image"] = self.getImage(
-                        file.get("image", {}) or file.get("file", {}))
-                    if item["preview_image"]:
-                        item["preview_image"]["filename"] = file.get(
-                            "id", None)
+        if imageB64:
+            item["preview_image"] = {
+                "encoding": "base64",
+                "content-type": "image/png",
+                "data": imageB64
+            }
 
         return item
