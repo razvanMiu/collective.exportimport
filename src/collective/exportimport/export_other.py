@@ -1628,8 +1628,8 @@ class ExportDavizFigure(ExportEEAContent):
                         if html:
                             newItem["figure_notes"] = self.text_to_slate(html)
                     items.append(newItem)
-                    self.multipleCharts += 1
             if len(items) >= 1:
+                self.multipleCharts += 1
                 for item in items:
                     item["relatedItems"] = [
                         _item["UID"]
@@ -1639,7 +1639,7 @@ class ExportDavizFigure(ExportEEAContent):
         return items if len(items) > 0 else item
 
     def finish(self):
-        print("===> Exported %s charts <===" % self.multipleCharts)
+        print("===> Exported %s daviz figures with multiple charts <===" % self.multipleCharts)
         return super().finish()
 
 
