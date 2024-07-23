@@ -1470,6 +1470,7 @@ class ExportGisMapApplication(ExportEEAContent):
         item["maps"] = {
             "dataprotection": {},
             "url": item.get("arcgis_url", None),
+            "useScreenHeight": True
         }
         item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
 
