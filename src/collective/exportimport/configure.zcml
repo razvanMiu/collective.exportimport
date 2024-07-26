@@ -141,10 +141,10 @@
       />
 
   <browser:page
-      name="export_eeafigure"
+      name="export_report"
       for="zope.interface.Interface"
       class=".export_other.ExportReport"
-      template="templates/export_report.pt"
+      template="templates/export_other.pt"
       permission="cmf.ManagePortal"
       />
 
