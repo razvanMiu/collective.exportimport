@@ -955,6 +955,10 @@ class ExportEEAContent(ExportContent):
         "tocdepth",
         "units",  # handled by migrate_more_info
         "workflow_history",
+        "@components",
+        "next_item",
+        "prev_item",
+        "management_plan"
     ]
 
     type = None
@@ -1697,6 +1701,14 @@ class ExportReport(ExportEEAContent):
         objects = []
 
         for o in obj.contentItems():
+            if IObjectArchived and IObjectArchived.providedBy(o[1]):
+                continue
+            if isExpired(o[1]):
+                continue
+            if IGetVersions and not IGetVersions(o[1]).isLatest():
+                continue
+            if o[1].getLanguage() != 'en':
+                continue
             if o[1].meta_type != 'Folder':
                 objects.append(o[1])
             else:
@@ -1706,6 +1718,8 @@ class ExportReport(ExportEEAContent):
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
+            if objects[index]["@type"] == 'Folder':
+                objects[index]["@type"] = 'Page'
 
         return objects
 
