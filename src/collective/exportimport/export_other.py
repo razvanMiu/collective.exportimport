@@ -69,6 +69,11 @@ try:
 except ImportError:
     IVisualizationConfig = None
 
+try:
+    from eea.reports.relations.interfaces import IGroupRelations
+except ImportError:
+    IGroupRelations = None
+
 if (sys.getdefaultencoding() != 'utf-8'):
     reload(sys)
     sys.setdefaultencoding('utf-8')
@@ -1688,6 +1693,11 @@ class ExportReport(ExportEEAContent):
     type = "report"
 
     def global_dict_hook(self, item, obj):
+        import pdb
+        pdb.set_trace()
+        if getAdapter(obj, IGroupRelations).forward():
+            return None
+
         item = super(ExportReport, self).global_dict_hook(item, obj)
 
         if obj.getDefaultPage():
