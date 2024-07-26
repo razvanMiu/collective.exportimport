@@ -1261,7 +1261,7 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_more_info(self, item):
-        if not item["blocks"]:
+        if "blocks" not in item or not item.get("blocks"):
             return item
 
         blocks = []
