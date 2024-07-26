@@ -1080,7 +1080,7 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_data_provenance(item, "provenances")
         item = self.migrate_introduction(item, "introduction")
         item = self.migrate_geo_coverage(item, obj)
-        item = self.migrate_more_info(item, obj)
+        item = self.migrate_more_info(item)
 
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
@@ -1253,7 +1253,10 @@ class ExportEEAContent(ExportContent):
 
         return item
 
-    def migrate_more_info(self, item, obj):
+    def migrate_more_info(self, item):
+        if not item["blocks"]:
+            return item
+
         blocks = []
 
         # Migrate "methodology" field
@@ -1660,5 +1663,23 @@ class ExportEEAFigure(ExportEEAContent):
                 "content-type": "image/png",
                 "data": imageB64
             }
+
+        return item
+
+
+class ExportReport(ExportEEAContent):
+    QUERY = {
+        "Report": {
+            "review_state": "published",
+        }
+    }
+    PORTAL_TYPE = ["Report"]
+    type = "report"
+
+    def global_dict_hook(self, item, obj):
+        item = super(ExportReport, self).global_dict_hook(item, obj)
+
+        import pdb
+        pdb.set_trace()
 
         return item
