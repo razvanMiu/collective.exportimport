@@ -1717,9 +1717,6 @@ class ExportReport(ExportEEAContent):
                 continue
             if o[1].getLanguage() != 'en':
                 continue
-            if o[1].meta_type not in ("Folder", "Image", "File"):
-                import pdb
-                pdb.set_trace()
             if o[1].meta_type != 'Folder':
                 objects.append(o[1])
             else:
@@ -1729,6 +1726,9 @@ class ExportReport(ExportEEAContent):
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
+            if objects[index]["@type"] not in ("Folder", "Image", "File"):
+                import pdb
+                pdb.set_trace()
             if objects[index]["@type"] == 'Folder':
                 objects[index]["@type"] = 'Page'
 
