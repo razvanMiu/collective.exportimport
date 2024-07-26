@@ -1705,9 +1705,9 @@ class ExportReport(ExportEEAContent):
             else:
                 objects + self.getFolderContents(o[1])
 
-        for o in objects:
+        for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
-            o = serializer()
+            objects[index] = serializer()
 
         return objects
 
