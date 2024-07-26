@@ -1691,10 +1691,7 @@ class ExportReport(ExportEEAContent):
 
         folderContents = self.getFolderContents(obj)
 
-        import pdb
-        pdb.set_trace()
-
-        return item
+        return [item] + folderContents
 
     def getFolderContents(self, obj):
         objects = []
@@ -1703,6 +1700,7 @@ class ExportReport(ExportEEAContent):
             if o[1].meta_type != 'Folder':
                 objects.append(o[1])
             else:
+                objects.append(o[1])
                 objects + self.getFolderContents(o[1])
 
         for index, o in enumerate(objects):
