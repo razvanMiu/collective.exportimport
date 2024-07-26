@@ -378,6 +378,8 @@ class ExportContent(BrowserView):
 
             try:
                 obj = brain.getObject()
+                import pdb
+                pdb.set_trace()
                 if IObjectArchived and IObjectArchived.providedBy(obj):
                     continue
                 if isExpired(obj):
