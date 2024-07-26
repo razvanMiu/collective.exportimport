@@ -1686,13 +1686,25 @@ class ExportReport(ExportEEAContent):
     def global_dict_hook(self, item, obj):
         item = super(ExportReport, self).global_dict_hook(item, obj)
 
-        defaultView = obj.getDefaultPage()
-
-        if defaultView and obj[defaultView].meta_type != 'Fiche':
-            import pdb
-            pdb.set_trace()
-
-        else:
+        if obj.getDefaultPage():
             return None
 
+        self.getFolderContents(obj)
+
+        return item
+
+    def getFolderContents(self, obj):
+        obj.getFolderContents()
+        import pdb
+        pdb.set_trace()
+
+
+class ExportImage(ExportEEAContent):
+    QUERY = {
+        "UID": images_ids
+    }
+    PORTAL_TYPE = ["Image"]
+    type = "Image"
+
+    def global_dict_hook(self, item, obj):
         return item

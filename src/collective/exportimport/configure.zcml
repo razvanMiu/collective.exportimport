@@ -148,6 +148,14 @@
       permission="cmf.ManagePortal"
       />
 
+  <browser:page
+      name="export_image"
+      for="zope.interface.Interface"
+      class=".export_other.ExportImage"
+      template="templates/export_other.pt"
+      permission="cmf.ManagePortal"
+      />
+
   <!-- Serializers -->
   <adapter zcml:condition="installed Products.Archetypes"
       factory=".serializer.ATFileFieldSerializer" />
