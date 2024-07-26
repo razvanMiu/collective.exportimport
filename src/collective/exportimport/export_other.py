@@ -1689,17 +1689,27 @@ class ExportReport(ExportEEAContent):
         if obj.getDefaultPage():
             return None
 
+        folderContents = self.getFolderContents(obj)
+
         import pdb
         pdb.set_trace()
-
-        self.getFolderContents(obj)
 
         return item
 
     def getFolderContents(self, obj):
-        obj.getFolderContents()
-        import pdb
-        pdb.set_trace()
+        objects = []
+
+        for o in obj.contentItems():
+            if o[1].meta_type != 'Folder':
+                objects.append(o[1])
+            else:
+                objects + self.getFolderContents(o[1])
+
+        for o in objects:
+            serializer = getMultiAdapter((o, self.request), ISerializeToJson)
+            o = serializer()
+
+        return objects
 
 
 class ExportImage(ExportEEAContent):
