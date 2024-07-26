@@ -1689,6 +1689,9 @@ class ExportReport(ExportEEAContent):
         if obj.getDefaultPage():
             return None
 
+        import pdb
+        pdb.set_trace()
+
         self.getFolderContents(obj)
 
         return item
