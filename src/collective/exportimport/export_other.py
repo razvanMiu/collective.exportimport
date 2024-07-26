@@ -977,15 +977,22 @@ class ExportEEAContent(ExportContent):
         if self.type in blocks:
             item["blocks"] = copy.deepcopy(blocks[self.type])
         else:
-            with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
-                item["blocks"] = json.load(file)
-                blocks[self.type] = copy.deepcopy(item["blocks"])
+            try:
+                with open(os.path.dirname(__file__) + '/resources/%s/blocks.json' % self.type) as file:
+                    item["blocks"] = json.load(file)
+                    blocks[self.type] = copy.deepcopy(item["blocks"])
+            except Exception:
+                pass
         if self.type in blocks_layout:
             item["blocks_layout"] = copy.deepcopy(blocks_layout[self.type])
         else:
-            with open(os.path.dirname(__file__) + '/resources/%s/blocks_layout.json' % self.type) as file:
-                item["blocks_layout"] = json.load(file)
-                blocks_layout[self.type] = copy.deepcopy(item["blocks_layout"])
+            try:
+                with open(os.path.dirname(__file__) + '/resources/%s/blocks_layout.json' % self.type) as file:
+                    item["blocks_layout"] = json.load(file)
+                    blocks_layout[self.type] = copy.deepcopy(
+                        item["blocks_layout"])
+            except Exception:
+                pass
         return item
 
     def getOrganisationName(self, url):
