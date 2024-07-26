@@ -1726,7 +1726,8 @@ class ExportReport(ExportEEAContent):
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
-            if objects[index]["@type"] not in ("Folder", "Image", "File"):
+            if objects[index]["@type"] not in (
+                    "Folder", "Image", "File", "Document"):
                 import pdb
                 pdb.set_trace()
             if objects[index]["@type"] == 'Folder':
