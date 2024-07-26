@@ -1686,7 +1686,8 @@ class ExportReport(ExportEEAContent):
     def global_dict_hook(self, item, obj):
         item = super(ExportReport, self).global_dict_hook(item, obj)
 
-        import pdb
-        pdb.set_trace()
+        if obj.getDefaultPage():
+            import pdb
+            pdb.set_trace()
 
         return item
