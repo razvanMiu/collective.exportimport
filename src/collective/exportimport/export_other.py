@@ -1693,9 +1693,7 @@ class ExportReport(ExportEEAContent):
     type = "report"
 
     def global_dict_hook(self, item, obj):
-        import pdb
-        pdb.set_trace()
-        if getAdapter(obj, IGroupRelations).forward():
+        if len(getAdapter(obj, IGroupRelations).forward()) > 0:
             return None
 
         item = super(ExportReport, self).global_dict_hook(item, obj)
