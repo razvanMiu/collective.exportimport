@@ -48,9 +48,6 @@ import requests
 import re
 import sys
 import copy
-import pprint
-
-pp = pprint.PrettyPrinter(indent=2)
 
 try:
     from eea.versions.interfaces import IGetVersions
@@ -1741,7 +1738,7 @@ class ExportReport(ExportEEAContent):
 
     def finish(self):
         print("===================================>")
-        pp.print(self.types)
+        print(self.types)
 
 
 class ExportImage(ExportEEAContent):
