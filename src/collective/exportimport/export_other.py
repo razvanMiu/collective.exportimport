@@ -48,6 +48,9 @@ import requests
 import re
 import sys
 import copy
+import pprint
+
+pp = pprint.PrettyPrinter(indent=2)
 
 try:
     from eea.versions.interfaces import IGetVersions
@@ -1691,6 +1694,7 @@ class ExportReport(ExportEEAContent):
     }
     PORTAL_TYPE = ["Report"]
     type = "report"
+    types = {}
 
     def global_dict_hook(self, item, obj):
         if len(getAdapter(obj, IGroupRelations).forward()) > 0:
@@ -1726,14 +1730,18 @@ class ExportReport(ExportEEAContent):
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
-            if objects[index]["@type"] not in (
-                    "Folder", "Image", "File", "Document", "SOERKeyFact"):
-                import pdb
-                pdb.set_trace()
-            if objects[index]["@type"] == 'Folder':
+            objType = objects[index]["@type"]
+            if objType not in (
+                    "Folder", "Image", "File") and objType not in self.types:
+                self.types[objType] = objects[index]["@id"]
+            if objType == 'Folder':
                 objects[index]["@type"] = 'Page'
 
         return objects
+
+    def finish(self):
+        print("===================================>")
+        pp.print(self.types)
 
 
 class ExportImage(ExportEEAContent):
