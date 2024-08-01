@@ -1717,8 +1717,12 @@ class ExportReport(ExportEEAContent):
             self.context, "portal_workflow", None)
 
         for o in obj.contentItems():
-            if portal_workflow.getInfoFor(o, 'review_state') != 'published':
-                continue
+            try:
+                if portal_workflow.getInfoFor(
+                        o, 'review_state') != 'published':
+                    continue
+            except Exception:
+                pass
             if IObjectArchived and IObjectArchived.providedBy(o[1]):
                 continue
             if isExpired(o[1]):
