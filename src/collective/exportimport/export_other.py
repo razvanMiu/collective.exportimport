@@ -1780,6 +1780,8 @@ class ExportReport(ExportEEAContent):
             self.statistics["Doesn't contain any content"] = self.statistics.get(
                 "Doesn't contain any content", 0) + 1
         elif True:
+            import pdb
+            pdb.set_trace()
             self.statistics["Exception"] = self.statistics.get(
                 "Exception", 0) + 1
 
