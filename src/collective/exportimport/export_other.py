@@ -1715,9 +1715,6 @@ class ExportReport(ExportEEAContent):
             self.context, "portal_workflow", None)
 
         for o in obj.contentItems():
-            if "publications/cost-of-air-pollution" in o[1].absolute_url():
-                import pdb
-                pdb.set_trace()
             if portal_workflow.getInfoFor(
                     o[1], 'review_state') != 'published':
                 continue
@@ -1729,8 +1726,8 @@ class ExportReport(ExportEEAContent):
                 continue
             if o[1].getLanguage() != 'en':
                 continue
-            if o[1].meta_type == 'SOERKeyFact':
-                continue
+            # if o[1].meta_type not in ['Folder', 'ATBlob']:
+            #     continue
             if o[1].meta_type != 'Folder':
                 objects.append(o[1])
             else:
@@ -1783,8 +1780,6 @@ class ExportReport(ExportEEAContent):
             self.statistics["Doesn't contain any content"] = self.statistics.get(
                 "Doesn't contain any content", 0) + 1
         elif True:
-            import pdb
-            pdb.set_trace()
             self.statistics["Exception"] = self.statistics.get(
                 "Exception", 0) + 1
 
