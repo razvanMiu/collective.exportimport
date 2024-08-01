@@ -1778,8 +1778,10 @@ class ExportReport(ExportEEAContent):
     def finish(self):
         import pprint
         pp = pprint.PrettyPrinter(indent=4)
-        print("===================================>")
-        pp.pprint(self.statistics)
+        import pdb
+        pdb.set_trace()
+        # print("===================================>")
+        # pp.pprint(self.statistics)
 
 
 class ExportImage(ExportEEAContent):
