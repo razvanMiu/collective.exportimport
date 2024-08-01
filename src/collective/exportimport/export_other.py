@@ -1715,6 +1715,9 @@ class ExportReport(ExportEEAContent):
             self.context, "portal_workflow", None)
 
         for o in obj.contentItems():
+            if "publications/cost-of-air-pollution" in o[1].absolute_url():
+                import pdb
+                pdb.set_trace()
             if portal_workflow.getInfoFor(
                     o[1], 'review_state') != 'published':
                 continue
