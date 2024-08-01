@@ -1710,9 +1710,6 @@ class ExportReport(ExportEEAContent):
     def getChildren(self, obj):
         objects = []
 
-        import pdb
-        pdb.set_trace()
-
         portal_workflow = getToolByName(
             self.context, "portal_workflow", None)
 
