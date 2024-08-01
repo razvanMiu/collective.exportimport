@@ -1783,8 +1783,6 @@ class ExportReport(ExportEEAContent):
         import pprint
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(self.statistics)
-        import pdb
-        pdb.set_trace()
         f = open(os.path.dirname(__file__) + '/resources/reports.json', "w")
         f.write(json.dumps(self.data, indent=4))
 
