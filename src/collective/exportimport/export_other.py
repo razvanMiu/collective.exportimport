@@ -1765,7 +1765,7 @@ class ExportReport(ExportEEAContent):
                 "Contains 'Files' but also documents, folders, collections or links", 0) + 1
         if hasFiles and hasDocuments and len(keys) == 2:
             self.statistics["Contains 'Files' and 'Documents'"] = self.statistics.get(
-                "Contains 'Files' and 'Documents'", 0) +
+                "Contains 'Files' and 'Documents'", 0) + 1
         if hasFiles and len(keys) == 1:
             self.statistics["Contains only 'Files'"] = self.statistics.get(
                 "Contains only 'Files'", 0) + 1
@@ -1776,8 +1776,8 @@ class ExportReport(ExportEEAContent):
         return objects
 
     def finish(self):
-        # import pprint
-        # pp = pprint.PrettyPrinter(indent=4)
+        import pprint
+        pp = pprint.PrettyPrinter(indent=4)
         import pdb
         pdb.set_trace()
         # print("===================================>")
