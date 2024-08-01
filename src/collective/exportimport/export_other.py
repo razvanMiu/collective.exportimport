@@ -1726,6 +1726,8 @@ class ExportReport(ExportEEAContent):
                 continue
             if o[1].getLanguage() != 'en':
                 continue
+            if o[1].meta_type == 'SOERKeyFact':
+                continue
             if o[1].meta_type != 'Folder':
                 objects.append(o[1])
             else:
@@ -1757,25 +1759,29 @@ class ExportReport(ExportEEAContent):
         hasFolders = 'Folder' in keys
         hasCollection = 'Collection' in keys
         hasLink = 'Link' in keys
+        hasImages = 'Image' in keys
 
-        if len(keys) == 1 and hasDocuments:
-            self.statistics["Only 'Documents'"] = self.statistics.get(
-                "Only 'Documents'", 0) + 1
-        if not hasFiles:
-            self.statistics["Doesn't contains 'Files'"] = self.statistics.get(
-                "Doesn't contains 'Files'", 0) + 1
-        elif len(keys) > 1 and (hasDocuments or hasFolders or hasCollection or hasLink):
-            self.statistics["Contains 'Files' but also documents, folders, collections or links"] = self.statistics.get(
-                "Contains 'Files' but also documents, folders, collections or links", 0) + 1
-        if hasFiles and hasDocuments and len(keys) == 2:
-            self.statistics["Contains 'Files' and 'Documents'"] = self.statistics.get(
-                "Contains 'Files' and 'Documents'", 0) + 1
-        if hasFiles and len(keys) == 1:
+        if hasDocuments and len(keys) == 1:
+            self.statistics["Contains only 'Documents'"] = self.statistics.get(
+                "Contains only 'Documents'", 0) + 1
+        elif hasFiles and len(keys) == 1:
             self.statistics["Contains only 'Files'"] = self.statistics.get(
                 "Contains only 'Files'", 0) + 1
-        if len(keys) == 0:
+        elif not hasFiles:
+            self.statistics["Doesn't contains 'Files'"] = self.statistics.get(
+                "Doesn't contains 'Files'", 0) + 1
+        elif hasFiles and hasDocuments and len(keys) == 2:
+            self.statistics["Contains only 'Files' and 'Documents'"] = self.statistics.get(
+                "Contains only 'Files' and 'Documents'", 0) + 1
+        elif hasFiles and len(keys) > 1 and (hasDocuments or hasFolders or hasCollection or hasLink or hasImages):
+            self.statistics["Contains 'Files' but also documents, folders, collections, links or images"] = self.statistics.get(
+                "Contains 'Files' but also documents, folders, collections, links or images", 0) + 1
+        elif len(keys) == 0:
             self.statistics["Doesn't contain any content"] = self.statistics.get(
                 "Doesn't contain any content", 0) + 1
+        elif True:
+            self.statistics["Exception"] = self.statistics.get(
+                "Exception", 0) + 1
 
         return objects
 
