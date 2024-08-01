@@ -1691,7 +1691,7 @@ class ExportReport(ExportEEAContent):
     }
     PORTAL_TYPE = ["Report"]
     type = "report"
-    types = {}
+    statistics = {}
 
     def global_dict_hook(self, item, obj):
         if len(getAdapter(obj, IGroupRelations).forward()) > 0:
@@ -1702,14 +1702,20 @@ class ExportReport(ExportEEAContent):
         if obj.getDefaultPage():
             return None
 
-        folderContents = self.getFolderContents(obj)
+        children = self.getChildren(obj)
+        folderContents = self.getFolderContents(children)
 
         return [item] + folderContents
 
-    def getFolderContents(self, obj):
+    def getChildren(self, obj):
         objects = []
 
+        portal_workflow = getToolByName(
+            self.context, "portal_workflow", None)
+
         for o in obj.contentItems():
+            if portal_workflow.getInfoFor(o, 'review_state') != 'published':
+                continue
             if IObjectArchived and IObjectArchived.providedBy(o[1]):
                 continue
             if isExpired(o[1]):
@@ -1724,21 +1730,56 @@ class ExportReport(ExportEEAContent):
                 objects.append(o[1])
                 objects + self.getFolderContents(o[1])
 
+        return objects
+
+    def getFolderContents(self, objects):
+
+        content = {}
+
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
             objType = objects[index]["@type"]
-            if objType not in (
-                    "Folder", "Image", "File") and objType not in self.types:
-                self.types[objType] = objects[index]["@id"]
-            if objType == 'Folder':
-                objects[index]["@type"] = 'Page'
+            if not content[objType]:
+                content[objType] = 0
+            content[objType] += 1
+            # if objType == 'Folder':
+            #     objects[index]["@type"] = 'Document'
+
+        keys = list(content.keys())
+
+        hasFiles = 'File' in keys
+        hasDocuments = 'Document' in keys
+        hasFolders = 'Folder' in keys
+        hasCollection = 'Collection' in keys
+        hasLink = 'Link' in keys
+
+        if len(keys) == 1 and hasDocuments:
+            self.statistics["Only 'Documents'"] = self.statistics.get(
+                "Only 'Documents'", 0) + 1
+        if not hasFiles:
+            self.statistics["Doesn't contains 'Files'"] = self.statistics.get(
+                "Doesn't contains 'Files'", 0) + 1
+        elif len(keys) > 1 and (hasDocuments or hasFolders or hasCollection or hasLink):
+            self.statistics["Contains 'Files' but also documents, folders, collections or links"] = self.statistics.get(
+                "Contains 'Files' but also documents, folders, collections or links", 0) + 1
+        if hasFiles and hasDocuments and len(keys) == 2:
+            self.statistics["Contains 'Files' and 'Documents'"] = self.statistics.get(
+                "Contains 'Files' and 'Documents'", 0) +
+        if hasFiles and len(keys) == 1:
+            self.statistics["Contains only 'Files'"] = self.statistics.get(
+                "Contains only 'Files'", 0) + 1
+        if len(keys) == 0:
+            self.statistics["Doesn't contain any content"] = self.statistics.get(
+                "Doesn't contain any content", 0) + 1
 
         return objects
 
     def finish(self):
+        import pprint
+        pp = pprint.PrettyPrinter(indent=4)
         print("===================================>")
-        print(self.types)
+        pp.pprint(self.statistics)
 
 
 class ExportImage(ExportEEAContent):
