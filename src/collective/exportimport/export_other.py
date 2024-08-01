@@ -1744,7 +1744,7 @@ class ExportReport(ExportEEAContent):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
             objType = objects[index]["@type"]
-            if not content[objType]:
+            if objType not in content:
                 content[objType] = 0
             content[objType] += 1
             # if objType == 'Folder':
