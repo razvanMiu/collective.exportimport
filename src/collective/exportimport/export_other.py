@@ -1692,6 +1692,7 @@ class ExportReport(ExportEEAContent):
     PORTAL_TYPE = ["Report"]
     type = "report"
     statistics = {}
+    data = {}
 
     def global_dict_hook(self, item, obj):
         if len(getAdapter(obj, IGroupRelations).forward()) > 0:
@@ -1703,7 +1704,7 @@ class ExportReport(ExportEEAContent):
             return None
 
         children = self.getChildren(obj)
-        folderContents = self.getFolderContents(children)
+        folderContents = self.getFolderContents(item, children)
 
         return [item] + folderContents
 
@@ -1732,11 +1733,11 @@ class ExportReport(ExportEEAContent):
                 objects.append(o[1])
             else:
                 objects.append(o[1])
-                objects + self.getFolderContents(o[1])
+                objects + self.getChildren(o[1])
 
         return objects
 
-    def getFolderContents(self, objects):
+    def getFolderContents(self, item, objects):
 
         content = {}
 
@@ -1749,6 +1750,8 @@ class ExportReport(ExportEEAContent):
             content[objType] += 1
             # if objType == 'Folder':
             #     objects[index]["@type"] = 'Document'
+
+        self.data[item["@id"]] = content
 
         keys = list(content.keys())
 
@@ -1782,10 +1785,11 @@ class ExportReport(ExportEEAContent):
     def finish(self):
         import pprint
         pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(self.statistics)
         import pdb
         pdb.set_trace()
-        # print("===================================>")
-        # pp.pprint(self.statistics)
+        f = open(os.path.dirname(__file__) + '/resources/reports.json', "w")
+        f.write(json.dumps(self.data, indent=4))
 
 
 class ExportImage(ExportEEAContent):
