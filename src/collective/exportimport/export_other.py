@@ -1776,8 +1776,8 @@ class ExportReport(ExportEEAContent):
         return objects
 
     def finish(self):
-        import pprint
-        pp = pprint.PrettyPrinter(indent=4)
+        # import pprint
+        # pp = pprint.PrettyPrinter(indent=4)
         import pdb
         pdb.set_trace()
         # print("===================================>")
