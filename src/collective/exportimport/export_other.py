@@ -1698,10 +1698,10 @@ class ExportReport(ExportEEAContent):
         if len(getAdapter(obj, IGroupRelations).forward()) > 0:
             return None
 
-        item = super(ExportReport, self).global_dict_hook(item, obj)
-
         if obj.getDefaultPage():
             return None
+
+        item = super(ExportReport, self).global_dict_hook(item, obj)
 
         children = self.getChildren(obj)
         folderContents = self.getFolderContents(item, children)
@@ -1726,8 +1726,8 @@ class ExportReport(ExportEEAContent):
                 continue
             if o[1].getLanguage() != 'en':
                 continue
-            # if o[1].meta_type not in ['Folder', 'ATBlob']:
-            #     continue
+            if o[1].meta_type not in ['Folder', 'ATBlob']:
+                continue
             if o[1].meta_type != 'Folder':
                 objects.append(o[1])
             else:
@@ -1738,59 +1738,59 @@ class ExportReport(ExportEEAContent):
 
     def getFolderContents(self, item, objects):
 
-        content = {}
+        # content = {}
 
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
             objType = objects[index]["@type"]
-            if objType not in content:
-                content[objType] = 0
-            content[objType] += 1
-            # if objType == 'Folder':
-            #     objects[index]["@type"] = 'Document'
+            # if objType not in content:
+            #     content[objType] = 0
+            # content[objType] += 1
+            if objType == 'Folder':
+                objects[index]["@type"] = 'Document'
 
-        self.data[item["@id"]] = content
+        # self.data[item["@id"]] = content
 
-        keys = list(content.keys())
+        # keys = list(content.keys())
 
-        hasFiles = 'File' in keys
-        hasDocuments = 'Document' in keys
-        hasFolders = 'Folder' in keys
-        hasCollection = 'Collection' in keys
-        hasLink = 'Link' in keys
-        hasImages = 'Image' in keys
+        # hasFiles = 'File' in keys
+        # hasDocuments = 'Document' in keys
+        # hasFolders = 'Folder' in keys
+        # hasCollection = 'Collection' in keys
+        # hasLink = 'Link' in keys
+        # hasImages = 'Image' in keys
 
-        if hasDocuments and len(keys) == 1:
-            self.statistics["Contains only 'Documents'"] = self.statistics.get(
-                "Contains only 'Documents'", 0) + 1
-        elif hasFiles and len(keys) == 1:
-            self.statistics["Contains only 'Files'"] = self.statistics.get(
-                "Contains only 'Files'", 0) + 1
-        elif not hasFiles:
-            self.statistics["Doesn't contains 'Files'"] = self.statistics.get(
-                "Doesn't contains 'Files'", 0) + 1
-        elif hasFiles and hasDocuments and len(keys) == 2:
-            self.statistics["Contains only 'Files' and 'Documents'"] = self.statistics.get(
-                "Contains only 'Files' and 'Documents'", 0) + 1
-        elif hasFiles and len(keys) > 1 and (hasDocuments or hasFolders or hasCollection or hasLink or hasImages):
-            self.statistics["Contains 'Files' but also documents, folders, collections, links or images"] = self.statistics.get(
-                "Contains 'Files' but also documents, folders, collections, links or images", 0) + 1
-        elif len(keys) == 0:
-            self.statistics["Doesn't contain any content"] = self.statistics.get(
-                "Doesn't contain any content", 0) + 1
-        elif True:
-            self.statistics["Exception"] = self.statistics.get(
-                "Exception", 0) + 1
+        # if hasDocuments and len(keys) == 1:
+        #     self.statistics["Contains only 'Documents'"] = self.statistics.get(
+        #         "Contains only 'Documents'", 0) + 1
+        # elif hasFiles and len(keys) == 1:
+        #     self.statistics["Contains only 'Files'"] = self.statistics.get(
+        #         "Contains only 'Files'", 0) + 1
+        # elif not hasFiles:
+        #     self.statistics["Doesn't contains 'Files'"] = self.statistics.get(
+        #         "Doesn't contains 'Files'", 0) + 1
+        # elif hasFiles and hasDocuments and len(keys) == 2:
+        #     self.statistics["Contains only 'Files' and 'Documents'"] = self.statistics.get(
+        #         "Contains only 'Files' and 'Documents'", 0) + 1
+        # elif hasFiles and len(keys) > 1 and (hasDocuments or hasFolders or hasCollection or hasLink or hasImages):
+        #     self.statistics["Contains 'Files' but also documents, folders, collections, links or images"] = self.statistics.get(
+        #         "Contains 'Files' but also documents, folders, collections, links or images", 0) + 1
+        # elif len(keys) == 0:
+        #     self.statistics["Doesn't contain any content"] = self.statistics.get(
+        #         "Doesn't contain any content", 0) + 1
+        # elif True:
+        #     self.statistics["Exception"] = self.statistics.get(
+        #         "Exception", 0) + 1
 
         return objects
 
-    def finish(self):
-        import pprint
-        pp = pprint.PrettyPrinter(indent=4)
-        pp.pprint(self.statistics)
-        f = open(os.path.dirname(__file__) + '/resources/reports.json', "w")
-        f.write(json.dumps(self.data, indent=4))
+    # def finish(self):
+    #     import pprint
+    #     pp = pprint.PrettyPrinter(indent=4)
+    #     pp.pprint(self.statistics)
+    #     f = open(os.path.dirname(__file__) + '/resources/reports.json', "w")
+    #     f.write(json.dumps(self.data, indent=4))
 
 
 class ExportImage(ExportEEAContent):
