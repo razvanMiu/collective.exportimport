@@ -1097,8 +1097,6 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_introduction(item, "introduction")
         item = self.migrate_geo_coverage(item, obj)
         item = self.migrate_more_info(item)
-    if "MIGRATE_MORE_INFO" in self and not self.MIGRATE_MORE_INFO:
-        return item
 
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
