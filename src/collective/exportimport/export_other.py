@@ -965,6 +965,7 @@ class ExportEEAContent(ExportContent):
         "prev_item",
         "management_plan"
     ]
+    MIGRATE_MORE_INFO = True
 
     type = None
     blocks = None
@@ -1270,7 +1271,7 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_more_info(self, item):
-        if "MIGRATE_MORE_INFO" in self and not self.MIGRATE_MORE_INFO:
+        if not self.MIGRATE_MORE_INFO:
             return item
 
         if "blocks" not in item or not item.get("blocks"):
