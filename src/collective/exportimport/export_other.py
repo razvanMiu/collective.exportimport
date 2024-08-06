@@ -1687,7 +1687,9 @@ class ExportEEAFigure(ExportEEAContent):
         return item
 
 
-def findBlockPaths(blocks, field='@type', value='', paths=[]):
+def findBlockPaths(blocks, field='@type', value='', paths=None):
+    if paths is None:
+        paths = []
     ok = False
     for blockId in blocks:
         block = blocks[blockId]
@@ -1722,7 +1724,9 @@ def getBlockByPaths(blocks, paths):
     return block
 
 
-def updateBlockByPaths(blocks, paths, data={}):
+def updateBlockByPaths(blocks, paths, data=None):
+    if data is None:
+        data = {}
     # Traverse the dictionary up to the second-to-last key
     value = blocks
     for key in paths[:-1]:
@@ -1743,7 +1747,9 @@ def getBlock(blocks, field="@type", value=""):
     return None
 
 
-def updateBlock(blocks, field="@type", value="", data={}):
+def updateBlock(blocks, field="@type", value="", data=None):
+    if data is None:
+        data = {}
     [paths, found] = findBlockPaths(blocks, field, value)
     if found:
         updateBlockByPaths(blocks, paths, data)
@@ -1779,16 +1785,17 @@ class ExportReport(ExportEEAContent):
         if length > 1:
             x2 = str(serialTitle[1])
         if length > 2:
-            x2 += '/' + str(serialTitle[2])
+            x2 += ('/' + str(serialTitle[2])) if serialTitle[2] else ''
         if length > 3:
-            x2 += '/' + str(serialTitle[3])
+            x2 += ('/' + str(serialTitle[3])) if serialTitle[3] else ''
 
         serialTitle = x1 + ' ' + x2 if x1 and x2 else x1
 
         import pdb
         pdb.set_trace()
 
-        updateBlock(item["blocks"], "@marker", "serial_title_title",
+        updateBlock(item["blocks"],
+                    "@marker", "serial_title_title",
                     {"subtitle": serialTitle})
         updateBlock(
             item["blocks"],
