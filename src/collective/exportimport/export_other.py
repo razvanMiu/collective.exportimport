@@ -1097,6 +1097,8 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_introduction(item, "introduction")
         item = self.migrate_geo_coverage(item, obj)
         item = self.migrate_more_info(item)
+    if "MIGRATE_MORE_INFO" in self and not self.MIGRATE_MORE_INFO:
+        return item
 
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
@@ -1270,6 +1272,9 @@ class ExportEEAContent(ExportContent):
         return item
 
     def migrate_more_info(self, item):
+        if "MIGRATE_MORE_INFO" in self and not self.MIGRATE_MORE_INFO:
+            return item
+
         if "blocks" not in item or not item.get("blocks"):
             return item
 
@@ -1683,6 +1688,69 @@ class ExportEEAFigure(ExportEEAContent):
         return item
 
 
+def findBlockPaths(blocks, field='@type', value='', paths=[]):
+    ok = False
+    for blockId in blocks:
+        block = blocks[blockId]
+        if block.get(field) == value:
+            paths.append(blockId)
+            ok = True
+            break
+        childrenBlocks = None
+        if block.get("data", {}).get("blocks", {}):
+            childrenBlocks = block.get("data", {}).get("blocks", {})
+            nestedPaths = [blockId, "data", "blocks"]
+        elif block.get("blocks", {}):
+            childrenBlocks = block.get("blocks", {})
+            nestedPaths = [blockId, "blocks"]
+        if childrenBlocks:
+            [p, o] = findBlockPaths(childrenBlocks, field, value, nestedPaths)
+            if o:
+                paths.extend(p)
+                ok = True
+                break
+
+    if ok:
+        return [paths, True]
+
+    return [[], False]
+
+
+def getBlockByPaths(blocks, paths):
+    block = blocks
+    for path in paths:
+        block = block.get(path, {})
+    return block
+
+
+def updateBlockByPaths(blocks, paths, data={}):
+    # Traverse the dictionary up to the second-to-last key
+    value = blocks
+    for key in paths[:-1]:
+        value = value[key]
+    # Update the value for the last key, keeping the old value
+    if isinstance(value[paths[-1]], dict) and isinstance(data, dict):
+        value[paths[-1]].update(data)
+    else:
+        value[paths[-1]] = data
+    if "@marker" in value[paths[-1]]:
+        del value[paths[-1]]["@marker"]
+
+
+def getBlock(blocks, field="@type", value=""):
+    [paths, found] = findBlockPaths(blocks, field, value)
+    if found:
+        return getBlockByPaths(blocks, paths)
+    return None
+
+
+def updateBlock(blocks, field="@type", value="", data={}):
+    [paths, found] = findBlockPaths(blocks, field, value)
+    if found:
+        updateBlockByPaths(blocks, paths, data)
+    return blocks
+
+
 class ExportReport(ExportEEAContent):
     QUERY = {
         "Report": {
@@ -1694,6 +1762,43 @@ class ExportReport(ExportEEAContent):
     statistics = {}
     data = {}
 
+    MIGRATE_MORE_INFO = False
+
+    def migrate_serial_title(self, item):
+        serialTitle = item.get("serial_title")
+
+        if not serialTitle:
+            return item
+
+        length = len(serialTitle)
+
+        x1 = ''
+        x2 = ''
+
+        if length > 0:
+            x1 = str(serialTitle[0])
+        if length > 1:
+            x2 = str(serialTitle[1])
+        if length > 2:
+            x2 += '/' + str(serialTitle[2])
+        if length > 3:
+            x2 += '/' + str(serialTitle[3])
+
+        serialTitle = x1 + ' ' + x2 if x1 and x2 else x1
+
+        import pdb
+        pdb.set_trace()
+
+        updateBlock(item["blocks"], "@marker", "serial_title_title",
+                    {"subtitle": serialTitle})
+        updateBlock(
+            item["blocks"],
+            "@marker", "serial_title_slate",
+            {"plaintext": serialTitle,
+             "value": self.text_to_slate(serialTitle)})
+
+        return item
+
     def global_dict_hook(self, item, obj):
         if len(getAdapter(obj, IGroupRelations).forward()) > 0:
             return None
@@ -1702,6 +1807,8 @@ class ExportReport(ExportEEAContent):
             return None
 
         item = super(ExportReport, self).global_dict_hook(item, obj)
+
+        item = self.migrate_serial_title(item)
 
         children = self.getChildren(obj)
         folderContents = self.getFolderContents(item, children)
