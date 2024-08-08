@@ -1861,8 +1861,7 @@ class ExportReport(ExportEEAContent):
                 cover = i
                 break
         if cover:
-            import pdb
-            pdb.set_trace()
+            item["preview_image"] = cover.get("image") or cover.get("file")
 
         return [item, file] + folderContents
 
