@@ -1423,11 +1423,19 @@ class ExportEEAContent(ExportContent):
         data = {"html": text}
         headers = {"Content-type": "application/json",
                    "Accept": "application/json"}
-
+        if not text:
+            return [
+                {
+                    "type": "p",
+                    "children": [
+                        {
+                            "text": ""
+                        }
+                    ]
+                }
+            ]
         res = requests.post(
             SLATE_CONVERTER, data=json.dumps(data), headers=headers)
-        import pdb
-        pdb.set_trace()
         slate = res.json()["data"]
         return slate
 
