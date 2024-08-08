@@ -1393,6 +1393,7 @@
               ]
             },
             "b6d39691-72fd-47b1-9f13-8ed0649ff7ac": {
+              "@marker": "file_call_to_action",
               "@type": "callToActionBlock",
               "styles": {
                 "align": "right",
@@ -1438,6 +1439,7 @@
               ]
             },
             "d9cf70d9-eefc-4fea-8ff7-5a02881e19db": {
+              "@marker": "order_id_isbn_slate",
               "@type": "slate",
               "plaintext": "   EN PDF: TH-AM-23-016-EN-N - ISBN: 978-92-9480-578-2 - ISSN: 2467-3196 - doi: 10.2800/325264 ",
               "value": [

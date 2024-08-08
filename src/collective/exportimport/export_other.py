@@ -1791,9 +1791,6 @@ class ExportReport(ExportEEAContent):
 
         serialTitle = x1 + ' ' + x2 if x1 and x2 else x1
 
-        import pdb
-        pdb.set_trace()
-
         updateBlock(item["blocks"],
                     "@marker", "serial_title_title",
                     {"subtitle": serialTitle})
@@ -1805,6 +1802,18 @@ class ExportReport(ExportEEAContent):
 
         return item
 
+    def migrate_order_id_isbn(self, item):
+        order_id = item.get("order_id")
+        isbn = item.get("isbn")
+
+        order_id_isbn = (("EN PDF: " + order_id + " - ")
+                         if order_id else "") + (("ISBN: " + isbn) if isbn else "")
+
+        updateBlock(item["blocks"],
+                    "@marker", "order_id_isbn_slate",
+                    {"plaintext": order_id_isbn,
+                     "value": self.text_to_slate(order_id_isbn)})
+
     def global_dict_hook(self, item, obj):
         if len(getAdapter(obj, IGroupRelations).forward()) > 0:
             return None
@@ -1814,12 +1823,35 @@ class ExportReport(ExportEEAContent):
 
         item = super(ExportReport, self).global_dict_hook(item, obj)
 
+        file = {
+            "@id": item["@id"] + "/%s" % item["id"],
+            "@type": "File",
+            "UID": str(uuid4()).replace('-', ''),
+            "id": item["id"],
+            "title": item["title"],
+            "file": item["file"]
+        }
+
         item = self.migrate_serial_title(item)
+        item = self.migrate_order_id_isbn(item)
+
+        updateBlock(item["blocks"],
+                    "@marker", "file_call_to_action",
+                    {"download": True, "href": file["@id"]})
 
         children = self.getChildren(obj)
         folderContents = self.getFolderContents(item, children)
 
-        return [item] + folderContents
+        cover = None
+        for i in folderContents:
+            if i["id"] == 'cover':
+                cover = i
+                break
+        if cover:
+            import pdb
+            pdb.set_trace()
+
+        return [item, file] + folderContents
 
     def getChildren(self, obj):
         objects = []
