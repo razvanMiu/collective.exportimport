@@ -1426,7 +1426,7 @@ class ExportEEAContent(ExportContent):
 
         res = requests.post(
             SLATE_CONVERTER, data=json.dumps(data), headers=headers)
-        import pdb;
+        import pdb
         pdb.set_trace()
         slate = res.json()["data"]
         return slate
@@ -1815,15 +1815,13 @@ class ExportReport(ExportEEAContent):
         updateBlock(item["blocks"],
                     "@marker", "order_id_isbn_slate",
                     {"plaintext": order_id_isbn,
-                     "value": self.text_to_slate(order_id_isb
+                     "value": self.text_to_slate(order_id_isbn)})
 
     def global_dict_hook(self, item, obj):
         if len(getAdapter(obj, IGroupRelations).forward()) > 0:
             return None
 
         if obj.getDefaultPage():
-                        import n)})pdb;
-                        pdb.set_trace()
             return None
 
         item = super(ExportReport, self).global_dict_hook(item, obj)
