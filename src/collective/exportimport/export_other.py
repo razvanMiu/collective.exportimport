@@ -1806,8 +1806,9 @@ class ExportReport(ExportEEAContent):
         order_id = item.get("order_id")
         isbn = item.get("isbn")
 
-        order_id_isbn = (("EN PDF: " + order_id + " - ")
-                         if order_id else "") + (("ISBN: " + isbn) if isbn else "")
+        order_id_isbn = (
+            (("EN PDF: " + order_id + " - ") if order_id else "")
+            + (("ISBN: " + isbn) if isbn else "")) or ""
 
         updateBlock(item["blocks"],
                     "@marker", "order_id_isbn_slate",
