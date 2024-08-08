@@ -1825,6 +1825,8 @@ class ExportReport(ExportEEAContent):
                     {"plaintext": order_id_isbn,
                      "value": self.text_to_slate(order_id_isbn)})
 
+        return item
+
     def global_dict_hook(self, item, obj):
         if len(getAdapter(obj, IGroupRelations).forward()) > 0:
             return None
