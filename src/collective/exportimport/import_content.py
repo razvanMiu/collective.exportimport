@@ -54,7 +54,8 @@ logger = logging.getLogger(__name__)
 BLOB_HOME = os.getenv("COLLECTIVE_EXPORTIMPORT_BLOB_HOME", "")
 
 PLONE4_KEY = 'plone4.metadata'
-PLONE4_FIELDS = ['versionId', 'relatedItems_unmapped', 'relatedItems_backward']
+PLONE4_FIELDS = ['versionId', 'relatedItems_unmapped',
+                 'relatedItems_backward', "contact", "dataOwner"]
 DEFERRED_KEY = "exportimport.deferred"
 DEFERRED_FIELD_MAPPING = {
     "chart_static": ["relatedItems"],

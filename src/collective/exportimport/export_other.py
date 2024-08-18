@@ -925,9 +925,9 @@ class ExportEEAContent(ExportContent):
         "body",  # handled by migrate_more_info
         "constrainTypesMode",
         "coverImage",
-        "contact",  # handled by migrate_more_info
+        # "contact",  # handled by migrate_more_info
         "dataLink",
-        "dataOwner",  # handled by migrate_more_info
+        # "dataOwner",  # handled by migrate_more_info
         "dataSource",
         "dataTitle",
         "dataWarning",
@@ -1095,6 +1095,7 @@ class ExportEEAContent(ExportContent):
         item = self.migrate_temporal_coverage(item, "temporalCoverage")
         item = self.migrate_topics(item, "themes")
         item = self.migrate_data_provenance(item, "provenances")
+        item = self.migrate_other_organisations(item)
         item = self.migrate_introduction(item, "introduction")
         item = self.migrate_geo_coverage(item, obj)
         item = self.migrate_more_info(item)
@@ -1201,6 +1202,7 @@ class ExportEEAContent(ExportContent):
             for topic in item[field]:
                 if topic in topics:
                     item["topics"].append(topics[topic])
+            # Store missing topic in a list
         return item
 
     def migrate_data_provenance(self, item, field):
@@ -1231,6 +1233,20 @@ class ExportEEAContent(ExportContent):
                     "title": provenance.get("title", None),
                     "organisation": organisation.Title
                     if organisation else provenance.get("owner", None), })
+        return item
+
+    def migrate_other_organisations(self, item):
+        item["other_organisations"] = []
+
+        if 'processor' in item and isinstance(
+                item['processor'],
+                list) and len(
+                item['processor']):
+            for url in item['processor']:
+                organisation = self.getOrganisationName(url)
+                title = organisation.Title if organisation else url
+                item["other_organisations"].append(title)
+
         return item
 
     def migrate_introduction(self, item, field):
@@ -1292,38 +1308,38 @@ class ExportEEAContent(ExportContent):
                 "Units", self.convert_to_blocks(html)))
 
         # Migrate "dataOwner" field
-        if 'dataOwner' in item and isinstance(
-                item['dataOwner'],
-                list) and len(
-                item['dataOwner']):
-            html = ''
-            for url in item['dataOwner']:
-                organisation = self.getOrganisationName(url)
-                if not organisation:
-                    continue
-                title = organisation.Title if organisation else url
-                html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
-                    url, title)
-            if html:
-                blocks.append(make_group_block(
-                    "Owners", self.convert_to_blocks(html)))
+        # if 'dataOwner' in item and isinstance(
+        #         item['dataOwner'],
+        #         list) and len(
+        #         item['dataOwner']):
+        #     html = ''
+        #     for url in item['dataOwner']:
+        #         organisation = self.getOrganisationName(url)
+        #         if not organisation:
+        #             continue
+        #         title = organisation.Title if organisation else url
+        #         html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
+        #             url, title)
+        #     if html:
+        #         blocks.append(make_group_block(
+        #             "Owners", self.convert_to_blocks(html)))
 
         # Migrate "processor" field
-        if 'processor' in item and isinstance(
-                item['processor'],
-                list) and len(
-                item['processor']):
-            html = ''
-            for url in item['processor']:
-                organisation = self.getOrganisationName(url)
-                if not organisation:
-                    continue
-                title = organisation.Title if organisation else url
-                html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
-                    url, title)
-            if html:
-                blocks.append(make_group_block(
-                    "Processors", self.convert_to_blocks(html)))
+        # if 'processor' in item and isinstance(
+        #         item['processor'],
+        #         list) and len(
+        #         item['processor']):
+        #     html = ''
+        #     for url in item['processor']:
+        #         organisation = self.getOrganisationName(url)
+        #         if not organisation:
+        #             continue
+        #         title = organisation.Title if organisation else url
+        #         html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
+        #             url, title)
+        #     if html:
+        #         blocks.append(make_group_block(
+        #             "Processors", self.convert_to_blocks(html)))
 
         # Migrate "eeaManagementPlan" field
         # if isinstance(
@@ -1664,7 +1680,6 @@ class ExportEEAFigure(ExportEEAContent):
         }
     }
     PORTAL_TYPE = ["EEAFigure"]
-    IMAGE_FORMAT = '.75dpi.png'
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
