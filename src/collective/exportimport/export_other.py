@@ -1471,7 +1471,7 @@ class ExportEEAContent(ExportContent):
         print("===> Locations <===")
         print(locations)
         f = open(os.path.dirname(__file__) + '/resources/locations.json', "w")
-        f.write(json.dumps(images_ids))
+        f.write(json.dumps(locations))
         f.close()
         print("===> Images uids <===")
         print(images_ids)
@@ -1482,7 +1482,7 @@ class ExportEEAContent(ExportContent):
         print(topics)
         f = open(os.path.dirname(
             __file__) + '/resources/missing-topics.json', "w")
-        f.write(json.dumps(images_ids))
+        f.write(json.dumps(topics))
         f.close()
 
 
