@@ -1751,9 +1751,6 @@ class ExportEEAFigure(ExportEEAContent):
 
         children = []
 
-        import pdb
-        pdb.set_trace()
-
         for o in obj.contentItems():
             if portal_workflow.getInfoFor(
                     o[1], 'review_state') != 'published':
