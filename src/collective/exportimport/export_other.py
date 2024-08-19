@@ -1588,6 +1588,7 @@ class ExportDavizFigure(ExportEEAContent):
         default_image = 0
 
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
+        return item
 
         accessor = queryAdapter(
             obj, IVisualizationConfig) if IVisualizationConfig else None
@@ -1738,6 +1739,8 @@ class ExportEEAFigure(ExportEEAContent):
         item["@type"] = self.type
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
+
+        return item
 
         figure = obj.unrestrictedTraverse(
             "@@getSingleEEAFigureFile").singlefigure()
