@@ -1727,8 +1727,6 @@ class ExportEEAFigure(ExportEEAContent):
         item["@type"] = self.type
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
-        import pdb
-        pdb.set_trace()
 
         figure = obj.unrestrictedTraverse(
             "@@getSingleEEAFigureFile").singlefigure()
@@ -1742,7 +1740,35 @@ class ExportEEAFigure(ExportEEAContent):
                 "data": imageB64
             }
 
-        return item
+        portal_workflow = getToolByName(
+            self.context, "portal_workflow", None)
+
+        children = []
+
+        for o in obj.contentItems():
+            if portal_workflow.getInfoFor(
+                    o[1], 'review_state') != 'published':
+                continue
+            if IObjectArchived and IObjectArchived.providedBy(o[1]):
+                continue
+            if isExpired(o[1]):
+                continue
+            if IGetVersions and not IGetVersions(o[1]).isLatest():
+                continue
+            if o[1].getLanguage() != 'en':
+                continue
+            if o[1].meta_type not in ['EEAFigureFile']:
+                continue
+            serializer = getMultiAdapter(
+                (o[1], self.request), ISerializeToJson)
+            child = serializer()
+            child["@type"] = 'File'
+            category = child.get("category")
+            if category:
+                child["subjects"] = [category]
+            children.append(child)
+
+        return item + children
 
 
 def findBlockPaths(blocks, field='@type', value='', paths=None):
