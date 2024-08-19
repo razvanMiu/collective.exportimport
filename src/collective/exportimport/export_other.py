@@ -129,7 +129,13 @@ with open(os.path.dirname(__file__) + '/resources/related_items.json') as file:
     related_items = json.load(file)
 
 with open(os.path.dirname(__file__) + '/resources/images_ids.json') as file:
-    images_ids = json.load(file)
+    with_images_ids = json.load(file)
+
+with open(os.path.dirname(__file__) + '/resources/locations.json') as file:
+    with_locations = json.load(file)
+
+with open(os.path.dirname(__file__) + '/resources/missing-topics.json') as file:
+    with_topics = json.load(file)
 
 
 def make_uid():
@@ -972,9 +978,9 @@ class ExportEEAContent(ExportContent):
     blocks_layout = None
     catalog = None
 
-    images_ids = images_ids
-    locations = []
-    topics = []
+    images_ids = with_images_ids
+    locations = with_locations
+    topics = with_topics
     parsed_ids = {}
 
     def update(self):
