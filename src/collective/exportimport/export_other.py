@@ -974,6 +974,7 @@ class ExportEEAContent(ExportContent):
 
     images_ids = images_ids
     locations = []
+    topics = []
     parsed_ids = {}
 
     def update(self):
@@ -1202,6 +1203,8 @@ class ExportEEAContent(ExportContent):
             for topic in item[field]:
                 if topic in topics:
                     item["topics"].append(topics[topic])
+                else:
+                    self.topics.append(topic)
             # Store missing topic in a list
         return item
 
@@ -1456,12 +1459,24 @@ class ExportEEAContent(ExportContent):
         return slate
 
     def finish(self):
+        locations = list(set(self.locations))
+        images_ids = list(set(self.images_ids))
+        topics = list(set(self.topics))
         print("===> Locations <===")
-        print(self.locations)
+        print(locations)
+        f = open(os.path.dirname(__file__) + '/resources/locations.json', "w")
+        f.write(json.dumps(images_ids))
+        f.close()
         print("===> Images uids <===")
-        print(self.images_ids)
+        print(images_ids)
         f = open(os.path.dirname(__file__) + '/resources/images_ids.json', "w")
-        f.write(json.dumps(list(set(self.images_ids))))
+        f.write(json.dumps(images_ids))
+        f.close()
+        print("===> Topics <===")
+        print(topics)
+        f = open(os.path.dirname(
+            __file__) + '/resources/missing-topics.json', "w")
+        f.write(json.dumps(images_ids))
         f.close()
 
 
@@ -1511,19 +1526,35 @@ class ExportGisMapApplication(ExportEEAContent):
     }
     PORTAL_TYPE = ["GIS Application"]
     type = 'map_interactive'
+    with_image_override = []
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+        arcgis_url = item.get("arcgis_url", None)
         item["maps"] = {
             "dataprotection": {},
-            "url": item.get("arcgis_url", None),
+            "url": arcgis_url,
             "useScreenHeight": True
         }
+
+        if 'appid' in arcgis_url and 'embed' not in arcgis_url:
+            self.with_image_override.append(item.get("UID"))
+
         item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
 
         return item
+
+    def finish(self):
+        with_image_override = list(set(self.with_image_override))
+        print("===> With image override <===")
+        print(with_image_override)
+        f = open(os.path.dirname(
+            __file__) + '/resources/with-image-override.json', "w")
+        f.write(json.dumps(with_image_override))
+        f.close()
+        return super(ExportGisMapApplication, self).finish()
 
 
 class ExportDavizFigure(ExportEEAContent):
@@ -1696,6 +1727,8 @@ class ExportEEAFigure(ExportEEAContent):
         item["@type"] = self.type
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
+        import pdb
+        pdb.set_trace()
 
         figure = obj.unrestrictedTraverse(
             "@@getSingleEEAFigureFile").singlefigure()
