@@ -1104,13 +1104,13 @@ class ExportEEAContent(ExportContent):
 
         item = self.migrate_related_items(item, obj)
         item = self.migrate_image(item, 'image')
-        # item = self.migrate_temporal_coverage(item, "temporalCoverage")
+        item = self.migrate_temporal_coverage(item, "temporalCoverage")
         item = self.migrate_topics(item, "themes")
-        # item = self.migrate_data_provenance(item, "provenances")
-        # item = self.migrate_other_organisations(item)
-        # item = self.migrate_introduction(item, "introduction")
+        item = self.migrate_data_provenance(item, "provenances")
+        item = self.migrate_other_organisations(item)
+        item = self.migrate_introduction(item, "introduction")
         item = self.migrate_geo_coverage(item, obj)
-        # item = self.migrate_more_info(item)
+        item = self.migrate_more_info(item)
 
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
@@ -1371,7 +1371,7 @@ class ExportEEAContent(ExportContent):
         # Migrate "contact" field
         html = self.get_html(item, 'contact')
         if html:
-            contacts = html.split("\n")
+            contacts = html.replace("\n\r", "\n").split("\n")
             html = ''
             for contact in contacts:
                 if not contact:
@@ -1588,7 +1588,6 @@ class ExportDavizFigure(ExportEEAContent):
         default_image = 0
 
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
-        return item
 
         accessor = queryAdapter(
             obj, IVisualizationConfig) if IVisualizationConfig else None
@@ -1739,8 +1738,6 @@ class ExportEEAFigure(ExportEEAContent):
         item["@type"] = self.type
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
-
-        return item
 
         figure = obj.unrestrictedTraverse(
             "@@getSingleEEAFigureFile").singlefigure()
