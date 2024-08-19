@@ -1751,6 +1751,9 @@ class ExportEEAFigure(ExportEEAContent):
 
         children = []
 
+        import pdb
+        pdb.set_trace()
+
         for o in obj.contentItems():
             if portal_workflow.getInfoFor(
                     o[1], 'review_state') != 'published':
@@ -1763,15 +1766,14 @@ class ExportEEAFigure(ExportEEAContent):
                 continue
             if o[1].getLanguage() != 'en':
                 continue
-            if o[1].meta_type not in ['EEAFigureFile']:
+            if o[1].meta_type not in ['EEAFigureFile', 'DataFileLink']:
                 continue
             serializer = getMultiAdapter(
                 (o[1], self.request), ISerializeToJson)
             child = serializer()
-            child["@type"] = 'File'
-            category = child.get("category")
-            if category:
-                child["subjects"] = [category]
+            child["@type"] = 'File' if child.get("file") else 'Link'
+            if child.get("category"):
+                child["subjects"] = [child.get("category")]
             children.append(child)
 
         return item + children
