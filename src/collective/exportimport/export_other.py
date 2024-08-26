@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import pdb
 from Acquisition import aq_base
 from App.config import getConfiguration
 from collective.exportimport import _
@@ -128,8 +127,6 @@ with open(os.path.dirname(__file__) + '/resources/geo_coverage.json') as file:
 
 with open(os.path.dirname(__file__) + '/resources/related_items.json') as file:
     related_items = json.load(file)
-
-pdb.set_trace()
 
 with open(os.path.dirname(__file__) + '/resources/images_ids.json') as file:
     with_images_ids = json.load(file)
@@ -981,8 +978,6 @@ class ExportEEAContent(ExportContent):
     blocks_layout = None
     catalog = None
 
-    pdb.set_trace()
-
     images_ids = with_images_ids
     locations = with_locations
     topics = with_topics
@@ -1441,6 +1436,7 @@ class ExportEEAContent(ExportContent):
         req = requests.post(
             BLOCKS_CONVERTER, data=json.dumps(data), headers=headers)
         if req.status_code != 200:
+            import pdb
             pdb.set_trace()
             logger.debug(req.text)
             # raise ValueError
@@ -1469,7 +1465,6 @@ class ExportEEAContent(ExportContent):
         return slate
 
     def finish(self):
-        pdb.set_trace()
         locations = list(set(self.locations))
         images_ids = list(set(self.images_ids))
         topics = list(set(self.topics))

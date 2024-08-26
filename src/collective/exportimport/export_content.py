@@ -351,8 +351,6 @@ class ExportContent(BrowserView):
         return query
 
     def export_content(self):
-        import pdb
-        pdb.set_trace()
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
         brains = catalog.unrestrictedSearchResults(**query)
