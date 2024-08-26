@@ -2036,7 +2036,9 @@ class ExportReport(ExportEEAContent):
 
 class ExportImage(ExportEEAContent):
     QUERY = {
-        "UID": with_images_ids
+        "Image": {
+            "UID": with_images_ids
+        }
     }
     PORTAL_TYPE = ["Image"]
     type = "Image"
