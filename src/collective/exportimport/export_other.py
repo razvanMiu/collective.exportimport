@@ -1757,7 +1757,7 @@ class ExportEEAFigure(ExportEEAContent):
         children = []
 
         for o in obj.contentItems():
-            if portal_workflow.getInfoFor(
+            if o[1].meta_type != 'EEAFigureFile' and portal_workflow.getInfoFor(
                     o[1], 'review_state') != 'published':
                 continue
             if IObjectArchived and IObjectArchived.providedBy(o[1]):
@@ -2042,4 +2042,6 @@ class ExportImage(ExportEEAContent):
     type = "Image"
 
     def global_dict_hook(self, item, obj):
+        import pdb
+        pdb.set_trace()
         return item
