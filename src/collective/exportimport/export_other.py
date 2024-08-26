@@ -2042,6 +2042,4 @@ class ExportImage(ExportEEAContent):
     type = "Image"
 
     def global_dict_hook(self, item, obj):
-        import pdb
-        pdb.set_trace()
         return item
