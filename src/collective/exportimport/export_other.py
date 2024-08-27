@@ -1493,6 +1493,8 @@ class ExportEEAContent(ExportContent):
             else:
                 [blocks.append(block) for block in result]
 
+        import pdb
+        pdb.set_trace()
         for b in blocks:
             block_id = b[0]
             block = b[1]
