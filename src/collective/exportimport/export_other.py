@@ -1419,7 +1419,7 @@ class ExportEEAContent(ExportContent):
         #         if not organisation:
         #             continue
         #         title = organisation.Title if organisation else url
-        #         html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
+        #         html += "<p><a href='%s' target='_blank'>%s</a></p>" % (
         #             url, title)
         #     if html:
         #         blocks.append(make_group_block(
@@ -1436,7 +1436,7 @@ class ExportEEAContent(ExportContent):
         #         if not organisation:
         #             continue
         #         title = organisation.Title if organisation else url
-        #         html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
+        #         html += "<p><a href='%s' target='_blank'>%s</a></p>" % (
         #             url, title)
         #     if html:
         #         blocks.append(make_group_block(
@@ -1458,20 +1458,20 @@ class ExportEEAContent(ExportContent):
         # Migrate "contact" field
         html = self.get_html(item, 'contact')
         if html:
-            import pdb
-            pdb.set_trace()
             contacts = html.replace("\n\r", "\n").split("\n")
             html = ''
             for contact in contacts:
                 if not contact:
                     continue
-                html += "<p>%s<p/>" % (contact)
+                html += "<p>%s</p>" % (contact)
             if html:
                 c_blocks = {}
                 c_blocks_layout = {
                     "items": []
                 }
                 for b in self.convert_to_blocks(html):
+                    if b[1].get("@type") == 'slate' and not b[1].get("plaintext"):
+                        continue
                     c_blocks[b[0]] = b[1]
                     c_blocks_layout["items"].append(b[0])
 
@@ -1489,7 +1489,7 @@ class ExportEEAContent(ExportContent):
                 item['externalRelations']):
             html = ''
             for url in item['externalRelations']:
-                html += "<p><a href='%s' target='_blank'>%s</a><p/>" % (
+                html += "<p><a href='%s' target='_blank'>%s</a></p>" % (
                     url, url)
             if html:
                 blocks.append(make_group_block(
