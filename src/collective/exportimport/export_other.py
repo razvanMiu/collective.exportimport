@@ -1008,11 +1008,9 @@ def appendBlock(blocks, field="@type", value="", id="", data=None):
         block.get("data", {}).get("blocks_layout", {}) or block.get(
             "blocks_layout", {}))
 
-    if not childrenBlocks or not childrenLayout:
-        return
-
     childrenBlocks[id] = data
-    childrenLayout.get("items").append(id)
+    if childrenLayout.get("items"):
+        childrenLayout.get("items").append(id)
 
     return blocks
 
@@ -1493,8 +1491,6 @@ class ExportEEAContent(ExportContent):
             else:
                 [blocks.append(block) for block in result]
 
-        import pdb
-        pdb.set_trace()
         for b in blocks:
             block_id = b[0]
             block = b[1]
