@@ -150,43 +150,11 @@
             "blocks": {
               "265e2bee-7de3-46e8-b6ee-76005f3f434f": {
                 "@type": "tab",
+                "@marker": "more_info_tab",
                 "assetPosition": "top",
-                "blocks": {
-                  "2c4799e2-a521-4f44-b4ca-f64255f13247": {
-                    "@type": "slate",
-                    "instructions": {
-                      "data": "<p>Any additional information goes here, like methodology or links to other supporting information</p>"
-                    },
-                    "placeholder": "Type optional extra information",
-                    "plaintext": "",
-                    "value": [
-                      {
-                        "children": [
-                          {
-                            "text": ""
-                          }
-                        ],
-                        "type": "p"
-                      }
-                    ]
-                  },
-                  "undefined": {
-                    "@type": "slate",
-                    "plaintext": "",
-                    "value": [
-                      {
-                        "children": [
-                          {
-                            "text": ""
-                          }
-                        ],
-                        "type": "p"
-                      }
-                    ]
-                  }
-                },
+                "blocks": {},
                 "blocks_layout": {
-                  "items": ["2c4799e2-a521-4f44-b4ca-f64255f13247"]
+                  "items": []
                 },
                 "iconSize": "small",
                 "imageSize": "icon",
@@ -827,11 +795,43 @@
             "blocks": {
               "265e2bee-7de3-46e8-b6ee-76005f3f434f": {
                 "@type": "tab",
-                "@marker": "more_info_tab",
                 "assetPosition": "top",
-                "blocks": {},
+                "blocks": {
+                  "2c4799e2-a521-4f44-b4ca-f64255f13247": {
+                    "@type": "slate",
+                    "instructions": {
+                      "data": "<p>Any additional information goes here, like methodology or links to other supporting information</p>"
+                    },
+                    "placeholder": "Type optional extra information",
+                    "plaintext": "",
+                    "value": [
+                      {
+                        "children": [
+                          {
+                            "text": ""
+                          }
+                        ],
+                        "type": "p"
+                      }
+                    ]
+                  },
+                  "undefined": {
+                    "@type": "slate",
+                    "plaintext": "",
+                    "value": [
+                      {
+                        "children": [
+                          {
+                            "text": ""
+                          }
+                        ],
+                        "type": "p"
+                      }
+                    ]
+                  }
+                },
                 "blocks_layout": {
-                  "items": []
+                  "items": ["2c4799e2-a521-4f44-b4ca-f64255f13247"]
                 },
                 "iconSize": "small",
                 "imageSize": "icon",
