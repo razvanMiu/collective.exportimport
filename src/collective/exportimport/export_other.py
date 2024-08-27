@@ -923,6 +923,100 @@ class ExportRedirects(BaseExport):
         self.download(data)
 
 
+def findBlockPaths(blocks, field='@type', value='', paths=None):
+    if paths is None:
+        paths = []
+    ok = False
+    for blockId in blocks:
+        block = blocks[blockId]
+        if block.get(field) == value:
+            paths.append(blockId)
+            ok = True
+            break
+        childrenBlocks = None
+        if block.get("data", {}).get("blocks", {}):
+            childrenBlocks = block.get("data", {}).get("blocks", {})
+            nestedPaths = [blockId, "data", "blocks"]
+        elif block.get("blocks", {}):
+            childrenBlocks = block.get("blocks", {})
+            nestedPaths = [blockId, "blocks"]
+        if childrenBlocks:
+            [p, o] = findBlockPaths(childrenBlocks, field, value, nestedPaths)
+            if o:
+                paths.extend(p)
+                ok = True
+                break
+
+    if ok:
+        return [paths, True]
+
+    return [[], False]
+
+
+def getBlockByPaths(blocks, paths):
+    block = blocks
+    for path in paths:
+        block = block.get(path, {})
+    return block
+
+
+def updateBlockByPaths(blocks, paths, data=None):
+    if data is None:
+        data = {}
+    # Traverse the dictionary up to the second-to-last key
+    value = blocks
+    for key in paths[:-1]:
+        value = value[key]
+    # Update the value for the last key, keeping the old value
+    if isinstance(value[paths[-1]], dict) and isinstance(data, dict):
+        value[paths[-1]].update(data)
+    else:
+        value[paths[-1]] = data
+    if "@marker" in value[paths[-1]]:
+        del value[paths[-1]]["@marker"]
+
+
+def getBlock(blocks, field="@type", value=""):
+    [paths, found] = findBlockPaths(blocks, field, value)
+    if found:
+        return getBlockByPaths(blocks, paths)
+    return None
+
+
+def updateBlock(blocks, field="@type", value="", data=None):
+    if data is None:
+        data = {}
+    [paths, found] = findBlockPaths(blocks, field, value)
+    if found:
+        updateBlockByPaths(blocks, paths, data)
+    return blocks
+
+
+def appendBlock(blocks, field="@type", value="", id="", data=None):
+    if data is None:
+        data = {}
+    [paths, found] = findBlockPaths(blocks, field, value)
+
+    if not found:
+        return
+
+    block = getBlockByPaths(blocks, paths)
+
+    childrenBlocks = (block.get("data", {}).get("blocks", {})
+                      or block.get("blocks", {}))
+    childrenLayout = (
+        block.get("data", {}).get("blocks_layout", {}) or block.get(
+            "blocks_layout", {}))
+
+    if not childrenBlocks or not childrenLayout:
+        return
+
+    childrenBlocks[id] = data
+    childrenLayout.get("items").append(id)
+
+    return blocks
+
+
 class ExportEEAContent(ExportContent):
     QUERY = {}
     PORTAL_TYPE = []
@@ -1399,24 +1493,30 @@ class ExportEEAContent(ExportContent):
             else:
                 [blocks.append(block) for block in result]
 
-        for block_id in item["blocks"]:
-            if block_id and item["blocks"][block_id].get('title') == 'Metadata section':
-                tabs_block_id = item["blocks"][block_id]['data'][
-                    'blocks_layout']['items'][0]
-                tabs_blocks = item["blocks"][block_id]['data']['blocks'][
-                    tabs_block_id]['data']['blocks']
+        for b in blocks:
+            block_id = b[0]
+            block = b[1]
+            appendBlock(item["blocks"], "@marker",
+                        "more_info_tab", block_id, block)
 
-                for _tab_block_id in tabs_blocks:
-                    if _tab_block_id and tabs_blocks[_tab_block_id].get(
-                            'title') == 'More info':
-                        for b in blocks:
-                            _block_id = b[0]
-                            _block = b[1]
-                            item["blocks"][block_id]['data']['blocks'][
-                                tabs_block_id]['data']['blocks'][
-                                _tab_block_id]['blocks'][_block_id] = _block
-                            item["blocks"][block_id]['data']['blocks'][tabs_block_id]['data']['blocks'][_tab_block_id]['blocks_layout']['items'].append(
-                                _block_id)
+        # for block_id in item["blocks"]:
+        #     if block_id and item["blocks"][block_id].get('title') == 'Metadata section':
+        #         tabs_block_id = item["blocks"][block_id]['data'][
+        #             'blocks_layout']['items'][0]
+        #         tabs_blocks = item["blocks"][block_id]['data']['blocks'][
+        #             tabs_block_id]['data']['blocks']
+
+        #         for _tab_block_id in tabs_blocks:
+        #             if _tab_block_id and tabs_blocks[_tab_block_id].get(
+        #                     'title') == 'More info':
+        #                 for b in blocks:
+        #                     _block_id = b[0]
+        #                     _block = b[1]
+        #                     item["blocks"][block_id]['data']['blocks'][
+        #                         tabs_block_id]['data']['blocks'][
+        #                         _tab_block_id]['blocks'][_block_id] = _block
+        #                     item["blocks"][block_id]['data']['blocks'][tabs_block_id]['data']['blocks'][_tab_block_id]['blocks_layout']['items'].append(
+        #                         _block_id)
 
         return item
 
@@ -1774,75 +1874,6 @@ class ExportEEAFigure(ExportEEAContent):
             children.append(child)
 
         return item + children
-
-
-def findBlockPaths(blocks, field='@type', value='', paths=None):
-    if paths is None:
-        paths = []
-    ok = False
-    for blockId in blocks:
-        block = blocks[blockId]
-        if block.get(field) == value:
-            paths.append(blockId)
-            ok = True
-            break
-        childrenBlocks = None
-        if block.get("data", {}).get("blocks", {}):
-            childrenBlocks = block.get("data", {}).get("blocks", {})
-            nestedPaths = [blockId, "data", "blocks"]
-        elif block.get("blocks", {}):
-            childrenBlocks = block.get("blocks", {})
-            nestedPaths = [blockId, "blocks"]
-        if childrenBlocks:
-            [p, o] = findBlockPaths(childrenBlocks, field, value, nestedPaths)
-            if o:
-                paths.extend(p)
-                ok = True
-                break
-
-    if ok:
-        return [paths, True]
-
-    return [[], False]
-
-
-def getBlockByPaths(blocks, paths):
-    block = blocks
-    for path in paths:
-        block = block.get(path, {})
-    return block
-
-
-def updateBlockByPaths(blocks, paths, data=None):
-    if data is None:
-        data = {}
-    # Traverse the dictionary up to the second-to-last key
-    value = blocks
-    for key in paths[:-1]:
-        value = value[key]
-    # Update the value for the last key, keeping the old value
-    if isinstance(value[paths[-1]], dict) and isinstance(data, dict):
-        value[paths[-1]].update(data)
-    else:
-        value[paths[-1]] = data
-    if "@marker" in value[paths[-1]]:
-        del value[paths[-1]]["@marker"]
-
-
-def getBlock(blocks, field="@type", value=""):
-    [paths, found] = findBlockPaths(blocks, field, value)
-    if found:
-        return getBlockByPaths(blocks, paths)
-    return None
-
-
-def updateBlock(blocks, field="@type", value="", data=None):
-    if data is None:
-        data = {}
-    [paths, found] = findBlockPaths(blocks, field, value)
-    if found:
-        updateBlockByPaths(blocks, paths, data)
-    return blocks
 
 
 class ExportReport(ExportEEAContent):
