@@ -1301,8 +1301,8 @@ class ExportEEAContent(ExportContent):
             for topic in item[field]:
                 if topic in topics:
                     item["topics"].append(topics[topic])
-                else:
-                    self.topics.append(topic)
+                # else:
+                #     self.topics.append(topic)
             # Store missing topic in a list
         return item
 
