@@ -1458,6 +1458,8 @@ class ExportEEAContent(ExportContent):
         # Migrate "contact" field
         html = self.get_html(item, 'contact')
         if html:
+            import pdb
+            pdb.set_trace()
             contacts = html.replace("\n\r", "\n").split("\n")
             html = ''
             for contact in contacts:
