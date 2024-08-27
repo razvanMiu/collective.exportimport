@@ -1883,7 +1883,10 @@ class ExportEEAFigure(ExportEEAContent):
                 child["subjects"] = [child.get("category")]
             children.append(child)
 
-        return item + children
+        if len(children) > 0:
+            return [item] + children
+
+        return item
 
 
 class ExportReport(ExportEEAContent):
