@@ -972,8 +972,8 @@ def updateBlockByPaths(blocks, paths, data=None):
         value[paths[-1]].update(data)
     else:
         value[paths[-1]] = data
-    if "@marker" in value[paths[-1]]:
-        del value[paths[-1]]["@marker"]
+    # if "@marker" in value[paths[-1]]:
+    #     del value[paths[-1]]["@marker"]
 
 
 def getBlock(blocks, field="@type", value=""):
@@ -1465,14 +1465,20 @@ class ExportEEAContent(ExportContent):
                     continue
                 html += "<p>%s<p/>" % (contact)
             if html:
-                contactBlocks = self.convert_to_blocks(html)
-                import pdb
-                pdb.set_trace()
-                # updateBlock(item["blocks"], "@marker", "contact_references_at_eea", {
+                c_blocks = {}
+                c_blocks_layout = {
+                    "items": []
+                }
+                for b in self.convert_to_blocks(html):
+                    c_blocks[b[0]] = b[1]
+                    c_blocks_layout["items"].append(b[0])
 
-                # })
-                # blocks.append(make_group_block(
-                #     "Contact references at EEA", self.convert_to_blocks(html)))
+                updateBlock(item["blocks"], "@marker", "contact_references_at_eea", {
+                    "data": {
+                        "blocks": c_blocks,
+                        "blocks_layout": c_blocks_layout
+                    }
+                })
 
         # Migrate "externalRelations" field
         if 'externalRelations' in item and isinstance(
