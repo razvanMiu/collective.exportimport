@@ -1465,8 +1465,14 @@ class ExportEEAContent(ExportContent):
                     continue
                 html += "<p>%s<p/>" % (contact)
             if html:
-                blocks.append(make_group_block(
-                    "Contact references at EEA", self.convert_to_blocks(html)))
+                contactBlocks = self.convert_to_blocks(html)
+                import pdb
+                pdb.set_trace()
+                # updateBlock(item["blocks"], "@marker", "contact_references_at_eea", {
+
+                # })
+                # blocks.append(make_group_block(
+                #     "Contact references at EEA", self.convert_to_blocks(html)))
 
         # Migrate "externalRelations" field
         if 'externalRelations' in item and isinstance(
