@@ -1509,13 +1509,21 @@ class ExportEEAContent(ExportContent):
                     c_blocks_layout["items"].append(b[0])
 
                 if len(c_blocks_layout["items"]) > 0:
-                    c_uid = make_uid()
-                    c_blocks[c_uid] = {
+                    c_uid1 = make_uid()
+                    c_uid2 = make_uid()
+                    c_blocks[c_uid1] = {
                         "@type": "slate",
                         "value": [{"type": "h3", "children": [{"text": "Contact references at EEA"}]}],
                         "plaintext": "Contact references at EEA"
                     }
-                    c_blocks_layout["items"].insert(0, c_uid)
+                    c_blocks[c_uid2] = {
+                        "@type": "dividerBlock",
+                        "hidden": True,
+                        "spacing": "s",
+                        "styles": {}
+                    }
+                    c_blocks_layout["items"].insert(0, c_uid1)
+                    c_blocks_layout["items"].insert(0, c_uid2)
 
                 updateBlock(item["blocks"], "@marker", "contact_references_at_eea", {
                     "data": {
