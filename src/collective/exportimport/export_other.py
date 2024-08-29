@@ -1005,12 +1005,11 @@ def appendBlock(blocks, field="@type", value="", id="", data=None):
     childrenBlocks = (block.get("data", {}).get("blocks", {})
                       or block.get("blocks", {}))
     childrenLayout = (
-        block.get("data", {}).get("blocks_layout", {}) or block.get(
-            "blocks_layout", {}))
+        block.get("data", {}).get("blocks_layout", {"items": []}) or block.get(
+            "blocks_layout", {"items": []}))
 
     childrenBlocks[id] = data
-    if childrenLayout.get("items"):
-        childrenLayout.get("items").append(id)
+    childrenLayout.get("items").append(id)
 
     return blocks
 
