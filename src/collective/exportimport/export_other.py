@@ -1899,8 +1899,6 @@ class ExportEEAFigure(ExportEEAContent):
         if figure_type == 'graph':
             self.type = 'chart_static'
 
-        item["@type"] = self.type
-
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
         figure = obj.unrestrictedTraverse(
