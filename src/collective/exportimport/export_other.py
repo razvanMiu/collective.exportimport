@@ -1523,7 +1523,7 @@ class ExportEEAContent(ExportContent):
                         "styles": {}
                     }
                     c_blocks_layout["items"].insert(0, c_uid1)
-                    c_blocks_layout["items"].insert(0, c_uid2)
+                    c_blocks_layout["items"].append(c_uid2)
 
                 updateBlock(item["blocks"], "@marker", "contact_references_at_eea", {
                     "data": {
