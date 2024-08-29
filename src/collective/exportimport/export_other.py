@@ -1010,9 +1010,8 @@ def appendBlock(blocks, field="@type", value="", id="", data=None):
         "items", None)
     nd_blocks_ids = block.get("blocks_layout", {}).get("items", "None")
 
-    childrenBlocks = (d_blocks if d_blocks is not None else nd_blocks).copy()
-    childrenIds = (
-        d_blocks_ids if d_blocks_ids is not None else nd_blocks_ids).copy()
+    childrenBlocks = d_blocks if d_blocks is not None else nd_blocks
+    childrenIds = d_blocks_ids if d_blocks_ids is not None else nd_blocks_ids
 
     if d_blocks is not None and d_blocks_ids is not None:
         childrenBlocks[id] = data
