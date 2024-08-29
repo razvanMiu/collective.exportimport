@@ -1004,28 +1004,35 @@ def appendBlock(blocks, field="@type", value="", id="", data=None):
 
     d_blocks = block.get("data", {}).get("blocks", None)
     nd_blocks = block.get("blocks", None)
-    d_blocks_layout = block.get("data", {}).get("blocks_layout", None)
-    nd_blocks_layout = block.get("blocks_layout", None)
+    d_blocks_ids = block.get(
+        "data", {}).get(
+        "blocks_layout", {}).get(
+        "items", None)
+    nd_blocks_ids = block.get("blocks_layout", {}).get("items", "None")
 
     childrenBlocks = (d_blocks if d_blocks is not None else nd_blocks).copy()
-    childrenLayout = (
-        d_blocks_layout if d_blocks_layout is not None else nd_blocks_layout).copy()
+    childrenIds = (
+        d_blocks_ids if d_blocks_ids is not None else nd_blocks_ids).copy()
 
-    if d_blocks is not None and d_blocks_layout is not None:
+    if d_blocks is not None and d_blocks_ids is not None:
         childrenBlocks[id] = data
-        childrenLayout.get("items").append(id)
+        childrenIds.append(id)
         updateBlockByPaths(blocks, paths, {
             "data": {
                 "blocks": childrenBlocks,
-                "blocks_layout": childrenLayout
+                "blocks_layout": {
+                    "items": childrenIds
+                }
             }
         })
-    elif nd_blocks is not None and nd_blocks_layout is not None:
+    elif nd_blocks is not None and nd_blocks_ids is not None:
         childrenBlocks[id] = data
-        childrenLayout.get("items").append(id)
+        childrenIds.append(id)
         updateBlockByPaths(blocks, paths, {
             "blocks": childrenBlocks,
-            "blocks_layout": childrenLayout
+            "blocks_layout": {
+                "items": childrenIds
+            }
         })
 
     return blocks
