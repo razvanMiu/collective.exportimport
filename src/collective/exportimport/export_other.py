@@ -1100,6 +1100,8 @@ class ExportEEAContent(ExportContent):
     topics = with_topics
     parsed_ids = {}
 
+    folder_path = "/www/en/sandbox/miu/"
+
     def update(self):
         """Use this to override stuff before the export starts
         (e.g. force a specific language in the request)."""
@@ -1204,6 +1206,9 @@ class ExportEEAContent(ExportContent):
 
         item = json.loads(item)
 
+        item["@id"] = "%s/%s" % (self.folder_path, item["id"])
+        item["parent"]["@id"] = self.folder_path
+        item["parent"]["UID"] = None
         item["original_content_type"] = item["@type"]
 
         if self.type:
@@ -1924,6 +1929,9 @@ class ExportEEAFigure(ExportEEAContent):
             serializer = getMultiAdapter(
                 (o[1], self.request), ISerializeToJson)
             child = serializer()
+            child["@id"] = "%s/%s/%s" % (self.folder_path,
+                                         item["id"], child["id"])
+            child["parent"]["@id"] = item["@id"]
             child["parent"]["UID"] = item.get("UID")
             child["@type"] = 'File' if child.get("file") else 'Link'
             if child.get("category"):
@@ -1937,6 +1945,7 @@ class ExportEEAFigure(ExportEEAContent):
 
 
 class ExportReport(ExportEEAContent):
+    # TODO: update @id and uid
     QUERY = {
         "Report": {
             "review_state": "published",
