@@ -1201,6 +1201,8 @@ class ExportEEAContent(ExportContent):
 
         item = json.loads(item)
 
+        item["original_content_type"] = item["@type"]
+
         if self.type:
             item["@type"] = self.type
 
