@@ -1464,6 +1464,7 @@ class ExportEEAContent(ExportContent):
                 if not contact:
                     continue
                 html += "<p>%s</p>" % (contact)
+
             if html:
                 c_blocks = {}
                 c_blocks_layout = {
@@ -1474,6 +1475,15 @@ class ExportEEAContent(ExportContent):
                         continue
                     c_blocks[b[0]] = b[1]
                     c_blocks_layout["items"].append(b[0])
+
+                if len(c_blocks_layout["items"]) > 0:
+                    c_uid = make_uid()
+                    c_blocks[c_uid] = {
+                        "@type": "slate",
+                        "value": [{"type": "h3", "children": [{"text": "Contact references at EEA"}]}],
+                        "plaintext": "Contact references at EEA"
+                    }
+                    c_blocks_layout["items"].append(c_uid)
 
                 updateBlock(item["blocks"], "@marker", "contact_references_at_eea", {
                     "data": {
@@ -1505,11 +1515,20 @@ class ExportEEAContent(ExportContent):
             else:
                 [blocks.append(block) for block in result]
 
+        import pdb
+        pdb.set_trace()
         for b in blocks:
             block_id = b[0]
             block = b[1]
             appendBlock(item["blocks"], "@marker",
                         "more_info_tab", block_id, block)
+        appendBlock(
+            item["blocks"],
+            "@marker", "more_info_tab", make_uid(), {
+                "@type": "slate",
+                "value": [{"type": "p", "children": [{"text": ""}]}],
+                "plaintext": ""
+            })
 
         # for block_id in item["blocks"]:
         #     if block_id and item["blocks"][block_id].get('title') == 'Metadata section':
@@ -2086,3 +2105,8 @@ class ExportImage(ExportEEAContent):
 
     def global_dict_hook(self, item, obj):
         return item
+
+
+# TODO: append empty slate to the end of more info tab
+# TODO: https://staging.eea.europa.eu/en/sandbox/migration-of-maps-and-graphs-to-new-plone-6/different-types-of-emissions-from-vehicles -> why do we see more info tab?
+# TODO: https://staging.eea.europa.eu/en/sandbox/migration-of-maps-and-graphs-to-new-plone-6/emissions-trading-viewer-1 -> more info blocks_layout empty??
