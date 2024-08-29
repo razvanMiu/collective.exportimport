@@ -437,8 +437,6 @@ class ExportContent(BrowserView):
 
     def portal_types(self):
         """A list with info on all content types with existing items."""
-        import pdb
-        pdb.set_trace()
         catalog = api.portal.get_tool("portal_catalog")
         portal_types = api.portal.get_tool("portal_types")
         results = []

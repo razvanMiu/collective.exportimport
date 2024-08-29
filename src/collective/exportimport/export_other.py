@@ -1083,7 +1083,10 @@ class ExportEEAContent(ExportContent):
         "@components",
         "next_item",
         "prev_item",
-        "management_plan"
+        "management_plan",
+        "@components",
+        "items",
+        "next_item"
     ]
     MIGRATE_MORE_INFO = True
 
@@ -1507,7 +1510,7 @@ class ExportEEAContent(ExportContent):
                         "value": [{"type": "h3", "children": [{"text": "Contact references at EEA"}]}],
                         "plaintext": "Contact references at EEA"
                     }
-                    c_blocks_layout["items"].append(c_uid)
+                    c_blocks_layout["items"].insert(0, c_uid)
 
                 updateBlock(item["blocks"], "@marker", "contact_references_at_eea", {
                     "data": {
@@ -1921,6 +1924,7 @@ class ExportEEAFigure(ExportEEAContent):
             serializer = getMultiAdapter(
                 (o[1], self.request), ISerializeToJson)
             child = serializer()
+            child["parent"]["UID"] = item.get("UID")
             child["@type"] = 'File' if child.get("file") else 'Link'
             if child.get("category"):
                 child["subjects"] = [child.get("category")]
