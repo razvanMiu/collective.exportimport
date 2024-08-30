@@ -59,7 +59,14 @@ PLONE4_FIELDS = [
     "dataOwner", "original_content_type"]
 DEFERRED_KEY = "exportimport.deferred"
 DEFERRED_FIELD_MAPPING = {
+    "infographic": ["relatedItems"],
     "chart_static": ["relatedItems"],
+    "tableau_visualization": ["relatedItems"],
+    "map_interactive": ["relatedItems"],
+    "map_static": ["relatedItems"],
+    "File": ["relatedItems"],
+    "Link": ["relatedItems"],
+    "Image": ["relatedItems"],
 }
 SIMPLE_SETTER_FIELDS = {}
 
