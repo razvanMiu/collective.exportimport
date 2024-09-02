@@ -1207,11 +1207,6 @@ class ExportEEAContent(ExportContent):
         item = json.loads(item)
 
         item["@id"] = "%s/%s" % (self.folder_path, item["id"])
-
-        if item["UID"] == "4873909afc9640f797806efd864974d4":
-            import pdb
-            pdb.set_trace()
-
         item["parent"]["@id"] = self.folder_path
         item["parent"]["UID"] = None
         item["original_content_type"] = item["@type"]
