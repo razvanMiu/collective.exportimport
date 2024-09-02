@@ -1208,7 +1208,7 @@ class ExportEEAContent(ExportContent):
 
         item["@id"] = "%s/%s" % (self.folder_path, item["id"])
 
-        if not item["@id"].startswith(self.folder_path):
+        if item["UID"] == "4873909afc9640f797806efd864974d4":
             import pdb
             pdb.set_trace()
 
