@@ -1208,7 +1208,7 @@ class ExportEEAContent(ExportContent):
 
         item["@id"] = "%s/%s" % (self.folder_path, item["id"])
 
-        if not item["@id"].startsWith(self.folder_path):
+        if not item["@id"].startswith(self.folder_path):
             import pdb
             pdb.set_trace()
 
