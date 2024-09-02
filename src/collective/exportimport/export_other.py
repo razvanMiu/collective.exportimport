@@ -1935,6 +1935,7 @@ class ExportEEAFigure(ExportEEAContent):
             serializer = getMultiAdapter(
                 (o[1], self.request), ISerializeToJson)
             child = serializer()
+            child["review_state"] = "published"
             child["@id"] = "%s/%s/%s" % (self.folder_path,
                                          item["id"], child["id"])
             child["parent"]["@id"] = item["@id"]
@@ -1942,6 +1943,9 @@ class ExportEEAFigure(ExportEEAContent):
             child["@type"] = 'File' if child.get("file") else 'Link'
             if child.get("category"):
                 child["subjects"] = [child.get("category")]
+            for field in self.DISSALLOWED_FIELDS:
+                if field in child:
+                    del child[field]
             children.append(child)
 
         if len(children) > 0:
