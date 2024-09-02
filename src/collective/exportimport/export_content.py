@@ -195,9 +195,6 @@ class ExportContent(BrowserView):
         self.errors = []
         content_generator = self.export_content()
 
-        import pdb
-        pdb.set_trace()
-
         number = 0
 
         # Export each item to a separate json-file

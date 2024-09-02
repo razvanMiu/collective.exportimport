@@ -1206,6 +1206,14 @@ class ExportEEAContent(ExportContent):
 
         item = json.loads(item)
 
+        if item["id"] in self.parsed_ids:
+            parts = item["@id"].split('/')
+            [parentId, id] = parts[-2:]
+            # item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
+            item["id"] = '%s-%s' % (id, parentId)
+        else:
+            self.parsed_ids[item["id"]] = True
+
         item["@id"] = "%s/%s" % (self.folder_path, item["id"])
         item["parent"]["@id"] = self.folder_path
         item["parent"]["UID"] = None
@@ -1233,14 +1241,6 @@ class ExportEEAContent(ExportContent):
 
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
-
-        if item["id"] in self.parsed_ids:
-            parts = item["@id"].split('/')
-            [parentId, id] = parts[-2:]
-            item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
-            item["id"] = '%s-%s' % (id, parentId)
-        else:
-            self.parsed_ids[item["id"]] = True
 
         for field in self.DISSALLOWED_FIELDS:
             if field in item:
