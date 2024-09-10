@@ -103,6 +103,10 @@ LISTING_VIEW_MAPPING = {  # OLD (AT and old DX) : NEW
 }
 
 
+with open(os.path.dirname(__file__) + '/resources/mandatory.json') as file:
+    mandatory = json.load(file)
+
+
 class ExportContent(BrowserView):
 
     template = ViewPageTemplateFile("templates/export_content.pt")
@@ -378,6 +382,8 @@ class ExportContent(BrowserView):
 
             try:
                 obj = brain.getObject()
+                import pdb
+                pdb.set_trace()
                 if IObjectArchived and IObjectArchived.providedBy(obj):
                     continue
                 if isExpired(obj):
