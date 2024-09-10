@@ -1254,9 +1254,6 @@ class ExportEEAContent(ExportContent):
     def migrate_related_items(self, item, obj):
         relatedItems = obj.getRelatedItems()
 
-        if not relatedItems:
-            return item
-
         if "data_provenance" not in item or not item["data_provenance"] or "data" not in item["data_provenance"]:
             item["data_provenance"] = {
                 "data": []
@@ -1938,6 +1935,8 @@ class ExportEEAFigure(ExportEEAContent):
             serializer = getMultiAdapter(
                 (o[1], self.request), ISerializeToJson)
             child = serializer()
+            import pdb
+            pdb.set_trace()
             child["review_state"] = "published"
             child["@id"] = "%s/%s/%s" % (self.folder_path,
                                          item["id"], child["id"])

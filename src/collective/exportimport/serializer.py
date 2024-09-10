@@ -669,3 +669,7 @@ else:
     def long_converter(value):
         # same as default_converter for py3
         return value
+
+
+# /www/en/sandbox/migration-of-maps-and-graphs-to-new-plone-6/30-european-countries-sent-their-1/map1-2_69336-monitoring-reporting-and-evaluation.png
+# /www/en/sandbox/migration-of-maps-and-graphs-to-new-plone-6/absolute-change-of-ghg-emissions-3/absolute-change-of-ghg-emissions
