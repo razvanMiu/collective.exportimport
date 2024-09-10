@@ -382,6 +382,8 @@ class ExportContent(BrowserView):
 
             try:
                 obj = brain.getObject()
+                import pdb
+                pdb.set_trace()
                 if obj.UID() not in mandatory:
                     continue
                 # if IObjectArchived and IObjectArchived.providedBy(obj):
