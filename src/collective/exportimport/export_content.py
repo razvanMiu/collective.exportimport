@@ -381,26 +381,21 @@ class ExportContent(BrowserView):
                 continue
 
             try:
-                # import pdb
-                # pdb.set_trace()
                 is_mandatory = True if brain.UID in mandatory else False
 
-                # if not is_mandatory and brain.review_state != 'published':
-                #     continue
+                if not is_mandatory and brain.review_state != 'published':
+                    continue
 
                 obj = brain.getObject()
 
-                if not is_mandatory:
+                if IObjectArchived and IObjectArchived.providedBy(obj):
                     continue
-
-                # if IObjectArchived and IObjectArchived.providedBy(obj):
-                #     continue
-                # if isExpired(obj):
-                #     continue
-                # if IGetVersions and not IGetVersions(obj).isLatest():
-                #     continue
-                # if obj.getLanguage() != 'en':
-                #     continue
+                if isExpired(obj):
+                    continue
+                if IGetVersions and not IGetVersions(obj).isLatest():
+                    continue
+                if obj.getLanguage() != 'en':
+                    continue
                 if p and nrOfHits:
                     startIndex = (p - 1) * nrOfHits
                     endIndex = p * nrOfHits
