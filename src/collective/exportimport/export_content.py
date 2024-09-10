@@ -384,14 +384,14 @@ class ExportContent(BrowserView):
                 obj = brain.getObject()
                 if obj.UID() not in mandatory:
                     continue
-                if IObjectArchived and IObjectArchived.providedBy(obj):
-                    continue
-                if isExpired(obj):
-                    continue
-                if IGetVersions and not IGetVersions(obj).isLatest():
-                    continue
-                if obj.getLanguage() != 'en':
-                    continue
+                # if IObjectArchived and IObjectArchived.providedBy(obj):
+                #     continue
+                # if isExpired(obj):
+                #     continue
+                # if IGetVersions and not IGetVersions(obj).isLatest():
+                #     continue
+                # if obj.getLanguage() != 'en':
+                #     continue
                 if p and nrOfHits:
                     startIndex = (p - 1) * nrOfHits
                     endIndex = p * nrOfHits
