@@ -532,10 +532,9 @@ class ExportContent(BrowserView):
 
         # 2. Remove all relationfields
         if HAS_AT and IBaseObject.providedBy(obj):
-            pass
-            # for field in obj.schema.fields():
-            #     if isinstance(field, ReferenceField):
-            #         item.pop(field.__name__, None)
+            for field in obj.schema.fields():
+                if isinstance(field, ReferenceField):
+                    item.pop(field.__name__, None)
         elif HAS_DX and HAS_RELATIONS and IDexterityContent.providedBy(obj):
             for schema in iterSchemata(obj):
                 for name, field in getFields(schema).items():

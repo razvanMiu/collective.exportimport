@@ -1254,11 +1254,6 @@ class ExportEEAContent(ExportContent):
     def migrate_related_items(self, item, obj):
         relatedItems = obj.getRelatedItems()
 
-        if "data_provenance" not in item or not item["data_provenance"] or "data" not in item["data_provenance"]:
-            item["data_provenance"] = {
-                "data": []
-            }
-
         for macro in obj.unrestrictedTraverse('@@eea.relations.macro').backward():
             if len(macro) < 2:
                 continue
@@ -1273,6 +1268,14 @@ class ExportEEAContent(ExportContent):
                         obj=relatedItem, default="unknown") != "published":
                     continue
                 item["relatedItems_backward"].append(relatedItem.UID())
+
+        if not relatedItems:
+            return item
+
+        if "data_provenance" not in item or not item["data_provenance"] or "data" not in item["data_provenance"]:
+            item["data_provenance"] = {
+                "data": []
+            }
 
         for relatedItem in relatedItems:
             if IObjectArchived and IObjectArchived.providedBy(relatedItem):
@@ -1935,8 +1938,8 @@ class ExportEEAFigure(ExportEEAContent):
             serializer = getMultiAdapter(
                 (o[1], self.request), ISerializeToJson)
             child = serializer()
-            import pdb
-            pdb.set_trace()
+            if "relatedItems" in child:
+                del child["relatedItems"]
             child["review_state"] = "published"
             child["@id"] = "%s/%s/%s" % (self.folder_path,
                                          item["id"], child["id"])
