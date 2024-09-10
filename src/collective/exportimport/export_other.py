@@ -1884,9 +1884,9 @@ class ExportDavizFigure(ExportEEAContent):
 
 class ExportEEAFigure(ExportEEAContent):
     QUERY = {
-        "EEAFigure": {
-            "review_state": "published",
-        }
+        # "EEAFigure": {
+        #     "review_state": "published",
+        # }
     }
     PORTAL_TYPE = ["EEAFigure"]
 
