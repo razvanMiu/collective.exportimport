@@ -245,12 +245,12 @@ if HAS_AT:
                 return None
             data = image.data.data if isinstance(
                 image.data, Pdata) else image.data
-            if len(data) > IMAGE_SIZE_WARNING:
-                logger.info(
-                    u"Large image for {}: {}".format(
-                        self.context.absolute_url(), size(len(data))
-                    )
-                )
+            # if len(data) > IMAGE_SIZE_WARNING:
+            #     logger.info(
+            #         u"Large image for {}: {}".format(
+            #             self.context.absolute_url(), size(len(data))
+            #         )
+            #     )
             result = {
                 "filename": self.field.getFilename(self.context),
                 "content-type": image.getContentType(),
@@ -300,12 +300,12 @@ if HAS_AT:
                 return None
             data = image.data.data if isinstance(
                 image.data, Pdata) else image.data
-            if len(data) > IMAGE_SIZE_WARNING:
-                logger.info(
-                    u"Large image for {}: {}".format(
-                        self.context.absolute_url(), size(len(data))
-                    )
-                )
+            # if len(data) > IMAGE_SIZE_WARNING:
+            #     logger.info(
+            #         u"Large image for {}: {}".format(
+            #             self.context.absolute_url(), size(len(data))
+            #         )
+            #     )
             result = {
                 "filename": self.field.getFilename(self.context),
                 "content-type": image.getContentType(),

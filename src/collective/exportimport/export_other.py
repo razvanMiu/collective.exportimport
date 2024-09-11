@@ -1919,6 +1919,7 @@ class ExportEEAFigure(ExportEEAContent):
 
         children = []
 
+        print(item["UID"])
         for o in obj.contentItems():
             if o[1].meta_type != 'EEAFigureFile' and portal_workflow.getInfoFor(
                     o[1], 'review_state') != 'published':
