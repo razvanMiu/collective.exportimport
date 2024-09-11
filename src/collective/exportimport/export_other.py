@@ -1100,7 +1100,7 @@ class ExportEEAContent(ExportContent):
     topics = with_topics
     parsed_ids = {}
 
-    folder_path = "/www/en/sandbox/migration-of-maps-and-graphs-to-new-plone-6"
+    folder_path = "/www/en/analysis/maps-and-charts"
 
     def update(self):
         """Use this to override stuff before the export starts
