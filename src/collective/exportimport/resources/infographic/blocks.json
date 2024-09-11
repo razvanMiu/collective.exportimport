@@ -1,87 +1,18 @@
 {
-  "0b39e3de-0806-4f2b-9c1c-a475f18ccff0": {
-    "@layout": "ddf3b4f7-c154-420d-a940-40efc7ab252f",
-    "@type": "slate",
-    "block": "dbfe6dee-89d0-4141-843e-53bc4084b386",
-    "plaintext": "",
-    "value": [
-      {
-        "children": [
-          {
-            "text": ""
-          }
-        ],
-        "type": "p"
-      }
-    ]
-  },
-  "0e8bbc20-dbd7-4710-9677-6f665539859a": {
-    "@layout": "7d151e78-3bd5-4895-b894-22cedd4886ba",
-    "@type": "gridBlock",
-    "block": "3224d773-f170-4b5d-9587-69ae2a1c88b7",
-    "blocks": {
-      "76c89d98-7d15-464d-b057-f90b72a99bc8": {
-        "@type": "teaser",
-        "id": "76c89d98-7d15-464d-b057-f90b72a99bc8"
-      },
-      "a5f98454-19a9-4e39-a5ec-45f6cd2fd0aa": {
-        "@type": "teaser",
-        "id": "a5f98454-19a9-4e39-a5ec-45f6cd2fd0aa"
-      },
-      "d8177bed-0213-461d-9c8f-c982688f5bfd": {
-        "@type": "teaser",
-        "id": "d8177bed-0213-461d-9c8f-c982688f5bfd"
-      }
-    },
-    "blocks_layout": {
-      "items": [
-        "76c89d98-7d15-464d-b057-f90b72a99bc8",
-        "d8177bed-0213-461d-9c8f-c982688f5bfd",
-        "a5f98454-19a9-4e39-a5ec-45f6cd2fd0aa"
-      ]
-    }
-  },
-  "551ae602-0226-4583-b0bc-e502b93c50b8": {
-    "@layout": "25ff84e3-c274-4fa7-8966-da8ce3d1d01c",
-    "@type": "dividerBlock",
-    "block": "1021a888-88b5-44ad-98b3-14f17c374fa5",
-    "disableNewBlocks": true,
-    "fixed": true,
-    "hidden": true,
-    "required": true,
-    "section": true,
-    "styles": {}
-  },
-  "8913893a-40e6-4f1e-96a9-552c3f9b35c9": {
-    "@layout": "489f8168-0687-4bbe-98b6-fd16cb2b035d",
-    "@type": "slate",
-    "block": "0432d0cf-189a-4af1-910b-922b57b2cbe5",
-    "plaintext": "Related content",
-    "value": [
-      {
-        "children": [
-          {
-            "text": "Related content"
-          }
-        ],
-        "type": "h2"
-      }
-    ]
-  },
-  "8be8bfb8-1507-4278-9c71-259f8a9665a9": {
+  "0470de5f-5ee9-4353-bc37-b08b256110a2": {
     "@layout": "c8433815-534d-4023-a67f-37536c777387",
     "@type": "title",
-    "block": "d1b3d050-5d5d-4472-9210-3232b8c5e934",
+    "block": "dfa21062-343a-49dc-991d-908b093dff10",
     "copyrightIcon": "ri-copyright-line",
     "hideCreationDate": true,
     "hideDownloadButton": true,
     "styles": {}
   },
-  "9c49494e-60a2-4f3e-a646-bce70c2823ed": {
+  "1fc0651d-7830-4748-a648-b79ce1adcfc9": {
     "@layout": "a7743a50-0bc9-4db7-9d1b-823a81e51d9d",
     "@type": "group",
     "as": "div",
-    "block": "9db433b8-df5d-4b7a-b760-82d4924127d2",
+    "block": "d3108860-e007-4348-8ebc-3888ff244b83",
     "data": {
       "blocks": {
         "3ae712a9-2551-4348-9ffb-e9f1ab79ce06": {
@@ -132,11 +63,53 @@
     "title": "Figure section",
     "variation": "default"
   },
-  "a5afb72b-84a1-4e9f-8025-f4f1bba3ed94": {
+  "24aa398a-854e-46bf-a504-007bbf53a0c2": {
+    "@layout": "489f8168-0687-4bbe-98b6-fd16cb2b035d",
+    "@type": "slate",
+    "block": "80effa70-c40d-4340-b9d2-7452f72cbf25",
+    "plaintext": "Related content",
+    "value": [
+      {
+        "children": [
+          {
+            "text": "Related content"
+          }
+        ],
+        "type": "h2"
+      }
+    ]
+  },
+  "5ddfa5b3-e9a3-4faa-b4c9-863c19280ed2": {
+    "@layout": "7d151e78-3bd5-4895-b894-22cedd4886ba",
+    "@type": "gridBlock",
+    "block": "26020d11-5816-4794-8420-a591f137f04f",
+    "blocks": {
+      "76c89d98-7d15-464d-b057-f90b72a99bc8": {
+        "@type": "teaser",
+        "id": "76c89d98-7d15-464d-b057-f90b72a99bc8"
+      },
+      "a5f98454-19a9-4e39-a5ec-45f6cd2fd0aa": {
+        "@type": "teaser",
+        "id": "a5f98454-19a9-4e39-a5ec-45f6cd2fd0aa"
+      },
+      "d8177bed-0213-461d-9c8f-c982688f5bfd": {
+        "@type": "teaser",
+        "id": "d8177bed-0213-461d-9c8f-c982688f5bfd"
+      }
+    },
+    "blocks_layout": {
+      "items": [
+        "76c89d98-7d15-464d-b057-f90b72a99bc8",
+        "d8177bed-0213-461d-9c8f-c982688f5bfd",
+        "a5f98454-19a9-4e39-a5ec-45f6cd2fd0aa"
+      ]
+    }
+  },
+  "8cd734ef-e55a-4de5-b6be-83671b659ed7": {
     "@layout": "feeef919-edc0-4bd0-a2de-10a517b75fcc",
     "@type": "group",
     "as": "div",
-    "block": "b8791e07-c0c2-4904-b791-522eb91bd835",
+    "block": "be9670a8-0e55-48c3-ac80-c36960f2d92e",
     "data": {
       "blocks": {
         "d08627f6-3334-4e15-85bd-c9eb831cbc28": {
@@ -663,11 +636,11 @@
     "title": "Metadata section",
     "variation": "default"
   },
-  "ca8aaf82-7432-4256-a82c-d327bacde1da": {
+  "b1ac0e24-182d-4cc6-b5d7-afe62eb6d5c1": {
     "@layout": "7dfa3ad6-494d-464e-8896-1f50e2129b50",
     "@type": "group",
     "as": "section",
-    "block": "dd943c50-ce4e-410b-b84c-20903c960376",
+    "block": "d3de2609-69f3-4f6b-aaa0-b0fb0dd00b76",
     "data": {
       "blocks": {
         "2fda6e67-fac9-4799-98c4-2dcd162485a5": {
@@ -706,11 +679,11 @@
     "title": "References and footnotes",
     "variation": "default"
   },
-  "e80e725d-db99-4c86-99d2-47939e3b7807": {
+  "b3c244ce-e3ad-4576-9e0b-61b6224376d3": {
     "@layout": "1b16722f-286a-481e-81c7-6952d843d2a7",
     "@type": "group",
     "as": "div",
-    "block": "e80e725d-db99-4c86-99d2-47939e3b7807",
+    "block": "b3c244ce-e3ad-4576-9e0b-61b6224376d3",
     "data": {
       "blocks": {
         "b08303fe-99a2-4e20-b072-2efd128c650c": {
@@ -746,5 +719,32 @@
     "styles": {},
     "title": "Descriptionsection",
     "variation": "default"
+  },
+  "e5331c65-4fd2-4794-9f21-b076fcbbb4c2": {
+    "@layout": "25ff84e3-c274-4fa7-8966-da8ce3d1d01c",
+    "@type": "dividerBlock",
+    "block": "41f6fbb6-fafa-467a-8a3a-f417c961b79c",
+    "disableNewBlocks": true,
+    "fixed": true,
+    "hidden": true,
+    "required": true,
+    "section": true,
+    "styles": {}
+  },
+  "f232a0be-4ead-40e3-8b93-51fbf37baa61": {
+    "@layout": "ddf3b4f7-c154-420d-a940-40efc7ab252f",
+    "@type": "slate",
+    "block": "c6943765-5c45-4d5b-a0c5-63ab2d625512",
+    "plaintext": "",
+    "value": [
+      {
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "type": "p"
+      }
+    ]
   }
 }
