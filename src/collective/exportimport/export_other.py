@@ -1161,8 +1161,6 @@ class ExportEEAContent(ExportContent):
 
     def global_dict_hook(self, item, obj):
 
-        print("Exporting %s" % item["UID"])
-
         self.catalog = getToolByName(self, "portal_catalog")
 
         item = json.dumps(item).replace('\\r\\n', '\\n')
