@@ -1764,9 +1764,6 @@ class ExportDavizFigure(ExportEEAContent):
         charts = chartsConfig.get('charts', [])
         notes = chartsConfig.get('notes', [])
 
-        import pdb
-        pdb.set_trace()
-
         for chart in charts:
             config = json.loads(chart["config"])
             id = chart.get("id")
@@ -1826,7 +1823,7 @@ class ExportDavizFigure(ExportEEAContent):
                         "id", None)
                 # Get figure note
                 if images[0].get("note"):
-                    newItem["figure_notes"] = self.text_to_slate(
+                    newItem["figure_note"] = self.text_to_slate(
                         images[0].get("note"))
                 items.append(newItem)
 
@@ -1865,7 +1862,7 @@ class ExportDavizFigure(ExportEEAContent):
                             "id", None)
                     # Get figure note
                     if img.get("note"):
-                        newItem["figure_notes"] = self.text_to_slate(
+                        newItem["figure_note"] = self.text_to_slate(
                             img.get("note"))
                     items.append(newItem)
             if len(items) >= 1:
