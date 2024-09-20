@@ -36,7 +36,7 @@ from zope.component import queryMultiAdapter, queryAdapter
 from zope.component import queryUtility
 from zope.interface import providedBy
 from uuid import uuid4
-from datetime import datetime
+from dateutil import parser
 
 import json
 import logging
@@ -1894,9 +1894,9 @@ class ExportEEAFigure(ExportEEAContent):
         Return None if you want to skip this particular object.
         """
 
-        import_date = datetime.fromisoformat("2024-09-11T23:59:59+00:00")
+        import_date = parser.parse("2024-09-11T23:59:59+00:00")
 
-        if datetime.fromisoformat(item.get("effective")) < import_date:
+        if parser.parse(item.get("effective")) < import_date:
             return None
 
         figure_type = item.get("figureType", "")
