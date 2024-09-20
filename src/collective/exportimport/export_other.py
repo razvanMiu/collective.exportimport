@@ -1755,6 +1755,16 @@ class ExportDavizFigure(ExportEEAContent):
 
         item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
 
+        item = {
+            "id": item.get("id"),
+            "@id": item.get("@id"),
+            "@type": item.get("@type"),
+            "UID": item.get("UID"),
+            "parent": item.get("parent"),
+            "id": item.get("id"),
+            "figure_note": item.get("figure_note")
+        }
+
         accessor = queryAdapter(
             obj, IVisualizationConfig) if IVisualizationConfig else None
 
