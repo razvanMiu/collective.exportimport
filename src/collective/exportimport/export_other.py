@@ -36,6 +36,7 @@ from zope.component import queryMultiAdapter, queryAdapter
 from zope.component import queryUtility
 from zope.interface import providedBy
 from uuid import uuid4
+from datetime import datetime
 
 import json
 import logging
@@ -1763,6 +1764,9 @@ class ExportDavizFigure(ExportEEAContent):
         charts = chartsConfig.get('charts', [])
         notes = chartsConfig.get('notes', [])
 
+        import pdb
+        pdb.set_trace()
+
         for chart in charts:
             config = json.loads(chart["config"])
             id = chart.get("id")
@@ -1892,12 +1896,19 @@ class ExportEEAFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
+
+        # import_date = datetime.fromisoformat("2024-09-11T23:59:59+00:00")
+
+        # if datetime.fromisoformat(item.get("effective")) < import_date:
+        #     return None
+
         figure_type = item.get("figureType", "")
 
         if figure_type == 'map':
             self.type = 'map_static'
 
         if figure_type == 'graph':
+            return None
             self.type = 'chart_static'
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
@@ -1919,38 +1930,38 @@ class ExportEEAFigure(ExportEEAContent):
 
         children = []
 
-        print(item["UID"])
-        for o in obj.contentItems():
-            if o[1].meta_type != 'EEAFigureFile' and portal_workflow.getInfoFor(
-                    o[1], 'review_state') != 'published':
-                continue
-            if IObjectArchived and IObjectArchived.providedBy(o[1]):
-                continue
-            if isExpired(o[1]):
-                continue
-            if IGetVersions and not IGetVersions(o[1]).isLatest():
-                continue
-            if o[1].getLanguage() != 'en':
-                continue
-            if o[1].meta_type not in ['EEAFigureFile', 'DataFileLink']:
-                continue
-            serializer = getMultiAdapter(
-                (o[1], self.request), ISerializeToJson)
-            child = serializer()
-            if "relatedItems" in child:
-                del child["relatedItems"]
-            child["review_state"] = "published"
-            child["@id"] = "%s/%s/%s" % (self.folder_path,
-                                         item["id"], child["id"])
-            child["parent"]["@id"] = item["@id"]
-            child["parent"]["UID"] = item.get("UID")
-            child["@type"] = 'File' if child.get("file") else 'Link'
-            if child.get("category"):
-                child["subjects"] = [child.get("category")]
-            for field in self.DISSALLOWED_FIELDS:
-                if field in child:
-                    del child[field]
-            children.append(child)
+        # print(item["UID"])
+        # for o in obj.contentItems():
+        #     if o[1].meta_type != 'EEAFigureFile' and portal_workflow.getInfoFor(
+        #             o[1], 'review_state') != 'published':
+        #         continue
+        #     if IObjectArchived and IObjectArchived.providedBy(o[1]):
+        #         continue
+        #     if isExpired(o[1]):
+        #         continue
+        #     if IGetVersions and not IGetVersions(o[1]).isLatest():
+        #         continue
+        #     if o[1].getLanguage() != 'en':
+        #         continue
+        #     if o[1].meta_type not in ['EEAFigureFile', 'DataFileLink']:
+        #         continue
+        #     serializer = getMultiAdapter(
+        #         (o[1], self.request), ISerializeToJson)
+        #     child = serializer()
+        #     if "relatedItems" in child:
+        #         del child["relatedItems"]
+        #     child["review_state"] = "published"
+        #     child["@id"] = "%s/%s/%s" % (self.folder_path,
+        #                                  item["id"], child["id"])
+        #     child["parent"]["@id"] = item["@id"]
+        #     child["parent"]["UID"] = item.get("UID")
+        #     child["@type"] = 'File' if child.get("file") else 'Link'
+        #     if child.get("category"):
+        #         child["subjects"] = [child.get("category")]
+        #     for field in self.DISSALLOWED_FIELDS:
+        #         if field in child:
+        #             del child[field]
+        #     children.append(child)
 
         if len(children) > 0:
             return [item] + children
