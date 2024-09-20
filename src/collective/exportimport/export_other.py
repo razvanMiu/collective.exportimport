@@ -36,7 +36,6 @@ from zope.component import queryMultiAdapter, queryAdapter
 from zope.component import queryUtility
 from zope.interface import providedBy
 from uuid import uuid4
-from dateutil import parser
 from DateTime import DateTime
 
 import json
@@ -1886,10 +1885,10 @@ class ExportEEAFigure(ExportEEAContent):
     QUERY = {
         "EEAFigure": {
             # "review_state": "published",
-            'effective': {
-                'query': DateTime("2024-09-11T23:59:59+00:00"),
-                'range': 'min'  # 'min' specifies greater than or equal to specific_date
-            }
+            # 'effective': {
+            #     'query': DateTime("2024-09-11T23:59:59+00:00"),
+            #     'range': 'min'  # 'min' specifies greater than or equal to specific_date
+            # }
         }
     }
     PORTAL_TYPE = ["EEAFigure"]
@@ -1898,11 +1897,6 @@ class ExportEEAFigure(ExportEEAContent):
         """Use this to modify or skip the serialized data.
         Return None if you want to skip this particular object.
         """
-
-        import_date = parser.parse("2024-09-11T23:59:59+00:00")
-
-        if parser.parse(item.get("effective")) < import_date:
-            return None
 
         figure_type = item.get("figureType", "")
 
