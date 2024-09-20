@@ -1761,7 +1761,6 @@ class ExportDavizFigure(ExportEEAContent):
             "@type": item.get("@type"),
             "UID": item.get("UID"),
             "parent": item.get("parent"),
-            "id": item.get("id"),
             "figure_note": item.get("figure_note")
         }
 
@@ -1796,17 +1795,17 @@ class ExportDavizFigure(ExportEEAContent):
             images[0] = images[default_image]
             images[default_image] = tmp
 
-        csv = queryMultiAdapter((obj, self.request), name='download.csv')
+        # csv = queryMultiAdapter((obj, self.request), name='download.csv')
 
-        if csv:
-            csv = csv(
-                attachment=False).encode('utf-8')
-            item["file"] = {
-                "data": base64.b64encode(csv),
-                "filename": obj.getId() + '.csv',
-                "content_type": "text/csv",
-                "encoding": "base64"
-            }
+        # if csv:
+        #     csv = csv(
+        #         attachment=False).encode('utf-8')
+        #     item["file"] = {
+        #         "data": base64.b64encode(csv),
+        #         "filename": obj.getId() + '.csv',
+        #         "content_type": "text/csv",
+        #         "encoding": "base64"
+        #     }
 
         if len(images) > 0 and images[0]:
             image = None
@@ -1825,12 +1824,12 @@ class ExportDavizFigure(ExportEEAContent):
                         item['@id'] + "-" + imageId))
             if image:
                 newItem = item.copy()
-                newItem["preview_image"] = self.getImage(
-                    image.get("image", None) or image.get("file", None)
-                )
-                if newItem["preview_image"] and "filename" in newItem["preview_image"]:
-                    newItem["preview_image"]["filename"] = image.get(
-                        "id", None)
+                # newItem["preview_image"] = self.getImage(
+                #     image.get("image", None) or image.get("file", None)
+                # )
+                # if newItem["preview_image"] and "filename" in newItem["preview_image"]:
+                #     newItem["preview_image"]["filename"] = image.get(
+                #         "id", None)
                 # Get figure note
                 if images[0].get("note"):
                     newItem["figure_note"] = self.text_to_slate(
@@ -1864,12 +1863,12 @@ class ExportDavizFigure(ExportEEAContent):
                     newItem["UID"] = image.get("UID", None) or item.get(
                         "UID", None)
                     newItem["title"] = itemTitle + " - " + imageTitle
-                    newItem["preview_image"] = self.getImage(
-                        image.get("image", None) or image.get("file", None)
-                    )
-                    if newItem["preview_image"] and "filename" in newItem["preview_image"]:
-                        newItem["preview_image"]["filename"] = image.get(
-                            "id", None)
+                    # newItem["preview_image"] = self.getImage(
+                    #     image.get("image", None) or image.get("file", None)
+                    # )
+                    # if newItem["preview_image"] and "filename" in newItem["preview_image"]:
+                    #     newItem["preview_image"]["filename"] = image.get(
+                    #         "id", None)
                     # Get figure note
                     if img.get("note"):
                         newItem["figure_note"] = self.text_to_slate(
