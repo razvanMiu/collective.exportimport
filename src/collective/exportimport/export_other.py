@@ -1894,10 +1894,10 @@ class ExportEEAFigure(ExportEEAContent):
         Return None if you want to skip this particular object.
         """
 
-        # import_date = datetime.fromisoformat("2024-09-11T23:59:59+00:00")
+        import_date = datetime.fromisoformat("2024-09-11T23:59:59+00:00")
 
-        # if datetime.fromisoformat(item.get("effective")) < import_date:
-        #     return None
+        if datetime.fromisoformat(item.get("effective")) < import_date:
+            return None
 
         figure_type = item.get("figureType", "")
 
@@ -1905,73 +1905,62 @@ class ExportEEAFigure(ExportEEAContent):
             self.type = 'map_static'
 
         if figure_type == 'graph':
-            return None
             self.type = 'chart_static'
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
-        item = {
-            "id": item.get("id"),
-            "@id": item.get("@id"),
-            "@type": item.get("@type"),
-            "UID": item.get("UID"),
-            "parent": item.get("parent"),
-            "blocks": item.get("blocks"),
-            "blocks_layout": item.get("blocks_layout"),
-        }
+        figure = obj.unrestrictedTraverse(
+            "@@getSingleEEAFigureFile").singlefigure()
+        image = figure.unrestrictedTraverse("image_large") if figure else None
+        imageB64 = base64.b64encode(image.__call__()) if image else None
 
-        # figure = obj.unrestrictedTraverse(
-        #     "@@getSingleEEAFigureFile").singlefigure()
-        # image = figure.unrestrictedTraverse("image_large") if figure else None
-        # imageB64 = base64.b64encode(image.__call__()) if image else None
+        if imageB64:
+            item["preview_image"] = {
+                "encoding": "base64",
+                "content-type": "image/png",
+                "data": imageB64
+            }
 
-        # if imageB64:
-        #     item["preview_image"] = {
-        #         "encoding": "base64",
-        #         "content-type": "image/png",
-        #         "data": imageB64
-        #     }
+        portal_workflow = getToolByName(
+            self.context, "portal_workflow", None)
 
-        # portal_workflow = getToolByName(
-        #     self.context, "portal_workflow", None)
-
-        # children = []
+        children = []
 
         # print(item["UID"])
-        # for o in obj.contentItems():
-        #     if o[1].meta_type != 'EEAFigureFile' and portal_workflow.getInfoFor(
-        #             o[1], 'review_state') != 'published':
-        #         continue
-        #     if IObjectArchived and IObjectArchived.providedBy(o[1]):
-        #         continue
-        #     if isExpired(o[1]):
-        #         continue
-        #     if IGetVersions and not IGetVersions(o[1]).isLatest():
-        #         continue
-        #     if o[1].getLanguage() != 'en':
-        #         continue
-        #     if o[1].meta_type not in ['EEAFigureFile', 'DataFileLink']:
-        #         continue
-        #     serializer = getMultiAdapter(
-        #         (o[1], self.request), ISerializeToJson)
-        #     child = serializer()
-        #     if "relatedItems" in child:
-        #         del child["relatedItems"]
-        #     child["review_state"] = "published"
-        #     child["@id"] = "%s/%s/%s" % (self.folder_path,
-        #                                  item["id"], child["id"])
-        #     child["parent"]["@id"] = item["@id"]
-        #     child["parent"]["UID"] = item.get("UID")
-        #     child["@type"] = 'File' if child.get("file") else 'Link'
-        #     if child.get("category"):
-        #         child["subjects"] = [child.get("category")]
-        #     for field in self.DISSALLOWED_FIELDS:
-        #         if field in child:
-        #             del child[field]
-        #     children.append(child)
+        for o in obj.contentItems():
+            if o[1].meta_type != 'EEAFigureFile' and portal_workflow.getInfoFor(
+                    o[1], 'review_state') != 'published':
+                continue
+            if IObjectArchived and IObjectArchived.providedBy(o[1]):
+                continue
+            if isExpired(o[1]):
+                continue
+            if IGetVersions and not IGetVersions(o[1]).isLatest():
+                continue
+            if o[1].getLanguage() != 'en':
+                continue
+            if o[1].meta_type not in ['EEAFigureFile', 'DataFileLink']:
+                continue
+            serializer = getMultiAdapter(
+                (o[1], self.request), ISerializeToJson)
+            child = serializer()
+            if "relatedItems" in child:
+                del child["relatedItems"]
+            child["review_state"] = "published"
+            child["@id"] = "%s/%s/%s" % (self.folder_path,
+                                         item["id"], child["id"])
+            child["parent"]["@id"] = item["@id"]
+            child["parent"]["UID"] = item.get("UID")
+            child["@type"] = 'File' if child.get("file") else 'Link'
+            if child.get("category"):
+                child["subjects"] = [child.get("category")]
+            for field in self.DISSALLOWED_FIELDS:
+                if field in child:
+                    del child[field]
+            children.append(child)
 
-        # if len(children) > 0:
-        #     return [item] + children
+        if len(children) > 0:
+            return [item] + children
 
         return item
 
