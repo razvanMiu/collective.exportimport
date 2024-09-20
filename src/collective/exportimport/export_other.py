@@ -37,6 +37,7 @@ from zope.component import queryUtility
 from zope.interface import providedBy
 from uuid import uuid4
 from dateutil import parser
+from DateTime import DateTime
 
 import json
 import logging
@@ -1883,9 +1884,13 @@ class ExportDavizFigure(ExportEEAContent):
 
 class ExportEEAFigure(ExportEEAContent):
     QUERY = {
-        # "EEAFigure": {
-        #     "review_state": "published",
-        # }
+        "EEAFigure": {
+            # "review_state": "published",
+            'effective': {
+                'query': DateTime("2024-09-11T23:59:59+00:00"),
+                'range': 'min'  # 'min' specifies greater than or equal to specific_date
+            }
+        }
     }
     PORTAL_TYPE = ["EEAFigure"]
 
