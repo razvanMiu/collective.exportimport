@@ -1737,7 +1737,7 @@ class ExportGisMapApplication(ExportEEAContent):
 class ExportDavizFigure(ExportEEAContent):
     QUERY = {
         "DavizVisualization": {
-            "review_state": "published",
+            # "review_state": "published",
         }
     }
     PORTAL_TYPE = ["DavizVisualization"]
