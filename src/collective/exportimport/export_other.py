@@ -1059,7 +1059,9 @@ class ExportIMSIndicator(ExportContent):
         dataFigureBlock = getBlock(item["blocks"], "@type", "dataFigure")
 
         return {
-            "dataFigure": dataFigureBlock
+            "dataFigure": {
+                "url": dataFigureBlock["url"]
+            }
         }
 
         return item
