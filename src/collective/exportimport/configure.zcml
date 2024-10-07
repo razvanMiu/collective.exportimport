@@ -101,46 +101,6 @@
       />
 
   <browser:page
-      name="export_infographic"
-      for="zope.interface.Interface"
-      class=".export_other.ExportInfographic"
-      template="templates/export_other.pt"
-      permission="cmf.ManagePortal"
-      />
-
-  <browser:page
-      name="export_dashboard"
-      for="zope.interface.Interface"
-      class=".export_other.ExportDashboard"
-      template="templates/export_other.pt"
-      permission="cmf.ManagePortal"
-      />
-
-  <browser:page
-      name="export_gis_map_application"
-      for="zope.interface.Interface"
-      class=".export_other.ExportGisMapApplication"
-      template="templates/export_other.pt"
-      permission="cmf.ManagePortal"
-      />
-
-  <browser:page
-      name="export_daviz_figure"
-      for="zope.interface.Interface"
-      class=".export_other.ExportDavizFigure"
-      template="templates/export_other.pt"
-      permission="cmf.ManagePortal"
-      />
-
-  <browser:page
-      name="export_eeafigure"
-      for="zope.interface.Interface"
-      class=".export_other.ExportEEAFigure"
-      template="templates/export_other.pt"
-      permission="cmf.ManagePortal"
-      />
-    
-  <browser:page
       name="export_ims_indicator"
       for="zope.interface.Interface"
       class=".export_other.ExportIMSIndicator"
@@ -152,14 +112,6 @@
       name="export_report"
       for="zope.interface.Interface"
       class=".export_other.ExportReport"
-      template="templates/export_other.pt"
-      permission="cmf.ManagePortal"
-      />
-
-  <browser:page
-      name="export_image"
-      for="zope.interface.Interface"
-      class=".export_other.ExportImage"
       template="templates/export_other.pt"
       permission="cmf.ManagePortal"
       />
