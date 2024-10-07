@@ -139,6 +139,14 @@
       template="templates/export_other.pt"
       permission="cmf.ManagePortal"
       />
+    
+  <browser:page
+      name="export_indicator"
+      for="zope.interface.Interface"
+      class=".export_other.ExportIMSIndicator"
+      template="templates/export_other.pt"
+      permission="cmf.ManagePortal"
+      />
 
   <browser:page
       name="export_report"

@@ -1964,6 +1964,26 @@ class ExportEEAFigure(ExportEEAContent):
         return item
 
 
+class ExportIMSIndicator(ExportEEAContent):
+    QUERY = {
+        "ims_indicator": {
+            "review_state": "published",
+        }
+    }
+    PORTAL_TYPE = ["ims_indicator"]
+    type = 'ims_indicator'
+
+    def global_dict_hook(self, item, obj):
+        """Use this to modify or skip the serialized data.
+        Return None if you want to skip this particular object.
+        """
+
+        import pdb
+        pdb.set_trace()
+
+        return item
+
+
 class ExportReport(ExportEEAContent):
     # TODO: update @id and uid
     QUERY = {
