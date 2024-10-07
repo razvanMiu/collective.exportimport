@@ -141,7 +141,7 @@
       />
     
   <browser:page
-      name="export_indicator"
+      name="export_ims_indicator"
       for="zope.interface.Interface"
       class=".export_other.ExportIMSIndicator"
       template="templates/export_other.pt"
