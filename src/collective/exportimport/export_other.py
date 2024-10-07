@@ -1636,6 +1636,11 @@ class ExportEEAContent(ExportContent):
         return slate
 
     def finish(self):
+        import pdb
+        pdb.set_trace()
+        with open(os.path.dirname(__file__) + '/resources/missing_ids.json', 'w') as f:
+            print(self.__ids)
+            json.dump(self.__ids, f)
         locations = list(set(self.locations))
         images_ids = list(set(self.images_ids))
         topics = list(set(self.topics))
