@@ -1060,6 +1060,8 @@ class ExportIMSIndicator(ExportContent):
 
         return {
             "dataFigure": {
+                "@id": item["@id"],
+                "UID": item["UID"],
                 "url": dataFigureBlock["url"]
             }
         }
