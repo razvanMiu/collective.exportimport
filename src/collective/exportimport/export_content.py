@@ -246,7 +246,10 @@ class ExportContent(BrowserView):
                 noLongerProvides(self.request, IBase64BlobsMarker)
             elif self.include_blobs == 2:
                 noLongerProvides(self.request, IPathBlobsMarker)
+            import pdb
+            pdb.set_trace()
             with open(os.path.dirname(__file__) + '/resources/missing_ids.json', 'w') as f:
+                print(self.__ids)
                 json.dump(self.__ids, f)
             self.finish()
             self.request.response.redirect(self.request["ACTUAL_URL"])
