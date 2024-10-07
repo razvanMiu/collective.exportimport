@@ -1044,6 +1044,12 @@ class ExportIMSIndicator(ExportContent):
             "review_state": "published",
         }
     }
+    PORTAL_TYPE = ["ims_indicator"]
+
+    def update(self):
+        """Use this to override stuff before the export starts
+        (e.g. force a specific language in the request)."""
+        self.portal_type = self.PORTAL_TYPE
 
     def global_dict_hook(self, item, obj):
         """Use this to modify or skip the serialized data.
