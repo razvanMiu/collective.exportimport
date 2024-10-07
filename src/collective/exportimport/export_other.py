@@ -1056,7 +1056,10 @@ class ExportIMSIndicator(ExportContent):
         Return None if you want to skip this particular object.
         """
 
-        import pdb
-        pdb.set_trace()
+        dataFigureBlock = getBlock(item["blocks"], "@type", "dataFigure")
+
+        return {
+            "dataFigure": dataFigureBlock
+        }
 
         return item
