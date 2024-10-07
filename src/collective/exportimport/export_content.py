@@ -393,10 +393,10 @@ class ExportContent(BrowserView):
 
                 review_state = workflow.getInfoFor(obj, 'review_state')
 
-                if brain.review_state != review_state and review_state == 'published':
-                    self.missing_ids.append(obj.UID())
-                else:
-                    continue
+                # if brain.review_state != review_state and review_state == 'published':
+                #     self.missing_ids.append(obj.UID())
+                # else:
+                #     continue
 
                 if not is_mandatory and review_state != 'published':
                     continue
