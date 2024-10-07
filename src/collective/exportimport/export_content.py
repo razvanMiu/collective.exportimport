@@ -386,11 +386,11 @@ class ExportContent(BrowserView):
                 if brain.UID in ["93ffd36e5350449dbe1e1efa06dcea8d"]:
                     continue
 
-                # if not is_mandatory and brain.review_state != 'published':
-                #     continue
-
-                if not is_mandatory:
+                if not is_mandatory and brain.review_state != 'published':
                     continue
+
+                # if not is_mandatory:
+                #     continue
 
                 obj = brain.getObject()
 
