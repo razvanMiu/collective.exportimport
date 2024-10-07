@@ -357,6 +357,7 @@ class ExportContent(BrowserView):
     def export_content(self):
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
+        workflow = api.portal.get_tool("portal_workflow")
         brains = catalog.unrestrictedSearchResults(**query)
         p = int(self.request.get('p', '0') or '0')
         nrOfHits = int(self.request.get('nrOfHits', '0') or '0')
@@ -381,21 +382,22 @@ class ExportContent(BrowserView):
                 continue
 
             try:
-                import pdb
-                pdb.set_trace()
-
                 is_mandatory = True if brain.UID in mandatory else False
 
                 if brain.UID in ["93ffd36e5350449dbe1e1efa06dcea8d"]:
                     continue
 
-                if not is_mandatory and brain.review_state != 'published':
+                obj = brain.getObject()
+
+                review_state = workflow.getInfoFor(obj, 'review_state')
+
+                if brain.review_state != review_state and review_state == 'published':
+                    print(obj.UID())
+                else:
                     continue
 
-                # if not is_mandatory:
-                #     continue
-
-                obj = brain.getObject()
+                if not is_mandatory and review_state != 'published':
+                    continue
 
                 if IObjectArchived and IObjectArchived.providedBy(obj):
                     continue
