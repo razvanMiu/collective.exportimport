@@ -382,8 +382,6 @@ class ExportContent(BrowserView):
 
             try:
                 is_mandatory = True if brain.UID in mandatory else False
-                import pdb
-                pdb.set_trace()
 
                 if brain.UID in ["93ffd36e5350449dbe1e1efa06dcea8d"]:
                     continue
