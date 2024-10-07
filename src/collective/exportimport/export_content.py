@@ -119,6 +119,8 @@ class ExportContent(BrowserView):
 
     locations = []
 
+    __ids = []
+
     def __call__(
         self,
         portal_type=None,
@@ -244,6 +246,8 @@ class ExportContent(BrowserView):
                 noLongerProvides(self.request, IBase64BlobsMarker)
             elif self.include_blobs == 2:
                 noLongerProvides(self.request, IPathBlobsMarker)
+            with open(os.path.dirname(__file__) + '/resources/missing_ids.json', 'w') as f:
+                json.dump(self.__ids, f)
             self.finish()
             self.request.response.redirect(self.request["ACTUAL_URL"])
 
@@ -392,7 +396,7 @@ class ExportContent(BrowserView):
                 review_state = workflow.getInfoFor(obj, 'review_state')
 
                 if brain.review_state != review_state and review_state == 'published':
-                    print(obj.UID())
+                    self.__ids.append(obj.UID())
                 else:
                     continue
 
