@@ -119,8 +119,6 @@ class ExportContent(BrowserView):
 
     locations = []
 
-    missing_ids = []
-
     def __call__(
         self,
         portal_type=None,
@@ -394,12 +392,6 @@ class ExportContent(BrowserView):
                 obj = brain.getObject()
 
                 review_state = workflow.getInfoFor(obj, 'review_state')
-
-                # if brain.review_state != review_state and review_state == 'published':
-                #     print(obj.UID())
-                #     self.missing_ids.append(obj.UID())
-                # else:
-                #     continue
 
                 if not is_mandatory and review_state != 'published':
                     continue
