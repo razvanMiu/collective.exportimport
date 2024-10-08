@@ -389,10 +389,13 @@ class ExportContent(BrowserView):
 
                 obj = brain.getObject()
 
-                # review_state = workflow.getInfoFor(obj, 'review_state')
+                review_state = workflow.getInfoFor(obj, 'review_state')
 
-                if not is_mandatory:
+                if brain.review_state != review_state and review_state != 'published':
                     continue
+
+                # if not is_mandatory:
+                #     continue
 
                 if IObjectArchived and IObjectArchived.providedBy(obj):
                     continue
