@@ -407,11 +407,18 @@ class ExportContent(BrowserView):
                     continue
                 # is latest dar nu e published -> ia versions si din versions alege utlimul published
                 if review_state != 'published':
-                    import pdb
-                    pdb.set_trace()
-                    print(obj.UID())
+                    ok = False
+                    versions = IGetVersions(obj).versions()
+                    for version in versions:
+                        if workflow.getInfoFor(
+                                version, 'review_state') == 'published':
+                            ok = True
+                            obj = version
+                            print(obj.UID())
+                            break
+                    if not ok:
+                        continue
                     continue
-                continue
                 if p and nrOfHits:
                     startIndex = (p - 1) * nrOfHits
                     endIndex = p * nrOfHits
