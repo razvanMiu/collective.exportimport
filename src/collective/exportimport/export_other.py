@@ -1911,6 +1911,9 @@ class ExportEEAFigure(ExportEEAContent):
         Return None if you want to skip this particular object.
         """
 
+        import pdb
+        pdb.set_trace()
+
         figure_type = item.get("figureType", "")
 
         if figure_type == 'map':
