@@ -391,8 +391,8 @@ class ExportContent(BrowserView):
 
                 review_state = workflow.getInfoFor(obj, 'review_state')
 
-                # if brain.review_state == review_state or review_state != 'published':
-                #     continue
+                if brain.review_state == review_state or review_state != 'published':
+                    continue
 
                 # if not is_mandatory:
                 #     continue
@@ -406,19 +406,19 @@ class ExportContent(BrowserView):
                 if obj.getLanguage() != 'en':
                     continue
                 # is latest dar nu e published -> ia versions si din versions alege utlimul published
-                if review_state != 'published':
-                    ok = False
-                    versions = IGetVersions(obj).versions()
-                    for version in versions:
-                        if workflow.getInfoFor(
-                                version, 'review_state') == 'published':
-                            ok = True
-                            obj = version
-                            print(obj.UID())
-                            break
-                    if not ok:
-                        continue
-                    continue
+                # if review_state != 'published':
+                #     ok = False
+                #     versions = IGetVersions(obj).versions()
+                #     for version in versions:
+                #         if workflow.getInfoFor(
+                #                 version, 'review_state') == 'published':
+                #             ok = True
+                #             obj = version
+                #             print(obj.UID())
+                #             break
+                #     if not ok:
+                #         continue
+                #     continue
                 if p and nrOfHits:
                     startIndex = (p - 1) * nrOfHits
                     endIndex = p * nrOfHits
