@@ -382,20 +382,20 @@ class ExportContent(BrowserView):
                 continue
 
             try:
-                is_mandatory = True if brain.UID in mandatory else False
+                # is_mandatory = True if brain.UID in mandatory else False
 
                 if brain.UID in ["93ffd36e5350449dbe1e1efa06dcea8d"]:
                     continue
 
                 obj = brain.getObject()
 
-                # review_state = workflow.getInfoFor(obj, 'review_state')
+                review_state = workflow.getInfoFor(obj, 'review_state')
 
-                # if brain.review_state != review_state and review_state != 'published':
-                #     continue
-
-                if not is_mandatory:
+                if brain.review_state != review_state and review_state != 'published':
                     continue
+
+                # if not is_mandatory:
+                #     continue
 
                 if IObjectArchived and IObjectArchived.providedBy(obj):
                     continue
