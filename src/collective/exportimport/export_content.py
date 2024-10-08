@@ -391,7 +391,7 @@ class ExportContent(BrowserView):
 
                 review_state = workflow.getInfoFor(obj, 'review_state')
 
-                if brain.review_state != review_state and review_state != 'published':
+                if brain.review_state == review_state or review_state != 'published':
                     continue
 
                 print("brain state: %s, review state: %s" %
