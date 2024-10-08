@@ -1911,16 +1911,17 @@ class ExportEEAFigure(ExportEEAContent):
         Return None if you want to skip this particular object.
         """
 
-        import pdb
-        pdb.set_trace()
-
         figure_type = item.get("figureType", "")
+
+        if not figure_type:
+            print("==> %s" % item["@id"])
 
         if figure_type == 'map':
             self.type = 'map_static'
-
-        if figure_type == 'graph':
+        elif figure_type == 'graph':
             self.type = 'chart_static'
+        else:
+            self.type = 'map_static'
 
         item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
 
