@@ -394,6 +394,9 @@ class ExportContent(BrowserView):
                 if brain.review_state != review_state and review_state != 'published':
                     continue
 
+                print("brain state: %s, review state: %s" %
+                      (brain.review_state, review_state))
+
                 # if not is_mandatory:
                 #     continue
 

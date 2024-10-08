@@ -1912,8 +1912,6 @@ class ExportEEAFigure(ExportEEAContent):
 
         figure_type = item.get("figureType", "")
 
-        print("==> %s, %s, %s" % (item["@id"], figure_type, self.type))
-
         if figure_type == 'map':
             self.type = 'map_static'
         elif figure_type == 'graph':
