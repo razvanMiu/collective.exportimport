@@ -1220,7 +1220,6 @@ class ExportEEAContent(ExportContent):
             [parentId, id] = parts[-2:]
             # item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
             item["id"] = '%s-%s' % (id, parentId)
-            print(item["@id"])
             self.missing_ids.append(item["UID"])
         else:
             self.parsed_ids.append(item["id"])
@@ -1913,8 +1912,7 @@ class ExportEEAFigure(ExportEEAContent):
 
         figure_type = item.get("figureType", "")
 
-        if not figure_type:
-            print("==> %s, %s" % (item["@id"], self.type))
+        print("==> %s, %s, %s" % (item["@id"], figure_type, self.type))
 
         if figure_type == 'map':
             self.type = 'map_static'
