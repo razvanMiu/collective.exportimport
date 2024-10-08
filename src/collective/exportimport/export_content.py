@@ -382,8 +382,6 @@ class ExportContent(BrowserView):
                 continue
 
             try:
-                # import pdb
-                # pdb.set_trace()
                 is_mandatory = True if brain.UID in mandatory else False
 
                 if brain.UID in ["93ffd36e5350449dbe1e1efa06dcea8d"]:
@@ -391,9 +389,9 @@ class ExportContent(BrowserView):
 
                 obj = brain.getObject()
 
-                review_state = workflow.getInfoFor(obj, 'review_state')
+                # review_state = workflow.getInfoFor(obj, 'review_state')
 
-                if not is_mandatory and review_state != 'published':
+                if not is_mandatory:
                     continue
 
                 if IObjectArchived and IObjectArchived.providedBy(obj):
