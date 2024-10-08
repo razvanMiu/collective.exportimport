@@ -407,6 +407,8 @@ class ExportContent(BrowserView):
                     continue
                 # is latest dar nu e published -> ia versions si din versions alege utlimul published
                 if review_state != 'published':
+                    import pdb
+                    pdb.set_trace()
                     print(obj.UID())
                     continue
                 continue
