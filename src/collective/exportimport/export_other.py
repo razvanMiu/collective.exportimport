@@ -1914,7 +1914,7 @@ class ExportEEAFigure(ExportEEAContent):
         figure_type = item.get("figureType", "")
 
         if not figure_type:
-            print("==> %s, %s" % item["@id"], self.type)
+            print("==> %s, %s" % (item["@id"], self.type))
 
         if figure_type == 'map':
             self.type = 'map_static'
