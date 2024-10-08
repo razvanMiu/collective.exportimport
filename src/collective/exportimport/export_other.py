@@ -1645,10 +1645,10 @@ class ExportEEAContent(ExportContent):
         return slate
 
     def finish(self):
-        with open(os.path.dirname(__file__) + '/resources/parsed_ids.json', 'w') as f:
-            json.dump(self.parsed_ids, f)
-        with open(os.path.dirname(__file__) + '/resources/missing_ids.json', 'w') as f:
-            json.dump(self.missing_ids, f)
+        # with open(os.path.dirname(__file__) + '/resources/parsed_ids.json', 'w') as f:
+        #     json.dump(self.parsed_ids, f)
+        # with open(os.path.dirname(__file__) + '/resources/missing_ids.json', 'w') as f:
+        #     json.dump(self.missing_ids, f)
         locations = list(set(self.locations))
         images_ids = list(set(self.images_ids))
         topics = list(set(self.topics))
