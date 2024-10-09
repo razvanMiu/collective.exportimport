@@ -119,6 +119,8 @@ class ExportContent(BrowserView):
 
     locations = []
 
+    x = []
+
     def __call__(
         self,
         portal_type=None,
@@ -226,6 +228,9 @@ class ExportContent(BrowserView):
                 filepath = os.path.join(directory, filename)
                 with open(filepath, "w") as f:
                     json.dump(datum, f, sort_keys=True, indent=4)
+            # TODO: scrie x in fisier
+            import pdb
+            pdb.set_trace()
             if number:
                 if self.errors and self.write_errors:
                     errors = {"unexported_paths": self.errors}
@@ -391,8 +396,8 @@ class ExportContent(BrowserView):
 
                 review_state = workflow.getInfoFor(obj, 'review_state')
 
-                if brain.review_state == review_state or review_state != 'published':
-                    continue
+                # if brain.review_state == review_state or review_state != 'published':
+                #     continue
 
                 # if not is_mandatory:
                 #     continue
@@ -405,20 +410,19 @@ class ExportContent(BrowserView):
                     continue
                 if obj.getLanguage() != 'en':
                     continue
-                # is latest dar nu e published -> ia versions si din versions alege utlimul published
-                # if review_state != 'published':
-                #     ok = False
-                #     versions = IGetVersions(obj).versions()
-                #     for version in versions:
-                #         if workflow.getInfoFor(
-                #                 version, 'review_state') == 'published':
-                #             ok = True
-                #             obj = version
-                #             print(obj.UID())
-                #             break
-                #     if not ok:
-                #         continue
-                #     continue
+                if review_state != 'published':
+                    ok = False
+                    versions = IGetVersions(obj).versions()
+                    for version in reversed(versions):
+                        if workflow.getInfoFor(version, 'review_state') == 'published' and not IObjectArchived.providedBy(version) and not isExpired(version) and version.getLanguage() == 'en':
+                            ok = True
+                            obj = version
+                            self.x.append(versions[-1])
+                            break
+                    if not ok:
+                        continue
+                else:
+                    continue
                 if p and nrOfHits:
                     startIndex = (p - 1) * nrOfHits
                     endIndex = p * nrOfHits
