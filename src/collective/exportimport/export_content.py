@@ -395,8 +395,8 @@ class ExportContent(BrowserView):
 
                 review_state = workflow.getInfoFor(obj, 'review_state')
 
-                # if brain.review_state == review_state or review_state != 'published':
-                #     continue
+                if brain.review_state == review_state or review_state != 'published':
+                    continue
 
                 # if not is_mandatory:
                 #     continue
@@ -409,19 +409,19 @@ class ExportContent(BrowserView):
                     continue
                 if obj.getLanguage() != 'en':
                     continue
-                if review_state != 'published':
-                    ok = False
-                    versions = IGetVersions(obj).versions()
-                    for version in reversed(versions):
-                        if workflow.getInfoFor(version, 'review_state') == 'published' and not IObjectArchived.providedBy(version) and not isExpired(version) and version.getLanguage() == 'en':
-                            ok = True
-                            obj = version
-                            self.x.append(versions[-1])
-                            break
-                    if not ok:
-                        continue
-                else:
-                    continue
+                # if review_state != 'published':
+                #     ok = False
+                #     versions = IGetVersions(obj).versions()
+                #     for version in reversed(versions):
+                #         if workflow.getInfoFor(version, 'review_state') == 'published' and not IObjectArchived.providedBy(version) and not isExpired(version) and version.getLanguage() == 'en':
+                #             ok = True
+                #             obj = version
+                #             self.x.append(versions[-1])
+                #             break
+                #     if not ok:
+                #         continue
+                # else:
+                #     continue
                 if p and nrOfHits:
                     startIndex = (p - 1) * nrOfHits
                     endIndex = p * nrOfHits
