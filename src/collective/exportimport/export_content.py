@@ -228,9 +228,6 @@ class ExportContent(BrowserView):
                 filepath = os.path.join(directory, filename)
                 with open(filepath, "w") as f:
                     json.dump(datum, f, sort_keys=True, indent=4)
-            # TODO: scrie x in fisier
-            import pdb
-            pdb.set_trace()
             if number:
                 if self.errors and self.write_errors:
                     errors = {"unexported_paths": self.errors}
@@ -331,6 +328,8 @@ class ExportContent(BrowserView):
                 elif self.include_blobs == 2:
                     noLongerProvides(self.request, IPathBlobsMarker)
                 f.seek(0)
+                import pdb
+                pdb.set_trace()
                 self.finish()
                 return response.write(safe_bytes(f.read()))
 
