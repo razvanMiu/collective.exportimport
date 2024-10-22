@@ -395,12 +395,16 @@ class ExportContent(BrowserView):
 
                 review_state = workflow.getInfoFor(obj, 'review_state')
 
-                if brain.review_state == review_state or review_state != 'published':
-                    continue
+                import pdb
+                pdb.set_trace()
+
+                # if brain.review_state == review_state or review_state != 'published':
+                #     continue
 
                 # if not is_mandatory:
                 #     continue
-
+                if review_state != 'published':
+                    continue
                 if IObjectArchived and IObjectArchived.providedBy(obj):
                     continue
                 if isExpired(obj):
