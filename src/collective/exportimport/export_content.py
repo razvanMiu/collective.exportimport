@@ -400,6 +400,8 @@ class ExportContent(BrowserView):
 
                 if not is_mandatory:
                     continue
+                import pdb
+                pdb.set_trace()
                 if review_state != 'published':
                     continue
                 if IObjectArchived and IObjectArchived.providedBy(obj):
