@@ -80,6 +80,14 @@ else:
 
     HAS_RELATIONS = True
 
+with open(os.path.dirname(__file__) + 'DavizVisualization.json') as file:
+    daviz = json.load(file)
+
+with open(os.path.dirname(__file__) + 'EEAFigure.json') as file:
+    eeafigures = json.load(file)
+
+with open(os.path.dirname(__file__) + 'Infographic.json') as file:
+    infographics = json.load(file)
 
 logger = logging.getLogger(__name__)
 
@@ -360,6 +368,8 @@ class ExportContent(BrowserView):
 
     def export_content(self):
         query = self.build_query()
+        import pdb
+        pdb.set_trace()
         catalog = api.portal.get_tool("portal_catalog")
         workflow = api.portal.get_tool("portal_workflow")
         brains = catalog.unrestrictedSearchResults(**query)
@@ -400,8 +410,6 @@ class ExportContent(BrowserView):
 
                 if not is_mandatory:
                     continue
-                import pdb
-                pdb.set_trace()
                 if review_state != 'published':
                     continue
                 if IObjectArchived and IObjectArchived.providedBy(obj):
