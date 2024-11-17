@@ -103,10 +103,6 @@ LISTING_VIEW_MAPPING = {  # OLD (AT and old DX) : NEW
 }
 
 
-with open(os.path.dirname(__file__) + '/resources/mandatory.json') as file:
-    mandatory = json.load(file)
-
-
 class ExportContent(BrowserView):
 
     template = ViewPageTemplateFile("templates/export_content.pt")
