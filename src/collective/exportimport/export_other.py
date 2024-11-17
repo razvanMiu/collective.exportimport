@@ -1444,16 +1444,3 @@ class ExportReport(ExportEEAContent):
     #     pp.pprint(self.statistics)
     #     f = open(os.path.dirname(__file__) + '/resources/reports.json', "w")
     #     f.write(json.dumps(self.data, indent=4))
-
-
-class ExportImage(ExportEEAContent):
-    QUERY = {
-        "Image": {
-            "UID": with_images_ids
-        }
-    }
-    PORTAL_TYPE = ["Image"]
-    type = "Image"
-
-    def global_dict_hook(self, item, obj):
-        return item
