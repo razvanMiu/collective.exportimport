@@ -36,7 +36,6 @@ from zope.component import queryMultiAdapter, queryAdapter
 from zope.component import queryUtility
 from zope.interface import providedBy
 from uuid import uuid4
-from DateTime import DateTime
 
 import json
 import logging
@@ -44,7 +43,6 @@ import os
 import pkg_resources
 import six
 import base64
-import uuid
 import requests
 import re
 import sys
@@ -119,30 +117,6 @@ except pkg_resources.DistributionNotFound:
 logger = logging.getLogger(__name__)
 
 PORTAL_PLACEHOLDER = "<Portal>"
-
-with open(os.path.dirname(__file__) + '/resources/topics.json') as file:
-    topics = json.load(file)
-
-with open(os.path.dirname(__file__) + '/resources/geo_coverage.json') as file:
-    geo_coverage = json.load(file)
-
-with open(os.path.dirname(__file__) + '/resources/related_items.json') as file:
-    related_items = json.load(file)
-
-with open(os.path.dirname(__file__) + '/resources/images_ids.json') as file:
-    with_images_ids = json.load(file)
-
-with open(os.path.dirname(__file__) + '/resources/locations.json') as file:
-    with_locations = json.load(file)
-
-with open(os.path.dirname(__file__) + '/resources/missing-topics.json') as file:
-    with_topics = json.load(file)
-
-with open(os.path.dirname(__file__) + '/resources/parsed_ids.json') as file:
-    with_parsed_ids = json.load(file)
-
-with open(os.path.dirname(__file__) + '/resources/missing_ids.json') as file:
-    with_missing_ids = json.load(file)
 
 
 def make_uid():
@@ -1049,43 +1023,41 @@ class ExportEEAContent(ExportContent):
     PORTAL_TYPE = []
     DISSALLOWED_FIELDS = [
         "arcgis_url",
-        "body",  # handled by migrate_more_info
+        "body",
         "constrainTypesMode",
         "coverImage",
-        # "contact",  # handled by migrate_more_info
         "dataLink",
-        # "dataOwner",  # handled by migrate_more_info
         "dataSource",
         "dataTitle",
         "dataWarning",
         "disableProgressTrailViewlet",
-        "eeaManagementPlan",  # handled by migrate_more_info
+        "eeaManagementPlan",
         "external",
-        "externalRelations",  # handled by migrate_more_info
+        "externalRelations",
         "forcedisableautolinks",
         "figureType",
         "geographicCoverage",
         "inheritedprovenance",
-        "introduction",  # handled by migrate_introduction
-        "image",  # handled by migrate_image
+        "introduction",
+        "image",
         "layout",
-        "location",  # handled by migrate_geo_coverage
-        "methodology",  # handled by migrate_more_info
-        "moreInfo",  # handled by migrate_more_info
+        "location",
+        "methodology",
+        "moreInfo",
         "pdfMaxBreadth",
         "pdfMaxDepth",
         "pdfMaxItems",
         "pdfStatic",
         "pdfTheme",
-        "provenances",  # handled by migrate_data_provenance
-        "processor",  # handled by migrate_more_info
+        "provenances",
+        "processor",
         "spreadsheet",
         "quickUpload",
-        "temporalCoverage",  # handled by migrate_temporal_coverage
-        "themes",  # handled by migrate_topics
+        "temporalCoverage",
+        "themes",
         "tocExclude",
         "tocdepth",
-        "units",  # handled by migrate_more_info
+        "units",
         "workflow_history",
         "@components",
         "next_item",
@@ -1095,18 +1067,11 @@ class ExportEEAContent(ExportContent):
         "items",
         "next_item"
     ]
-    MIGRATE_MORE_INFO = True
 
     type = None
     blocks = None
     blocks_layout = None
     catalog = None
-
-    images_ids = with_images_ids
-    locations = with_locations
-    topics = with_topics
-    parsed_ids = with_parsed_ids
-    missing_ids = with_missing_ids
 
     folder_path = "/www/en/analysis/maps-and-charts"
 
@@ -1239,363 +1204,12 @@ class ExportEEAContent(ExportContent):
         item["relatedItems_unmapped"] = []
         item["relatedItems_backward"] = []
 
-        item = self.migrate_related_items(item, obj)
-        item = self.migrate_image(item, 'image')
-        item = self.migrate_temporal_coverage(item, "temporalCoverage")
-        item = self.migrate_topics(item, "themes")
-        item = self.migrate_data_provenance(item, "provenances")
-        item = self.migrate_other_organisations(item)
-        item = self.migrate_introduction(item, "introduction")
-        item = self.migrate_geo_coverage(item, obj)
-        item = self.migrate_more_info(item)
-
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
 
         for field in self.DISSALLOWED_FIELDS:
             if field in item:
                 del item[field]
-
-        return item
-
-    def migrate_related_items(self, item, obj):
-        relatedItems = obj.getRelatedItems()
-
-        for macro in obj.unrestrictedTraverse('@@eea.relations.macro').backward():
-            if len(macro) < 2:
-                continue
-            for relatedItem in macro[1]:
-                if IObjectArchived and IObjectArchived.providedBy(relatedItem):
-                    continue
-                if isExpired(relatedItem):
-                    continue
-                if IGetVersions and not IGetVersions(relatedItem).isLatest():
-                    continue
-                if api.content.get_state(
-                        obj=relatedItem, default="unknown") != "published":
-                    continue
-                item["relatedItems_backward"].append(relatedItem.UID())
-
-        if not relatedItems:
-            return item
-
-        if "data_provenance" not in item or not item["data_provenance"] or "data" not in item["data_provenance"]:
-            item["data_provenance"] = {
-                "data": []
-            }
-
-        for relatedItem in relatedItems:
-            if IObjectArchived and IObjectArchived.providedBy(relatedItem):
-                continue
-            if isExpired(relatedItem):
-                continue
-            if IGetVersions and not IGetVersions(relatedItem).isLatest():
-                continue
-            if api.content.get_state(
-                    obj=relatedItem, default="unknown") != "published":
-                continue
-            ok = True
-            data = {
-                "@id": str(uuid.uuid4()),
-                "title": relatedItem.Title(),
-            }
-            if relatedItem.meta_type not in ['Data', 'ExternalDataSpec']:
-                item["relatedItems_unmapped"].append(relatedItem.UID())
-                continue
-            if relatedItem.meta_type == 'Data':
-                versionId = IGetVersions(relatedItem).versionId
-                if versionId not in related_items:
-                    print("related item %s not found" % versionId)
-                    continue
-                data["link"] = "/en/datahub/datahubitem-view/%s" % related_items[versionId]
-            for data_provenance in item["data_provenance"]["data"]:
-                if data_provenance["title"] == relatedItem.Title():
-                    ok = False
-                    break
-            if not ok:
-                continue
-            item["data_provenance"]["data"].append(data)
-        return item
-
-    def migrate_image(self, item, field):
-        if field in item:
-            item["preview_image"] = self.getImage(item[field])
-        return item
-
-    def migrate_temporal_coverage(self, item, field):
-        if field in item:
-            temporals = item[field]
-            item["temporal_coverage"] = {
-                "temporal": []
-            }
-            for temporal in temporals:
-                if not temporal > 0:
-                    continue
-                item["temporal_coverage"]["temporal"].append({
-                    "label": temporal,
-                    "value": temporal
-                })
-        return item
-
-    def migrate_topics(self, item, field):
-        if field in item:
-            item["topics"] = []
-            for topic in item[field]:
-                if topic in topics:
-                    item["topics"].append(topics[topic])
-                # else:
-                #     self.topics.append(topic)
-            # Store missing topic in a list
-        return item
-
-    def migrate_data_provenance(self, item, field):
-        if "data_provenance" not in item or not item["data_provenance"] or "data" not in item["data_provenance"]:
-            item["data_provenance"] = {
-                "data": []
-            }
-
-        if field in item:
-            for provenance in item[field]:
-                ok = True
-
-                for data_provenance in item["data_provenance"]["data"]:
-                    if data_provenance["title"] == provenance.get(
-                            "title", None):
-                        ok = False
-                        break
-
-                if not ok:
-                    continue
-
-                organisation = self.getOrganisationName(
-                    provenance.get("owner", None))
-
-                item["data_provenance"]["data"].append({
-                    "@id": str(uuid.uuid4()),
-                    "link": provenance.get("link", None),
-                    "title": provenance.get("title", None),
-                    "organisation": organisation.Title
-                    if organisation else provenance.get("owner", None), })
-        return item
-
-    def migrate_other_organisations(self, item):
-        item["other_organisations"] = []
-
-        if 'processor' in item and isinstance(
-                item['processor'],
-                list) and len(
-                item['processor']):
-            for url in item['processor']:
-                organisation = self.getOrganisationName(url)
-                title = organisation.Title if organisation else url
-                item["other_organisations"].append(title)
-
-        return item
-
-    def migrate_introduction(self, item, field):
-        if field in item:
-            item["text"] = item.get(field, None)
-            if item["text"]:
-                item["text"]["encoding"] = "utf8"
-
-        return item
-
-    def migrate_geo_coverage(self, item, obj):
-
-        item["geo_coverage"] = {
-            "geolocation": []
-        }
-
-        geo = getAdapter(obj, IGeoTags) if IGeoTags else None
-
-        if not geo:
-            return item
-
-        for feature in geo.getFeatures():
-            other = feature['properties'].get('other', {})
-            title = feature["properties"]["title"]
-            if other.has_key('geonameId'):
-                id = 'geo-' + str(other['geonameId'])
-                item["geo_coverage"]["geolocation"].append(
-                    {
-                        "label": title,
-                        "value": id,
-                    })
-            elif title in geo_coverage:
-                item["geo_coverage"]["geolocation"].append(geo_coverage[title])
-            else:
-                self.locations.append(title)
-                logger.warn(u"No geonameId found for tag %s", title)
-
-        return item
-
-    def migrate_more_info(self, item):
-        if not self.MIGRATE_MORE_INFO:
-            return item
-
-        if "blocks" not in item or not item.get("blocks"):
-            return item
-
-        blocks = []
-
-        # Migrate "methodology" field
-        html = self.get_html(item, 'methodology')
-        if html:
-            blocks.append(make_group_block(
-                "Methodology", self.convert_to_blocks(html)))
-
-        # Migrate "units" field
-        html = self.get_html(item, 'units')
-        if html:
-            blocks.append(make_group_block(
-                "Units", self.convert_to_blocks(html)))
-
-        # Migrate "dataOwner" field
-        # if 'dataOwner' in item and isinstance(
-        #         item['dataOwner'],
-        #         list) and len(
-        #         item['dataOwner']):
-        #     html = ''
-        #     for url in item['dataOwner']:
-        #         organisation = self.getOrganisationName(url)
-        #         if not organisation:
-        #             continue
-        #         title = organisation.Title if organisation else url
-        #         html += "<p><a href='%s' target='_blank'>%s</a></p>" % (
-        #             url, title)
-        #     if html:
-        #         blocks.append(make_group_block(
-        #             "Owners", self.convert_to_blocks(html)))
-
-        # Migrate "processor" field
-        # if 'processor' in item and isinstance(
-        #         item['processor'],
-        #         list) and len(
-        #         item['processor']):
-        #     html = ''
-        #     for url in item['processor']:
-        #         organisation = self.getOrganisationName(url)
-        #         if not organisation:
-        #             continue
-        #         title = organisation.Title if organisation else url
-        #         html += "<p><a href='%s' target='_blank'>%s</a></p>" % (
-        #             url, title)
-        #     if html:
-        #         blocks.append(make_group_block(
-        #             "Processors", self.convert_to_blocks(html)))
-
-        # Migrate "eeaManagementPlan" field
-        # if isinstance(
-        #         item.get('eeaManagementPlan'),
-        #         list):
-        #     html = "year: %s, code: %s" % (
-        #         item["eeaManagementPlan"][0]
-        #         if len(item["eeaManagementPlan"]) > 0 else "",
-        #         item["eeaManagementPlan"][1]
-        #         if len(item["eeaManagementPlan"]) > 1 else "")
-        # if html:
-        #     blocks.append(make_group_block(
-        #         "EEA management plan code", self.convert_to_blocks(html)))
-
-        # Migrate "contact" field
-        html = self.get_html(item, 'contact')
-        if html:
-            contacts = html.replace("\n\r", "\n").split("\n")
-            html = ''
-            for contact in contacts:
-                if not contact:
-                    continue
-                html += "<p>%s</p>" % (contact)
-
-            if html:
-                c_blocks = {}
-                c_blocks_layout = {
-                    "items": []
-                }
-                for b in self.convert_to_blocks(html):
-                    if b[1].get("@type") == 'slate' and not b[1].get("plaintext"):
-                        continue
-                    c_blocks[b[0]] = b[1]
-                    c_blocks_layout["items"].append(b[0])
-
-                if len(c_blocks_layout["items"]) > 0:
-                    c_uid1 = make_uid()
-                    c_uid2 = make_uid()
-                    c_blocks[c_uid1] = {
-                        "@type": "slate",
-                        "value": [{"type": "h3", "children": [{"text": "Contact references at EEA"}]}],
-                        "plaintext": "Contact references at EEA"
-                    }
-                    c_blocks[c_uid2] = {
-                        "@type": "dividerBlock",
-                        "hidden": True,
-                        "spacing": "s",
-                        "styles": {}
-                    }
-                    c_blocks_layout["items"].insert(0, c_uid1)
-                    c_blocks_layout["items"].append(c_uid2)
-
-                updateBlock(item["blocks"], "@marker", "contact_references_at_eea", {
-                    "data": {
-                        "blocks": c_blocks,
-                        "blocks_layout": c_blocks_layout
-                    }
-                })
-
-        # Migrate "externalRelations" field
-        if 'externalRelations' in item and isinstance(
-                item['externalRelations'],
-                list) and len(
-                item['externalRelations']):
-            html = ''
-            for url in item['externalRelations']:
-                html += "<p><a href='%s' target='_blank'>%s</a></p>" % (
-                    url, url)
-            if html:
-                blocks.append(make_group_block(
-                    "External links, non EEA websites", self.convert_to_blocks(html)))
-
-        # Migrate "moreInfo" field
-        html = self.get_html(item, 'body') + self.get_html(item, 'moreInfo')
-        if html:
-            result = self.convert_to_blocks(html)
-            if len(blocks) > 0:
-                blocks.append(make_group_block(
-                    "Additional information", result))
-            else:
-                [blocks.append(block) for block in result]
-
-        for b in blocks:
-            block_id = b[0]
-            block = b[1]
-            appendBlock(item["blocks"], "@marker",
-                        "more_info_tab", block_id, block)
-        appendBlock(
-            item["blocks"],
-            "@marker", "more_info_tab", make_uid(), {
-                "@type": "slate",
-                "value": [{"type": "p", "children": [{"text": ""}]}],
-                "plaintext": ""
-            })
-
-        # for block_id in item["blocks"]:
-        #     if block_id and item["blocks"][block_id].get('title') == 'Metadata section':
-        #         tabs_block_id = item["blocks"][block_id]['data'][
-        #             'blocks_layout']['items'][0]
-        #         tabs_blocks = item["blocks"][block_id]['data']['blocks'][
-        #             tabs_block_id]['data']['blocks']
-
-        #         for _tab_block_id in tabs_blocks:
-        #             if _tab_block_id and tabs_blocks[_tab_block_id].get(
-        #                     'title') == 'More info':
-        #                 for b in blocks:
-        #                     _block_id = b[0]
-        #                     _block = b[1]
-        #                     item["blocks"][block_id]['data']['blocks'][
-        #                         tabs_block_id]['data']['blocks'][
-        #                         _tab_block_id]['blocks'][_block_id] = _block
-        #                     item["blocks"][block_id]['data']['blocks'][tabs_block_id]['data']['blocks'][_tab_block_id]['blocks_layout']['items'].append(
-        #                         _block_id)
 
         return item
 
@@ -1643,338 +1257,6 @@ class ExportEEAContent(ExportContent):
         slate = res.json()["data"]
         return slate
 
-    def finish(self):
-        # with open(os.path.dirname(__file__) + '/resources/parsed_ids.json', 'w') as f:
-        #     json.dump(self.parsed_ids, f)
-        # with open(os.path.dirname(__file__) + '/resources/missing_ids.json', 'w') as f:
-        #     json.dump(self.missing_ids, f)
-        locations = list(set(self.locations))
-        images_ids = list(set(self.images_ids))
-        topics = list(set(self.topics))
-        print("===> Locations <===")
-        print(locations)
-        f = open(os.path.dirname(__file__) + '/resources/locations.json', "w")
-        f.write(json.dumps(locations))
-        f.close()
-        print("===> Images uids <===")
-        print(images_ids)
-        f = open(os.path.dirname(__file__) + '/resources/images_ids.json', "w")
-        f.write(json.dumps(images_ids))
-        f.close()
-        print("===> Topics <===")
-        print(topics)
-        f = open(os.path.dirname(
-            __file__) + '/resources/missing-topics.json', "w")
-        f.write(json.dumps(topics))
-        f.close()
-
-
-class ExportInfographic(ExportEEAContent):
-    QUERY = {
-        "Infographic": {
-            "review_state": "published",
-        }
-    }
-    PORTAL_TYPE = ["Infographic"]
-    type = "infographic"
-
-    def global_dict_hook(self, item, obj):
-        """Use this to modify or skip the serialized data.
-        Return None if you want to skip this particular object.
-        """
-        if IObjectArchived.providedBy(obj):
-            return None
-        item = super(ExportInfographic, self).global_dict_hook(item, obj)
-
-        return item
-
-
-class ExportDashboard(ExportEEAContent):
-    QUERY = {
-        "Dashboard": {
-            "review_state": "published",
-        }
-    }
-    PORTAL_TYPE = ["Dashboard"]
-    type = 'tableau_visualization'
-
-    def global_dict_hook(self, item, obj):
-        """Use this to modify or skip the serialized data.
-        Return None if you want to skip this particular object.
-        """
-        item = super(ExportDashboard, self).global_dict_hook(item, obj)
-
-        return item
-
-
-class ExportGisMapApplication(ExportEEAContent):
-    QUERY = {
-        "GIS Application": {
-            "review_state": "published",
-        }
-    }
-    PORTAL_TYPE = ["GIS Application"]
-    type = 'map_interactive'
-    with_image_override = []
-
-    def global_dict_hook(self, item, obj):
-        """Use this to modify or skip the serialized data.
-        Return None if you want to skip this particular object.
-        """
-        arcgis_url = item.get("arcgis_url", None)
-        item["maps"] = {
-            "dataprotection": {},
-            "url": arcgis_url,
-            "useScreenHeight": True
-        }
-
-        if 'appid' in arcgis_url and 'embed' not in arcgis_url:
-            self.with_image_override.append(item.get("UID"))
-
-        item = super(ExportGisMapApplication, self).global_dict_hook(item, obj)
-
-        return item
-
-    def finish(self):
-        with_image_override = list(set(self.with_image_override))
-        print("===> With image override <===")
-        print(with_image_override)
-        f = open(os.path.dirname(
-            __file__) + '/resources/with-image-override.json', "w")
-        f.write(json.dumps(with_image_override))
-        f.close()
-        return super(ExportGisMapApplication, self).finish()
-
-
-class ExportDavizFigure(ExportEEAContent):
-    QUERY = {
-        "DavizVisualization": {
-            # "review_state": "published",
-        }
-    }
-    PORTAL_TYPE = ["DavizVisualization"]
-    type = 'chart_static'
-
-    multipleCharts = 0
-
-    def global_dict_hook(self, item, obj):
-        """Use this to modify or skip the serialized data.
-        Return None if you want to skip this particular object.
-        """
-        items = []
-        images = []
-        default_image = 0
-
-        item = super(ExportDavizFigure, self).global_dict_hook(item, obj)
-
-        accessor = queryAdapter(
-            obj, IVisualizationConfig) if IVisualizationConfig else None
-
-        chartsConfig = accessor.view("googlechart.googlecharts")[
-            "chartsconfig"]
-
-        charts = chartsConfig.get('charts', [])
-        notes = chartsConfig.get('notes', [])
-
-        for chart in charts:
-            config = json.loads(chart["config"])
-            id = chart.get("id")
-            type = config.get('chartType', None)
-            if type == 'Table':
-                continue
-            images.append({
-                "id": chart.get("id"),
-                "title": chart.get("name"),
-            })
-            cIndex = len(images) - 1
-            if config.get("isDefaultVisualization", False):
-                default_image = cIndex
-            for note in notes:
-                if id in note.get("charts", []):
-                    images[cIndex]["note"] = note.get("text", "")
-
-        if default_image > 0:
-            tmp = images[0]
-            images[0] = images[default_image]
-            images[default_image] = tmp
-
-        csv = queryMultiAdapter((obj, self.request), name='download.csv')
-
-        if csv:
-            csv = csv(
-                attachment=False).encode('utf-8')
-            item["file"] = {
-                "data": base64.b64encode(csv),
-                "filename": obj.getId() + '.csv',
-                "content_type": "text/csv",
-                "encoding": "base64"
-            }
-
-        if len(images) > 0 and images[0]:
-            image = None
-            imageObj = None
-            imageId = images[0].get("id")
-            if imageId:
-                imageObj = obj.get(
-                    imageId + '.svg') or obj.get(imageId + '.png')
-            if imageObj:
-                try:
-                    serializer = getMultiAdapter(
-                        (imageObj, self.request), ISerializeToJson)
-                    image = serializer()
-                except Exception:
-                    print("Error getting image for {}".format(
-                        item['@id'] + "-" + imageId))
-            if image:
-                newItem = item.copy()
-                newItem["preview_image"] = self.getImage(
-                    image.get("image", None) or image.get("file", None)
-                )
-                if newItem["preview_image"] and "filename" in newItem["preview_image"]:
-                    newItem["preview_image"]["filename"] = image.get(
-                        "id", None)
-                # Get figure note
-                if images[0].get("note"):
-                    newItem["figure_note"] = self.text_to_slate(
-                        images[0].get("note"))
-                items.append(newItem)
-
-        if len(images) > 1:
-            itemTitle = item.get("title", "")
-            itemId = item.get("id", "")
-            for index, img in enumerate(images[1:]):
-                image = None
-                imageObj = None
-                imageId = img.get("id")
-                if imageId:
-                    imageObj = obj.get(
-                        imageId + '.svg') or obj.get(imageId + '.png')
-                if imageObj:
-                    try:
-                        serializer = getMultiAdapter(
-                            (imageObj, self.request),
-                            ISerializeToJson)
-                        image = serializer()
-                    except Exception:
-                        print("Error getting image for {}".format(
-                            item['@id'] + "-" + imageId))
-                if image:
-                    imageTitle = img.get('title', "")
-                    newItem = item.copy()
-                    newItem["@id"] = item["@id"] + "-" + imageId
-                    newItem["id"] = itemId + "-" + imageId
-                    newItem["UID"] = image.get("UID", None) or item.get(
-                        "UID", None)
-                    newItem["title"] = itemTitle + " - " + imageTitle
-                    newItem["preview_image"] = self.getImage(
-                        image.get("image", None) or image.get("file", None)
-                    )
-                    if newItem["preview_image"] and "filename" in newItem["preview_image"]:
-                        newItem["preview_image"]["filename"] = image.get(
-                            "id", None)
-                    # Get figure note
-                    if img.get("note"):
-                        newItem["figure_note"] = self.text_to_slate(
-                            img.get("note"))
-                    items.append(newItem)
-            if len(items) >= 1:
-                self.multipleCharts += 1
-                for item in items:
-                    item["relatedItems"] = [
-                        _item["UID"]
-                        for _item in items
-                        if _item["@id"] != item["@id"]
-                    ]
-        return items if len(items) > 0 else item
-
-    def finish(self):
-        print("===> Exported %s daviz figures with multiple charts <===" %
-              self.multipleCharts)
-        return super(ExportDavizFigure, self).finish()
-
-
-class ExportEEAFigure(ExportEEAContent):
-    QUERY = {
-        "EEAFigure": {
-            # "review_state": "published",
-            # 'effective': {
-            #     'query': DateTime("2024-09-11T23:59:59+00:00"),
-            #     'range': 'min'  # 'min' specifies greater than or equal to specific_date
-            # }
-        }
-    }
-    PORTAL_TYPE = ["EEAFigure"]
-
-    def global_dict_hook(self, item, obj):
-        """Use this to modify or skip the serialized data.
-        Return None if you want to skip this particular object.
-        """
-
-        figure_type = item.get("figureType", "")
-
-        if figure_type == 'map':
-            self.type = 'map_static'
-        elif figure_type == 'graph':
-            self.type = 'chart_static'
-        else:
-            self.type = 'map_static'
-
-        item = super(ExportEEAFigure, self).global_dict_hook(item, obj)
-
-        figure = obj.unrestrictedTraverse(
-            "@@getSingleEEAFigureFile").singlefigure()
-        image = figure.unrestrictedTraverse("image_large") if figure else None
-        imageB64 = base64.b64encode(image.__call__()) if image else None
-
-        if imageB64:
-            item["preview_image"] = {
-                "encoding": "base64",
-                "content-type": "image/png",
-                "data": imageB64
-            }
-
-        portal_workflow = getToolByName(
-            self.context, "portal_workflow", None)
-
-        children = []
-
-        for o in obj.contentItems():
-            if o[1].meta_type != 'EEAFigureFile' and portal_workflow.getInfoFor(
-                    o[1], 'review_state') != 'published':
-                continue
-            if IObjectArchived and IObjectArchived.providedBy(o[1]):
-                continue
-            if isExpired(o[1]):
-                continue
-            if IGetVersions and not IGetVersions(o[1]).isLatest():
-                continue
-            if o[1].getLanguage() != 'en':
-                continue
-            if o[1].meta_type not in ['EEAFigureFile', 'DataFileLink']:
-                continue
-            serializer = getMultiAdapter(
-                (o[1], self.request), ISerializeToJson)
-            child = serializer()
-            if "relatedItems" in child:
-                del child["relatedItems"]
-            child["review_state"] = "published"
-            child["@id"] = "%s/%s/%s" % (self.folder_path,
-                                         item["id"], child["id"])
-            child["parent"]["@id"] = item["@id"]
-            child["parent"]["UID"] = item.get("UID")
-            child["@type"] = 'File' if child.get("file") else 'Link'
-            if child.get("category"):
-                child["subjects"] = [child.get("category")]
-            for field in self.DISSALLOWED_FIELDS:
-                if field in child:
-                    del child[field]
-            children.append(child)
-
-        if len(children) > 0:
-            return [item] + children
-
-        return item
-
 
 class ExportReport(ExportEEAContent):
     # TODO: update @id and uid
@@ -1987,8 +1269,6 @@ class ExportReport(ExportEEAContent):
     type = "report"
     statistics = {}
     data = {}
-
-    MIGRATE_MORE_INFO = False
 
     def migrate_serial_title(self, item):
         serialTitle = item.get("serial_title")
@@ -2040,10 +1320,15 @@ class ExportReport(ExportEEAContent):
 
     def global_dict_hook(self, item, obj):
         if len(getAdapter(obj, IGroupRelations).forward()) > 0:
+            print("Has group relations - skipping")
             return None
 
         if obj.getDefaultPage():
+            print("Has default page - skipping")
             return None
+
+        import pdb
+        pdb.set_trace()
 
         item = super(ExportReport, self).global_dict_hook(item, obj)
 
@@ -2172,8 +1457,3 @@ class ExportImage(ExportEEAContent):
 
     def global_dict_hook(self, item, obj):
         return item
-
-
-# TODO: append empty slate to the end of more info tab
-# TODO: https://staging.eea.europa.eu/en/sandbox/migration-of-maps-and-graphs-to-new-plone-6/different-types-of-emissions-from-vehicles -> why do we see more info tab?
-# TODO: https://staging.eea.europa.eu/en/sandbox/migration-of-maps-and-graphs-to-new-plone-6/emissions-trading-viewer-1 -> more info blocks_layout empty??
