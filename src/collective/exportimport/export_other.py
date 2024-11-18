@@ -1086,6 +1086,7 @@ class ExportEEAContent(ExportContent):
     catalog = None
 
     folder_path = "/www/en/analysis/maps-and-charts"
+    parsed_ids = []
 
     def update(self):
         """Use this to override stuff before the export starts
@@ -1473,19 +1474,19 @@ class ExportReport(ExportEEAContent):
         x1 = ''
         x2 = ''
 
-        if length > 0:
+        if length > 3:
+            x1 = str(serial_title[3]) or str(serial_title[0])
+        elif length > 0:
             x1 = str(serial_title[0])
         if length > 1:
             x2 = str(serial_title[1])
         if length > 2:
             x2 += ('/' + str(serial_title[2])) if serial_title[2] else ''
-        if length > 3:
-            x2 += ('/' + str(serial_title[3])) if serial_title[3] else ''
 
         serial_title = x1 + ' ' + x2 if x1 and x2 else x1
 
         updateBlock(item["blocks"],
-                    "@marker", "serial_title_title",
+                    "@marker", "serial_title_subtitle",
                     {"subtitle": serial_title})
         updateBlock(
             item["blocks"],
@@ -1496,17 +1497,18 @@ class ExportReport(ExportEEAContent):
         return item
 
     def migrate_order_id_isbn(self, item):
-        order_id = item.get("order_id")
         isbn = item.get("isbn")
 
-        order_id_isbn = (
-            (("EN PDF: " + order_id + " - ") if order_id else "")
-            + (("ISBN: " + isbn) if isbn else "")) or ""
+        if isbn:
+            import pdb
+            pdb.set_trace()
+
+        isbn = ("ISBN: " + isbn) if isbn else ""
 
         updateBlock(item["blocks"],
                     "@marker", "order_id_isbn_slate",
-                    {"plaintext": order_id_isbn,
-                     "value": self.text_to_slate(order_id_isbn)})
+                    {"plaintext": isbn,
+                     "value": self.text_to_slate(isbn)})
 
         return item
 
@@ -1577,17 +1579,6 @@ class ExportReport(ExportEEAContent):
 
         report_content = []
 
-        # ====
-        translations = obj.getTranslations()
-
-        for lang, i in translations.items():
-            if lang == 'en':
-                continue
-            [translation, review_state] = i
-            import pdb
-            pdb.set_trace()
-        # ====
-
         item = super(ExportReport, self).global_dict_hook(item, obj)
 
         preview_image = obj.cover
@@ -1614,6 +1605,14 @@ class ExportReport(ExportEEAContent):
                 "title": item["title"],
                 "file": item["file"],
                 "exclude_from_nav": True,
+                "parent": {
+                    "@id": item["@id"],
+                    "@type": item["@type"],
+                    "UID": item["UID"],
+                    "description": item["description"],
+                    "review_state": item["review_state"],
+                    "title": item["title"]
+                },
             }
             report_content.append(file)
             updateBlock(item["blocks"],
@@ -1626,6 +1625,39 @@ class ExportReport(ExportEEAContent):
         item = self.migrate_serial_title(item)
         item = self.migrate_order_id_isbn(item)
         item = self.migrate_trailer(item)
+
+        # Migrate translations
+        translations = obj.getTranslations()
+        for lang, i in translations.items():
+            [translation, review_state] = i
+            if lang == 'en':
+                continue
+            if review_state != 'published':
+                continue
+            serializer = getMultiAdapter(
+                (translation, self.request),
+                ISerializeToJson)
+            translation = serializer()
+            id = "%s-pdf-%s" % (languages[lang].lower(), translation["id"])
+            title = "%s PDF - " % translation["title"]
+            file = {
+                "@id": item["@id"] + "/%s" % id,
+                "@type": "File",
+                "UID": translation["UID"],
+                "id": id,
+                "title": title,
+                "file": translation["file"],
+                "exclude_from_nav": True,
+                "parent": {
+                    "@id": item["@id"],
+                    "@type": item["@type"],
+                    "UID": item["UID"],
+                    "description": item["description"],
+                    "review_state": item["review_state"],
+                    "title": item["title"]
+                },
+            }
+            report_content.append(file)
 
         item["version_group"] = item.get("publication_groups")
 
