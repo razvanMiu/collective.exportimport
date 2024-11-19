@@ -1588,19 +1588,20 @@ class ExportReport(ExportEEAContent):
         return objects
 
     def global_dict_hook(self, item, obj):
-        import pdb
-        pdb.set_trace()
-        if len(getAdapter(obj, IGroupRelations).forward()) > 0:
-            print("Has group relations - skipping")
-            return None
+        # if len(getAdapter(obj, IGroupRelations).forward()) > 0:
+        #     print("Has group relations - skipping")
+        #     return None
 
-        if obj.getDefaultPage():
-            print("Has default page - skipping")
-            return None
+        # if obj.getDefaultPage():
+        #     print("Has default page - skipping")
+        #     return None
 
         report_content = []
 
         item = super(ExportReport, self).global_dict_hook(item, obj)
+
+        import pdb
+        pdb.set_trace()
 
         preview_image = obj.cover
 

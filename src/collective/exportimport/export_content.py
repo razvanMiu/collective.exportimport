@@ -324,8 +324,6 @@ class ExportContent(BrowserView):
                 elif self.include_blobs == 2:
                     noLongerProvides(self.request, IPathBlobsMarker)
                 f.seek(0)
-                import pdb
-                pdb.set_trace()
                 self.finish()
                 return response.write(safe_bytes(f.read()))
 
