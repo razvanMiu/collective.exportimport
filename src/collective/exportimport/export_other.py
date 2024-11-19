@@ -1600,9 +1600,6 @@ class ExportReport(ExportEEAContent):
 
         item = super(ExportReport, self).global_dict_hook(item, obj)
 
-        import pdb
-        pdb.set_trace()
-
         preview_image = obj.cover
 
         if preview_image:
@@ -1644,6 +1641,7 @@ class ExportReport(ExportEEAContent):
                         {"download": True, "href": file["@id"]})
         else:
             # TODO: remove call to action
+            deleteBlock(item["blocks"], "@marker", "file_call_to_action")
             print("here")
 
         item = self.migrate_serial_title(item)
