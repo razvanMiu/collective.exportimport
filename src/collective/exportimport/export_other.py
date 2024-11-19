@@ -918,6 +918,10 @@ class ExportRedirects(BaseExport):
         self.download(data)
 
 
+def size(b64string):
+    return (len(b64string) * 3) / 4 - b64string.count('=', -2)
+
+
 def findBlockPaths(blocks, field='@type', value='', paths=None):
     if paths is None:
         paths = []
@@ -1711,7 +1715,7 @@ class ExportReport(ExportEEAContent):
             report_content.append(file)
             import pdb
             pdb.set_trace()
-            slate_list += '<li><a href="../../../../resolveuid/%s">%s</a> (%sMB)</li>' % (
+            slate_list += '<li><a href="../resolveuid/%s">%s</a> (%sMB)</li>' % (
                 translation["UID"], title, 'xx')
             slate_list_plaintext += '%s (%sMB)' % (title, 'xx')
         if slate_list:
