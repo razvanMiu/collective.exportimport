@@ -1669,6 +1669,7 @@ class ExportReport(ExportEEAContent):
         item = self.migrate_trailer(item)
 
         # Migrate translations
+        slate_list = ''
         translations = obj.getTranslations()
         for lang, i in translations.items():
             [translation, review_state] = i
@@ -1678,6 +1679,8 @@ class ExportReport(ExportEEAContent):
                 continue
             if not languages.get(lang):
                 print("====> No language for %s" % item["@id"])
+            if not slate_list:
+                slate_list += '<ul>'
             serializer = getMultiAdapter(
                 (translation, self.request),
                 ISerializeToJson)
@@ -1704,7 +1707,9 @@ class ExportReport(ExportEEAContent):
                 },
             }
             report_content.append(file)
-        # TODO: make a slate list with links to translations. Should include file size also
+            # TODO: make a slate list with links to translations. Should include file size also
+            slate_list += '<li><a href="%s">%s</a> (%sMB)</li>' % (
+                file["@id"], title, translation["file"]["size"] / 1000000)
         # TODO: import step for moving related visualization. look in annotations _bacward and _unmapped
 
         if len(item["publication_groups"]) > 1:
