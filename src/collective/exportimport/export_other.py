@@ -1544,16 +1544,12 @@ class ExportReport(ExportEEAContent):
             return item
 
         plaintext = ''
-        blocks = (trailer["data"]) if trailer else None
+        blocks = self.convert_to_blocks(trailer["data"]) if trailer else None
 
         if not blocks:
             return item
 
         for i in blocks:
-            if len(i) < 2:
-                import pdb
-                pdb.set_trace()
-                continue
             block = i[1]
             if block.get("type") == "slate":
                 plaintext += block.get("plaintext") + "\n"
