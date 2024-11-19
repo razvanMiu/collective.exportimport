@@ -982,11 +982,9 @@ def deleteBlockByPaths(blocks, blocks_layout, paths):
         value = blocks
         for key in paths[:-2]:
             value = value[key]
-        import pdb
-        pdb.set_trace()
-        del value[paths[-2]]
+        value["blocks_layout"]["items"].remove(paths[-1])
     else:
-        print("x")
+        blocks_layout["items"].remove(paths[-1])
     return blocks
 
 
@@ -1552,6 +1550,10 @@ class ExportReport(ExportEEAContent):
             return item
 
         for i in blocks:
+            if len(i) < 2:
+                import pdb
+                pdb.set_trace()
+                continue
             block = i[1]
             if block.get("type") == "slate":
                 plaintext += block.get("plaintext") + "\n"
@@ -1654,6 +1656,8 @@ class ExportReport(ExportEEAContent):
                         {"download": True, "href": file["@id"]})
         else:
             # TODO: remove call to action
+            import pdb
+            pdb.set_trace()
             deleteBlock(
                 item["blocks"],
                 item["blocks_layout"],
