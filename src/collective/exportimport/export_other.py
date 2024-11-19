@@ -969,15 +969,24 @@ def updateBlockByPaths(blocks, paths, data=None):
         value[paths[-1]] = data
 
 
-def deleteBlockByPaths(blocks, paths):
+def deleteBlockByPaths(blocks, blocks_layout, paths):
     # Traverse the dictionary up to the second-to-last key
-    import pdb
-    pdb.set_trace()
+    hasParent = paths[-2] == 'blocks'
+    # Step 1: delete the block from the parent blocks
     value = blocks
     for key in paths[:-1]:
         value = value[key]
-    # Update the value
     del value[paths[-1]]
+    # Step 2: delete the block from blocks_layout
+    if hasParent:
+        value = blocks
+        for key in paths[:-2]:
+            value = value[key]
+        import pdb
+        pdb.set_trace()
+        del value[paths[-2]]
+    else:
+        print("x")
     return blocks
 
 
@@ -997,10 +1006,10 @@ def updateBlock(blocks, field="@type", value="", data=None):
     return blocks
 
 
-def deleteBlock(blocks, field="@type", value=""):
+def deleteBlock(blocks, blocks_layout, field="@type", value=""):
     [paths, found] = findBlockPaths(blocks, field, value)
     if found:
-        deleteBlockByPaths(blocks, paths)
+        deleteBlockByPaths(blocks, blocks_layout, paths)
     return blocks
 
 
@@ -1604,7 +1613,7 @@ class ExportReport(ExportEEAContent):
 
         item = super(ExportReport, self).global_dict_hook(item, obj)
 
-        preview_image = obj.cover
+        preview_image = obj.cover if 'cover' in obj.keys() else None
 
         if preview_image:
             try:
@@ -1645,7 +1654,10 @@ class ExportReport(ExportEEAContent):
                         {"download": True, "href": file["@id"]})
         else:
             # TODO: remove call to action
-            deleteBlock(item["blocks"], "@marker", "file_call_to_action")
+            deleteBlock(
+                item["blocks"],
+                item["blocks_layout"],
+                "@marker", "file_call_to_action")
             print("here")
 
         item = self.migrate_serial_title(item)
