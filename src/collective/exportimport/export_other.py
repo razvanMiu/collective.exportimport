@@ -1537,7 +1537,11 @@ class ExportReport(ExportEEAContent):
             return item
 
         plaintext = ''
-        blocks = self.convert_to_blocks(trailer)
+        blocks = (trailer["data"]) if trailer else None
+
+        if not blocks:
+            return item
+
         for i in blocks:
             block = i[1]
             if block.get("type") == "slate":
