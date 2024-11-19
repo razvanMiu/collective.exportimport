@@ -1703,8 +1703,8 @@ class ExportReport(ExportEEAContent):
             # TODO: make a slate list with links to translations. Should include file size also
             import pdb
             pdb.set_trace()
-            slate_list += '<li><a href="%s">%s</a> (%sMB)</li>' % (
-                file["@id"], title, translation["file"]["size"] / 1000000)
+            slate_list += '<li><a href="../resolveuid/%s">%s</a> (%sMB)</li>' % (
+                translation["UID"], title, 'xx')
         # TODO: import step for moving related visualization. look in annotations _bacward and _unmapped
 
         if len(item["publication_groups"]) > 1:
