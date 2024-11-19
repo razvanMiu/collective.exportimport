@@ -1113,6 +1113,7 @@ class ExportEEAContent(ExportContent):
 
     folder_path = "/www/en/analysis/maps-and-charts"
     parsed_ids = []
+    images_ids = []
 
     def update(self):
         """Use this to override stuff before the export starts
@@ -1589,13 +1590,21 @@ class ExportReport(ExportEEAContent):
 
         return objects
 
-    def getFolderContents(self, objects):
+    def getFolderContents(self, objects, item):
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
             objType = objects[index]["@type"]
             if objType == 'Folder':
                 objects[index]["@type"] = 'Document'
+            objects[index]["parent"] = {
+                "@id": item["@id"],
+                "@type": item["@type"],
+                "UID": item["UID"],
+                "description": item["description"],
+                "review_state": item["review_state"],
+                "title": item["title"]
+            }
         return objects
 
     def global_dict_hook(self, item, obj):
@@ -1655,7 +1664,6 @@ class ExportReport(ExportEEAContent):
                 item["blocks"],
                 item["blocks_layout"],
                 "@marker", "file_call_to_action")
-            print("here")
 
         item = self.migrate_serial_title(item)
         item = self.migrate_order_id_isbn(item)
@@ -1701,6 +1709,8 @@ class ExportReport(ExportEEAContent):
                 },
             }
             report_content.append(file)
+            import pdb
+            pdb.set_trace()
             slate_list += '<li><a href="../resolveuid/%s">%s</a> (%sMB)</li>' % (
                 translation["UID"], title, 'xx')
             slate_list_plaintext += '%s (%sMB)' % (title, 'xx')
@@ -1718,6 +1728,6 @@ class ExportReport(ExportEEAContent):
             print("====> Multiple publication groups for %s" % item["@id"])
 
         children = self.getChildren(obj)
-        report_content += self.getFolderContents(children)
+        report_content += self.getFolderContents(children, item)
 
         return [item] + report_content
