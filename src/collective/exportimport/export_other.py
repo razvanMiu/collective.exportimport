@@ -1663,6 +1663,7 @@ class ExportReport(ExportEEAContent):
 
         # Migrate translations
         slate_list = ''
+        slate_list_plaintext = ''
         translations = obj.getTranslations()
         for lang, i in translations.items():
             [translation, review_state] = i
@@ -1700,11 +1701,17 @@ class ExportReport(ExportEEAContent):
                 },
             }
             report_content.append(file)
-            # TODO: make a slate list with links to translations. Should include file size also
-            import pdb
-            pdb.set_trace()
             slate_list += '<li><a href="../resolveuid/%s">%s</a> (%sMB)</li>' % (
                 translation["UID"], title, 'xx')
+            slate_list_plaintext += '%s (%sMB)' % (title, 'xx')
+        if slate_list:
+            slate_list += '</ul>'
+            updateBlock(
+                item["blocks"],
+                "@marker", "translations_list_slate",
+                {"plaintext": slate_list_plaintext,
+                 "value": self.text_to_slate(slate_list)})
+
         # TODO: import step for moving related visualization. look in annotations _bacward and _unmapped
 
         if len(item["publication_groups"]) > 1:
