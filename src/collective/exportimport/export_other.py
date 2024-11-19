@@ -1711,7 +1711,7 @@ class ExportReport(ExportEEAContent):
             report_content.append(file)
             import pdb
             pdb.set_trace()
-            slate_list += '<li><a href="../resolveuid/%s">%s</a> (%sMB)</li>' % (
+            slate_list += '<li><a href="../../../../resolveuid/%s">%s</a> (%sMB)</li>' % (
                 translation["UID"], title, 'xx')
             slate_list_plaintext += '%s (%sMB)' % (title, 'xx')
         if slate_list:
