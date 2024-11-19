@@ -1000,7 +1000,7 @@ def updateBlock(blocks, field="@type", value="", data=None):
 def deleteBlock(blocks, field="@type", value=""):
     [paths, found] = findBlockPaths(blocks, field, value)
     if found:
-        deleteBlockByPaths(blocks, paths, None)
+        deleteBlockByPaths(blocks, paths)
     return blocks
 
 
