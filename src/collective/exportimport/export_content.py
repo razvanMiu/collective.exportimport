@@ -388,10 +388,10 @@ class ExportContent(BrowserView):
 
                 if review_state != 'published':
                     continue
-                if isExpired(obj):
-                    continue
-                if IGetVersions and not IGetVersions(obj).isLatest():
-                    continue
+                # if isExpired(obj):
+                #     continue
+                # if IGetVersions and not IGetVersions(obj).isLatest():
+                #     continue
                 if obj.getLanguage() != 'en':
                     continue
 

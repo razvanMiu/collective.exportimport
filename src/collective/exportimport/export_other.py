@@ -969,6 +969,18 @@ def updateBlockByPaths(blocks, paths, data=None):
         value[paths[-1]] = data
 
 
+def deleteBlockByPaths(blocks, paths):
+    # Traverse the dictionary up to the second-to-last key
+    import pdb
+    pdb.set_trace()
+    value = blocks
+    for key in paths[:-1]:
+        value = value[key]
+    # Update the value
+    del value[paths[-1]]
+    return blocks
+
+
 def getBlock(blocks, field="@type", value=""):
     [paths, found] = findBlockPaths(blocks, field, value)
     if found:
@@ -982,6 +994,13 @@ def updateBlock(blocks, field="@type", value="", data=None):
     [paths, found] = findBlockPaths(blocks, field, value)
     if found:
         updateBlockByPaths(blocks, paths, data)
+    return blocks
+
+
+def deleteBlock(blocks, field="@type", value=""):
+    [paths, found] = findBlockPaths(blocks, field, value)
+    if found:
+        deleteBlockByPaths(blocks, paths, None)
     return blocks
 
 
@@ -1497,18 +1516,17 @@ class ExportReport(ExportEEAContent):
         return item
 
     def migrate_order_id_isbn(self, item):
+        order_id = item.get("order_id")
         isbn = item.get("isbn")
 
-        if isbn:
-            import pdb
-            pdb.set_trace()
-
-        isbn = ("ISBN: " + isbn) if isbn else ""
+        order_id_isbn = (
+            (("EN PDF: " + order_id + " - ") if order_id else "")
+            + (("ISBN: " + isbn) if isbn else "")) or ""
 
         updateBlock(item["blocks"],
                     "@marker", "order_id_isbn_slate",
-                    {"plaintext": isbn,
-                     "value": self.text_to_slate(isbn)})
+                    {"plaintext": order_id_isbn,
+                     "value": self.text_to_slate(order_id_isbn)})
 
         return item
 
@@ -1549,7 +1567,8 @@ class ExportReport(ExportEEAContent):
                 continue
             if o[1].getLanguage() != 'en':
                 continue
-            if o[1].meta_type not in ['Folder', 'ATBlob', 'ATImage', 'Image']:
+            if o[1].meta_type not in [
+                    'ATImage', 'Collection', 'Fiche']:
                 continue
             if o[1].meta_type != 'Folder':
                 objects.append(o[1])
@@ -1569,6 +1588,8 @@ class ExportReport(ExportEEAContent):
         return objects
 
     def global_dict_hook(self, item, obj):
+        import pdb
+        pdb.set_trace()
         if len(getAdapter(obj, IGroupRelations).forward()) > 0:
             print("Has group relations - skipping")
             return None
@@ -1605,6 +1626,8 @@ class ExportReport(ExportEEAContent):
                 "title": item["title"],
                 "file": item["file"],
                 "exclude_from_nav": True,
+                "publication_file": True,
+                "report_language": "en",
                 "parent": {
                     "@id": item["@id"],
                     "@type": item["@type"],
@@ -1634,12 +1657,14 @@ class ExportReport(ExportEEAContent):
                 continue
             if review_state != 'published':
                 continue
+            if not languages.get(lang):
+                print("====> No language for %s" % item["@id"])
             serializer = getMultiAdapter(
                 (translation, self.request),
                 ISerializeToJson)
             translation = serializer()
             id = "%s-pdf-%s" % (languages[lang].lower(), translation["id"])
-            title = "%s PDF - " % translation["title"]
+            title = "%s PDF - %s" % (languages[lang], translation["title"])
             file = {
                 "@id": item["@id"] + "/%s" % id,
                 "@type": "File",
@@ -1648,6 +1673,8 @@ class ExportReport(ExportEEAContent):
                 "title": title,
                 "file": translation["file"],
                 "exclude_from_nav": True,
+                "publication_file": True,
+                "report_language": lang,
                 "parent": {
                     "@id": item["@id"],
                     "@type": item["@type"],
@@ -1658,8 +1685,11 @@ class ExportReport(ExportEEAContent):
                 },
             }
             report_content.append(file)
+        # TODO: make a slate list with links to translations. Should include file size also
+        # TODO: import step for moving related visualization. look in annotations _bacward and _unmapped
 
-        item["version_group"] = item.get("publication_groups")
+        if len(item["publication_groups"]) > 1:
+            print("====> Multiple publication groups for %s" % item["@id"])
 
         children = self.getChildren(obj)
         report_content += self.getFolderContents(children)

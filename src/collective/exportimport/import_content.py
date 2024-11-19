@@ -57,7 +57,7 @@ PLONE4_KEY = 'plone4.metadata'
 PLONE4_FIELDS = [
     'versionId', 'relatedItems_unmapped', 'relatedItems_backward', "contact",
     "dataOwner", "original_content_type", "order_override_text",
-    "order_extra_text"]
+    "order_extra_text", "publication_file", "report_language"]
 DEFERRED_KEY = "exportimport.deferred"
 DEFERRED_FIELD_MAPPING = {
     # "infographic": ["relatedItems"],
