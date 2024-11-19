@@ -1557,7 +1557,7 @@ class ExportReport(ExportEEAContent):
         updateBlock(item["blocks"],
                     "@marker", "trailer_slate",
                     {"plaintext": plaintext,
-                     "value": self.text_to_slate(trailer)})
+                     "value": self.text_to_slate(trailer["data"])})
         return item
 
     def getChildren(self, obj):
@@ -1651,9 +1651,6 @@ class ExportReport(ExportEEAContent):
                         "@marker", "file_call_to_action",
                         {"download": True, "href": file["@id"]})
         else:
-            # TODO: remove call to action
-            import pdb
-            pdb.set_trace()
             deleteBlock(
                 item["blocks"],
                 item["blocks_layout"],
@@ -1704,6 +1701,8 @@ class ExportReport(ExportEEAContent):
             }
             report_content.append(file)
             # TODO: make a slate list with links to translations. Should include file size also
+            import pdb
+            pdb.set_trace()
             slate_list += '<li><a href="%s">%s</a> (%sMB)</li>' % (
                 file["@id"], title, translation["file"]["size"] / 1000000)
         # TODO: import step for moving related visualization. look in annotations _bacward and _unmapped
