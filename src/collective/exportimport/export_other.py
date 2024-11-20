@@ -1715,9 +1715,12 @@ class ExportReport(ExportEEAContent):
             report_content.append(file)
             import pdb
             pdb.set_trace()
+            size_kbts = size(translation["file"]) / 1024.0
+            file_size_mbts = round(size_kbts / 1024.0, 2
+                                   if size_kbts > 11 else 3)
             slate_list += '<li><a href="../resolveuid/%s">%s</a> (%sMB)</li>' % (
-                translation["UID"], title, 'xx')
-            slate_list_plaintext += '%s (%sMB)' % (title, 'xx')
+                translation["UID"], title, file_size_mbts)
+            slate_list_plaintext += '%s (%sMB)' % (title, file_size_mbts)
         if slate_list:
             slate_list += '</ul>'
             updateBlock(
