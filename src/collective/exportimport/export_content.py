@@ -353,11 +353,11 @@ class ExportContent(BrowserView):
         return query
 
     def export_content(self):
+        import pdb
+        pdb.set_trace()
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
         workflow = api.portal.get_tool("portal_workflow")
-        import pdb
-        pdb.set_trace()
         brains = catalog.unrestrictedSearchResults(**query)
         p = int(self.request.get('p', '0') or '0')
         nrOfHits = int(self.request.get('nrOfHits', '0') or '0')
