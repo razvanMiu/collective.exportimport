@@ -353,8 +353,6 @@ class ExportContent(BrowserView):
         return query
 
     def export_content(self):
-        import ipdb
-        ipdb.set_trace()
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
         workflow = api.portal.get_tool("portal_workflow")
