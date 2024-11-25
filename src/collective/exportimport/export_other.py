@@ -1495,35 +1495,35 @@ class ExportReport(ExportEEAContent):
     data = {}
 
     def migrate_serial_title(self, item):
-        serial_title = item.get("serial_title")
+        subtitle = item.get("subtitle")
 
-        if not serial_title:
+        if not subtitle:
             return item
 
-        length = len(serial_title)
+        length = len(subtitle)
 
         x1 = ''
         x2 = ''
 
         if length > 3:
-            x1 = str(serial_title[3]) or str(serial_title[0])
+            x1 = str(subtitle[3]) or str(subtitle[0])
         elif length > 0:
-            x1 = str(serial_title[0])
+            x1 = str(subtitle[0])
         if length > 1:
-            x2 = str(serial_title[1])
+            x2 = str(subtitle[1])
         if length > 2:
-            x2 += ('/' + str(serial_title[2])) if serial_title[2] else ''
+            x2 += ('/' + str(subtitle[2])) if subtitle[2] else ''
 
-        serial_title = x1 + ' ' + x2 if x1 and x2 else x1
+        subtitle = x1 + ' ' + x2 if x1 and x2 else x1
 
         updateBlock(item["blocks"],
-                    "@marker", "serial_title_subtitle",
-                    {"subtitle": serial_title})
+                    "@marker", "serial_title",
+                    {"subtitle": subtitle})
         updateBlock(
             item["blocks"],
-            "@marker", "serial_title_slate",
-            {"plaintext": serial_title,
-             "value": self.text_to_slate(serial_title)})
+            "@marker", "serial_subtitle_slate",
+            {"plaintext": subtitle,
+             "value": self.text_to_slate(subtitle)})
 
         return item
 
@@ -1616,9 +1616,12 @@ class ExportReport(ExportEEAContent):
         #     print("Has group relations - skipping")
         #     return None
 
-        # if obj.getDefaultPage():
-        #     print("Has default page - skipping")
-        #     return None
+        has_relations = True if len(getAdapter(obj, IGroupRelations).forward(
+        )) + len(getAdapter(obj, IGroupRelations).backward()) > 0 else False
+
+        if obj.getDefaultPage():
+            print("Has default page - skipping")
+            return None
 
         report_content = []
 
@@ -1671,7 +1674,11 @@ class ExportReport(ExportEEAContent):
 
         item = self.migrate_serial_title(item)
         item = self.migrate_order_id_isbn(item)
-        item = self.migrate_trailer(item)
+        # item = self.migrate_trailer(item)
+
+        updateBlock(item["blocks"],
+                    "@marker", "report_navigation",
+                    {"root_node": item["@id"]})
 
         # Migrate translations
         slate_list = ''
