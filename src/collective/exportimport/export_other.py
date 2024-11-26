@@ -1616,8 +1616,8 @@ class ExportReport(ExportEEAContent):
         #     print("Has group relations - skipping")
         #     return None
 
-        has_relations = True if len(getAdapter(obj, IGroupRelations).forward(
-        )) + len(getAdapter(obj, IGroupRelations).backward()) > 0 else False
+        # has_relations = True if len(getAdapter(obj, IGroupRelations).forward(
+        # )) + len(getAdapter(obj, IGroupRelations).backward()) > 0 else False
 
         if obj.getDefaultPage():
             print("Has default page - skipping")
@@ -1666,7 +1666,7 @@ class ExportReport(ExportEEAContent):
             updateBlock(
                 item["blocks"],
                 "@marker", "file_call_to_action",
-                {"download": True, "href": "../resolveuid/%s" % file["UID"]})
+                {"download": True, "href": file["@id"].replace("/wwww", "/")})
         else:
             deleteBlock(
                 item["blocks"],
@@ -1679,7 +1679,7 @@ class ExportReport(ExportEEAContent):
 
         updateBlock(item["blocks"],
                     "@marker", "report_navigation",
-                    {"root_node": item["@id"]})
+                    {"root_node": [{"@id": item["@id"]}]})
 
         # Migrate translations
         slate_list = ''
