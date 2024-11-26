@@ -1663,9 +1663,10 @@ class ExportReport(ExportEEAContent):
                 },
             }
             report_content.append(file)
-            updateBlock(item["blocks"],
-                        "@marker", "file_call_to_action",
-                        {"download": True, "href": file["@id"]})
+            updateBlock(
+                item["blocks"],
+                "@marker", "file_call_to_action",
+                {"download": True, "href": "../resolveuid/%s" % file["UID"]})
         else:
             deleteBlock(
                 item["blocks"],
