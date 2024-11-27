@@ -1689,7 +1689,7 @@ class ExportReport(ExportEEAContent):
         slate_list_plaintext = ''
         translations = obj.getTranslations().items()
         translations.sort(key=lambda item: item[0])
-        for lang, i in translations.items():
+        for lang, i in translations:
             [translation_obj, review_state] = i
             if lang == 'en':
                 continue
