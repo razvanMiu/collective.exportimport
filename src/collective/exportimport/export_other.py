@@ -1261,10 +1261,6 @@ class ExportEEAContent(ExportContent):
         if "rights" in item and item["rights"]:
             item["rights"] = item["rights"].replace("\n", " ")
 
-        for field in self.DISSALLOWED_FIELDS:
-            if field in item:
-                del item[field]
-
         return item
 
     def migrate_related_items(self, item, obj):
@@ -1500,10 +1496,7 @@ class ExportReport(ExportEEAContent):
     data = {}
 
     def migrate_serial_title(self, item):
-        subtitle = item.get("subtitle")
-
-        import pdb
-        pdb.set_trace()
+        subtitle = item.get("serial_title")
 
         if not subtitle:
             return item
@@ -1685,6 +1678,10 @@ class ExportReport(ExportEEAContent):
         item = self.migrate_serial_title(item)
         item = self.migrate_order_id_isbn(item)
         # item = self.migrate_trailer(item)
+
+        for field in self.DISSALLOWED_FIELDS:
+            if field in item:
+                del item[field]
 
         updateBlock(item["blocks"],
                     "@marker", "report_navigation",
