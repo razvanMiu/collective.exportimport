@@ -507,19 +507,8 @@
           "assetPosition": "top",
           "blocks": {
             "e1fb8a6d-3c95-45a9-8e67-c639f8ba6d23": {
-              "@type": "slate",
-              "@marker": "report_previous_versions",
-              "plaintext": "",
-              "value": [
-                {
-                  "children": [
-                    {
-                      "text": ""
-                    }
-                  ],
-                  "type": "p"
-                }
-              ]
+              "@type": "report_previous_versions",
+              "@marker": "report_previous_versions"
             }
           },
           "blocks_layout": {
