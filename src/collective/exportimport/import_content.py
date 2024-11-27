@@ -528,8 +528,8 @@ class ImportContent(BrowserView):
                     raise error
         except Exception:
             logger.warning(
-                "Cannot deserialize %s %s", item["@type"],
-                item["@id"],
+                "Cannot deserialize %s %s %s", item["@type"],
+                item["@id"], item["UID"],
                 exc_info=True)
             raise
 
