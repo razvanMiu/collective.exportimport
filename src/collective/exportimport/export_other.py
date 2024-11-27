@@ -1481,6 +1481,9 @@ class ExportEEAContent(ExportContent):
         slate = res.json()["data"]
         return slate
 
+    def finish(self):
+        self.parsed_ids = []
+
 
 class ExportReport(ExportEEAContent):
     # TODO: update @id and uid
@@ -1685,6 +1688,8 @@ class ExportReport(ExportEEAContent):
         slate_list = ''
         slate_list_plaintext = ''
         translations = obj.getTranslations()
+        import pdb
+        pdb.set_trace()
         for lang, i in translations.items():
             [translation, review_state] = i
             if lang == 'en':
