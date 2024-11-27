@@ -1642,9 +1642,6 @@ class ExportReport(ExportEEAContent):
                 print("Error getting image for {}".format(
                     item['@id'] + "-" + item["@id"]))
 
-        import pdb
-        pdb.set_trace()
-
         if item["file"]:
             file = {
                 "@id": item["@id"] + "/%s" % item["id"],
