@@ -1586,7 +1586,7 @@ class ExportReport(ExportEEAContent):
             if o[1].getLanguage() != 'en':
                 continue
             if o[1].meta_type not in [
-                    'ATImage', 'Collection', 'Fiche']:
+                    'ATImage', 'Collection', 'Fiche', 'Briefing']:
                 continue
             if o[1].meta_type != 'Folder':
                 objects.append(o[1])
