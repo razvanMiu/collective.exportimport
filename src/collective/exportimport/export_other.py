@@ -1118,6 +1118,7 @@ class ExportEEAContent(ExportContent):
     folder_path = "/www/en/sandbox/reports-migration"
     parsed_ids = []
     images_ids = []
+    missing_ids = []
 
     def update(self):
         """Use this to override stuff before the export starts
@@ -1483,6 +1484,7 @@ class ExportEEAContent(ExportContent):
 
     def finish(self):
         self.parsed_ids = []
+        self.missing_ids = []
 
 
 class ExportReport(ExportEEAContent):
@@ -1518,6 +1520,9 @@ class ExportReport(ExportEEAContent):
             x2 += ('/' + str(subtitle[2])) if subtitle[2] else ''
 
         subtitle = x1 + ' ' + x2 if x1 and x2 else x1
+
+        import pdb
+        pdb.set_trace()
 
         updateBlock(item["blocks"],
                     "@marker", "serial_title",
