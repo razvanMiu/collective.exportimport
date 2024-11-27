@@ -41,6 +41,7 @@ import json
 import logging
 import os
 import pkg_resources
+import datetime
 import six
 import base64
 import uuid
@@ -1613,6 +1614,11 @@ class ExportReport(ExportEEAContent):
         return objects
 
     def global_dict_hook(self, item, obj):
+        if item["expires"] and item["expires"] != 'None' and datetime(
+                item["expires"]) < datetime(item["effective"]):
+            print("===> WTF: %s", item["UID"])
+            return None
+
         # if len(getAdapter(obj, IGroupRelations).forward()) > 0:
         #     print("Has group relations - skipping")
         #     return None
