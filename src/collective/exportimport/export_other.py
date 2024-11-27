@@ -1687,21 +1687,22 @@ class ExportReport(ExportEEAContent):
         # Migrate translations
         slate_list = ''
         slate_list_plaintext = ''
-        translations = obj.getTranslations()
-        import pdb
-        pdb.set_trace()
+        translations = obj.getTranslations().items().sort(
+            key=lambda item: item[0])
         for lang, i in translations.items():
-            [translation, review_state] = i
+            [translation_obj, review_state] = i
             if lang == 'en':
                 continue
             if review_state != 'published':
+                continue
+            if not translation_obj.file:
                 continue
             if not languages.get(lang):
                 print("====> No language for %s" % item["@id"])
             if not slate_list:
                 slate_list += '<ul>'
             serializer = getMultiAdapter(
-                (translation, self.request),
+                (translation_obj, self.request),
                 ISerializeToJson)
             translation = serializer()
             id = "%s-pdf-%s" % (languages[lang].lower(), translation["id"])
@@ -1726,7 +1727,7 @@ class ExportReport(ExportEEAContent):
                 },
             }
             report_content.append(file)
-            size_kbts = size(translation["file"]["data"]) / 1024.0
+            size_kbts = translation_obj.file.get_size() / 1024.0
             file_size_mbts = round(size_kbts / 1024.0, 2
                                    if size_kbts > 11 else 3)
             slate_list += '<li><a href="../resolveuid/%s">%s</a> (%sMB)</li>' % (
