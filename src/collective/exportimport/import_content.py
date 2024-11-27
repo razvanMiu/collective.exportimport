@@ -372,9 +372,8 @@ class ImportContent(BrowserView):
                 break
 
             uuid = item.get("UID")
-            if item.get('id') == 'budget-of-the-eea-2015' and item.get("@type") == 'File':
-                import pdb
-                pdb.set_trace()
+            print("==> uid: %s id: %s @id: %s " %
+                  (uuid, item.get("id"), item.get("@id")))
             if uuid and uuid in self.DROP_UIDS:
                 continue
 
