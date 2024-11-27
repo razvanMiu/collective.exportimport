@@ -1687,8 +1687,8 @@ class ExportReport(ExportEEAContent):
         # Migrate translations
         slate_list = ''
         slate_list_plaintext = ''
-        translations = obj.getTranslations().items().sort(
-            key=lambda item: item[0])
+        translations = obj.getTranslations().items()
+        translations.sort(key=lambda item: item[0])
         for lang, i in translations.items():
             [translation_obj, review_state] = i
             if lang == 'en':
