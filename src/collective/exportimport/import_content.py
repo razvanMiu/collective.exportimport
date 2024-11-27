@@ -369,8 +369,9 @@ class ImportContent(BrowserView):
             logger.info(u"Importing data")
         for index, item in enumerate(data, start=1):
 
-            if item["@type"] not in ['report_pdf', "Document", "File", "Image"]:
+            if item["@type"] not in ['report_pdf', "Document", "File", "Image", "Link"]:
                 print("===> %s %s", item["UID"], item["@id"])
+                continue
 
             if self.limit and len(added) >= self.limit:
                 break
