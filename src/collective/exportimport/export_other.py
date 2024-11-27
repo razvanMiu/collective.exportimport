@@ -1115,7 +1115,7 @@ class ExportEEAContent(ExportContent):
     blocks_layout = None
     catalog = None
 
-    folder_path = "/www/en/sandbox/miu-test"
+    folder_path = "/www/en/sandbox/reports-migration"
     parsed_ids = []
     images_ids = []
 
