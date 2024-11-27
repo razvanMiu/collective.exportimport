@@ -509,6 +509,10 @@ class ImportContent(BrowserView):
 
     def handle_new_object(self, item, index, new):
 
+        if index == 77:
+            import pdb
+            pdb.set_trace()
+
         new, item = self.global_obj_hook_before_deserializing(new, item)
 
         # import using plone.restapi deserializers

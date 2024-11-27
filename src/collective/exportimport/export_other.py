@@ -1670,6 +1670,7 @@ class ExportReport(ExportEEAContent):
                 item["blocks"],
                 "@marker", "file_call_to_action",
                 {"download": True, "href": file["@id"].replace("/wwww", "")})
+            del item["file"]
         else:
             deleteBlock(
                 item["blocks"],
