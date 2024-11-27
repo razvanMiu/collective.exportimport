@@ -362,6 +362,8 @@ class ImportContent(BrowserView):
 
     def import_new_content(self, data):  # noqa: C901
         added = []
+        import pdb
+        pdb.set_trace()
 
         if getattr(data, "len", None):
             logger.info(u"Importing {} items".format(len(data)))
@@ -508,10 +510,6 @@ class ImportContent(BrowserView):
         return added
 
     def handle_new_object(self, item, index, new):
-
-        if index == 77:
-            import pdb
-            pdb.set_trace()
 
         new, item = self.global_obj_hook_before_deserializing(new, item)
 
@@ -1059,7 +1057,7 @@ class ImportContent(BrowserView):
     def create_container(self, item):
         """Create container for item.
 
-        See remarks in get_parent_as_container for some corner cases.
+        See remarks in e for some corner cases.
         """
         folder = self.context
         parent_url = unquote(item["parent"]["@id"])
