@@ -322,7 +322,7 @@
               "bottomLevel": 0,
               "currentFolderOnly": true,
               "root_node": null,
-              "portal_type": ["Document", "File"],
+              "portal_type": ["Document", "File", "Link"],
               "variation": "report_navigation"
             },
             "undefined": {

@@ -1502,6 +1502,9 @@ class ExportReport(ExportEEAContent):
     def migrate_serial_title(self, item):
         subtitle = item.get("subtitle")
 
+        import pdb
+        pdb.set_trace()
+
         if not subtitle:
             return item
 
@@ -1520,9 +1523,6 @@ class ExportReport(ExportEEAContent):
             x2 += ('/' + str(subtitle[2])) if subtitle[2] else ''
 
         subtitle = x1 + ' ' + x2 if x1 and x2 else x1
-
-        import pdb
-        pdb.set_trace()
 
         updateBlock(item["blocks"],
                     "@marker", "serial_title",
