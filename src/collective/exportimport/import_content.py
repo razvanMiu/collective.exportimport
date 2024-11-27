@@ -362,8 +362,6 @@ class ImportContent(BrowserView):
 
     def import_new_content(self, data):  # noqa: C901
         added = []
-        import pdb
-        pdb.set_trace()
 
         if getattr(data, "len", None):
             logger.info(u"Importing {} items".format(len(data)))
@@ -374,6 +372,9 @@ class ImportContent(BrowserView):
                 break
 
             uuid = item.get("UID")
+            if item.get('id') == 'budget-of-the-eea-2015' and item.get("@type") == 'File':
+                import pdb
+                pdb.set_trace()
             if uuid and uuid in self.DROP_UIDS:
                 continue
 
