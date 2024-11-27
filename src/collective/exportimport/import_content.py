@@ -511,9 +511,6 @@ class ImportContent(BrowserView):
 
         new, item = self.global_obj_hook_before_deserializing(new, item)
 
-        import pdb
-        pdb.set_trace()
-
         # import using plone.restapi deserializers
         deserializer = getMultiAdapter(
             (new, self.request),

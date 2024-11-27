@@ -1115,7 +1115,7 @@ class ExportEEAContent(ExportContent):
     blocks_layout = None
     catalog = None
 
-    folder_path = "/www/en/analysis/maps-and-charts"
+    folder_path = "/www/en/sandbox/miu-test"
     parsed_ids = []
     images_ids = []
 
@@ -1641,6 +1641,9 @@ class ExportReport(ExportEEAContent):
             except Exception:
                 print("Error getting image for {}".format(
                     item['@id'] + "-" + item["@id"]))
+
+        import pdb
+        pdb.set_trace()
 
         if item["file"]:
             file = {
