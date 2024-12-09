@@ -1568,6 +1568,8 @@ class ExportReport(ExportEEAContent):
         return item
 
     def getChildren(self, obj):
+        import pdb
+        pdb.set_trace()
         objects = []
 
         portal_workflow = getToolByName(
@@ -1597,6 +1599,8 @@ class ExportReport(ExportEEAContent):
         return objects
 
     def getFolderContents(self, objects, item):
+        import pdb
+        pdb.set_trace()
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
@@ -1657,6 +1661,7 @@ class ExportReport(ExportEEAContent):
                 "id": item["id"],
                 "title": item["title"],
                 "file": item["file"],
+                "review_state": "published",
                 "exclude_from_nav": True,
                 "publication_file": True,
                 "report_language": "en",
@@ -1673,7 +1678,7 @@ class ExportReport(ExportEEAContent):
             updateBlock(
                 item["blocks"],
                 "@marker", "file_call_to_action",
-                {"download": True, "href": file["@id"].replace("/wwww", "")})
+                {"download": True, "href": file["@id"].replace("/www", "")})
             del item["file"]
         else:
             deleteBlock(
@@ -1755,6 +1760,8 @@ class ExportReport(ExportEEAContent):
         if len(item["publication_groups"]) > 1:
             print("====> Multiple publication groups for %s" % item["@id"])
 
+        import pdb
+        pdb.set_trace()
         children = self.getChildren(obj)
         report_content += self.getFolderContents(children, item)
 
