@@ -1108,7 +1108,8 @@ class ExportEEAContent(ExportContent):
         "management_plan",
         "@components",
         "items",
-        "next_item"
+        "next_item",
+        "maps_and_graphs"
     ]
 
     type = None
@@ -1249,6 +1250,7 @@ class ExportEEAContent(ExportContent):
             obj).versionId if IGetVersions else None
         item["relatedItems_unmapped"] = []
         item["relatedItems_backward"] = []
+        item["maps_and_graphs"] = []
 
         item = self.migrate_related_items(item, obj)
         # item = self.migrate_image(item, 'image')
@@ -1282,8 +1284,8 @@ class ExportEEAContent(ExportContent):
                     continue
                 if relatedItem.Type() in ['Infographic', 'Dashboard',
                                           'GIS Application', 'DavizVisualization', 'EEAFigure']:
-                    import pdb
-                    pdb.set_trace()
+                    item["maps_and_graphs"].append(
+                        [relatedItem.Title(), relatedItem.UID()])
                 item["relatedItems_backward"].append(relatedItem.UID())
 
         if not relatedItems:
@@ -1306,8 +1308,8 @@ class ExportEEAContent(ExportContent):
                 continue
             if relatedItem.Type() in ['Infographic', 'Dashboard',
                                       'GIS Application', 'DavizVisualization', 'EEAFigure']:
-                import pdb
-                pdb.set_trace()
+                item["maps_and_graphs"].append(
+                    [relatedItem.Title(), relatedItem.UID()])
             ok = True
             data = {
                 "@id": str(uuid.uuid4()),
@@ -1750,12 +1752,29 @@ class ExportReport(ExportEEAContent):
                                    if size_kbts > 11 else 3)
             slate_list += '<li><a href="../resolveuid/%s">%s</a> (%sMB)</li>' % (
                 translation["UID"], title, file_size_mbts)
-            slate_list_plaintext += '%s (%sMB)' % (title, file_size_mbts)
+            slate_list_plaintext += '%s (%sMB)\n' % (title, file_size_mbts)
         if slate_list:
             slate_list += '</ul>'
             updateBlock(
                 item["blocks"],
                 "@marker", "translations_list_slate",
+                {"plaintext": slate_list_plaintext,
+                 "value": self.text_to_slate(slate_list)})
+
+        if len(item["maps_and_graphs"]) > 0:
+            slate_list += '<ul>'
+            slate_list_plaintext = ''
+            for relatedItem in item["maps_and_graphs"]:
+                title = relatedItem[0]
+                uid = relatedItem[1]
+                slate_list += '<li><a href="../resolveuid/%s">%s</a></li>' % (
+                    uid,
+                    title)
+                slate_list_plaintext += '%s\n' % title
+            slate_list += '</ul>'
+            updateBlock(
+                item["blocks"],
+                "@marker", "maps_and_graphs_list_slate",
                 {"plaintext": slate_list_plaintext,
                  "value": self.text_to_slate(slate_list)})
 
