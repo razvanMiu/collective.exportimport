@@ -36,12 +36,12 @@ from zope.component import queryMultiAdapter, queryAdapter
 from zope.component import queryUtility
 from zope.interface import providedBy
 from uuid import uuid4
+from dateutil import parser
 
 import json
 import logging
 import os
 import pkg_resources
-import datetime
 import six
 import base64
 import uuid
@@ -1616,8 +1616,8 @@ class ExportReport(ExportEEAContent):
         return objects
 
     def global_dict_hook(self, item, obj):
-        if item["expires"] and item["expires"] != 'None' and datetime(
-                item["expires"]) < datetime(item["effective"]):
+        if item["expires"] and item["expires"] != 'None' and parser.parse(
+                item["expires"]) < parser.parse(item["effective"]):
             print("===> WTF: %s", item["UID"])
             return None
 
@@ -1758,8 +1758,6 @@ class ExportReport(ExportEEAContent):
         if len(item["publication_groups"]) > 1:
             print("====> Multiple publication groups for %s" % item["@id"])
 
-        import pdb
-        pdb.set_trace()
         children = self.getChildren(obj)
         report_content += self.getFolderContents(children, item)
 
