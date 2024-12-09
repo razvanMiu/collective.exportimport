@@ -1280,6 +1280,8 @@ class ExportEEAContent(ExportContent):
                 if api.content.get_state(
                         obj=relatedItem, default="unknown") != "published":
                     continue
+                import pdb
+                pdb.set_trace()
                 item["relatedItems_backward"].append(relatedItem.UID())
 
         if not relatedItems:
@@ -1568,8 +1570,6 @@ class ExportReport(ExportEEAContent):
         return item
 
     def getChildren(self, obj):
-        import pdb
-        pdb.set_trace()
         objects = []
 
         portal_workflow = getToolByName(
@@ -1599,8 +1599,6 @@ class ExportReport(ExportEEAContent):
         return objects
 
     def getFolderContents(self, objects, item):
-        import pdb
-        pdb.set_trace()
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
