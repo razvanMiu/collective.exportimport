@@ -1587,7 +1587,7 @@ class ExportReport(ExportEEAContent):
                 continue
             if o[1].getLanguage() != 'en':
                 continue
-            if o[1].meta_type not in [
+            if o[1].meta_type in [
                     'ATImage', 'Collection', 'Fiche', 'Briefing']:
                 continue
             if o[1].meta_type != 'Folder':
