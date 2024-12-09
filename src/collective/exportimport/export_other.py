@@ -1280,8 +1280,10 @@ class ExportEEAContent(ExportContent):
                 if api.content.get_state(
                         obj=relatedItem, default="unknown") != "published":
                     continue
-                import pdb
-                pdb.set_trace()
+                if relatedItem.Type() in ['Infographic', 'Dashboard',
+                                          'GIS Application', 'DavizVisualization', 'EEAFigure']:
+                    import pdb
+                    pdb.set_trace()
                 item["relatedItems_backward"].append(relatedItem.UID())
 
         if not relatedItems:
@@ -1302,6 +1304,10 @@ class ExportEEAContent(ExportContent):
             if api.content.get_state(
                     obj=relatedItem, default="unknown") != "published":
                 continue
+            if relatedItem.Type() in ['Infographic', 'Dashboard',
+                                      'GIS Application', 'DavizVisualization', 'EEAFigure']:
+                import pdb
+                pdb.set_trace()
             ok = True
             data = {
                 "@id": str(uuid.uuid4()),
