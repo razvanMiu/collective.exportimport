@@ -1764,7 +1764,7 @@ class ExportReport(ExportEEAContent):
             for relatedItem in item["maps_and_charts"]:
                 title = relatedItem[0]
                 uid = relatedItem[1]
-                slate_list += '<li><a href="../resolveuid/%s/@@download/file">%s</a></li>' % (
+                slate_list += '<li><a href="../resolveuid/%s">%s</a></li>' % (
                     uid, title)
                 slate_list_plaintext += '%s\n' % title
             slate_list += '</ul>'
