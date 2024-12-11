@@ -33,6 +33,12 @@
       "blocks": {
         "20490e40-34d1-4dce-a424-fffcd6e4374a": {
           "blocks": {
+            "a8efebab-eba8-40e8-9bcd-5092ac94f136": {
+              "@type": "dividerBlock",
+              "hidden": true,
+              "spacing": "s",
+              "styles": {}
+            },
             "205555ae-dceb-4c82-a2e2-a8602b804439": {
               "@type": "metadata",
               "data": {
@@ -57,6 +63,7 @@
           },
           "blocks_layout": {
             "items": [
+              "a8efebab-eba8-40e8-9bcd-5092ac94f136",
               "205555ae-dceb-4c82-a2e2-a8602b804439",
               "4220caf8-1bc2-4b92-9b51-5dc5ad4d9823"
             ]
@@ -372,62 +379,9 @@
         "3ea17926-72e8-4d1c-a76a-09c6b4b1c3a4": {
           "@type": "tab",
           "blocks": {
-            "6d5201c3-839b-49e2-8a92-fc62dd4b18f8": {
-              "@type": "slate"
-            },
-            "a549b9a3-0558-4692-a663-a55cc6393715": {
-              "@type": "search",
-              "availableViews": ["summary"],
-              "itemModel": {
-                "@type": "imageOnLeft",
-                "callToAction": {
-                  "enable": false
-                },
-                "hasDate": true,
-                "hasDescription": true,
-                "hasLabel": false,
-                "hasLink": true,
-                "hasMetaType": true,
-                "hasTags": false,
-                "maxTitle": "3",
-                "styles": {
-                  "inverted:bool": false
-                },
-                "titleOnImage": false
-              },
-              "listingBodyTemplate": "summary",
-              "query": {
-                "b_size": "5",
-                "query": [
-                  {
-                    "i": "portal_type",
-                    "o": "plone.app.querystring.operation.selection.any",
-                    "v": [
-                      "chart_static",
-                      "visualization",
-                      "map_interactive",
-                      "map_static",
-                      "tableau_visualization",
-                      "infographic",
-                      "map_visualization"
-                    ]
-                  },
-                  {
-                    "i": "path",
-                    "o": "plone.app.querystring.operation.string.relativePath",
-                    "v": ""
-                  }
-                ],
-                "sort_on": "sortable_title",
-                "sort_order": "ascending",
-                "sort_order_boolean": false
-              },
-              "showSearchInput": false,
-              "showSortOn": false,
-              "showTotalResults": true
-            },
             "b43f2ea4-098c-4323-b5b0-622b58580209": {
               "@type": "slate",
+              "@marker": "maps_and_charts_list_slate",
               "plaintext": "",
               "value": [
                 {
@@ -439,65 +393,10 @@
                   "type": "p"
                 }
               ]
-            },
-            "undefined": {
-              "@type": "search",
-              "availableViews": ["summary"],
-              "itemModel": {
-                "@type": "imageOnLeft",
-                "callToAction": {
-                  "enable": false
-                },
-                "hasDate": true,
-                "hasDescription": true,
-                "hasLabel": false,
-                "hasLink": true,
-                "hasMetaType": true,
-                "hasTags": false,
-                "maxTitle": "3",
-                "styles": {
-                  "inverted:bool": false
-                },
-                "titleOnImage": false
-              },
-              "listingBodyTemplate": "summary",
-              "query": {
-                "b_size": "5",
-                "query": [
-                  {
-                    "i": "portal_type",
-                    "o": "plone.app.querystring.operation.selection.any",
-                    "v": [
-                      "chart_static",
-                      "visualization",
-                      "map_interactive",
-                      "map_static",
-                      "tableau_visualization",
-                      "infographic",
-                      "map_visualization"
-                    ]
-                  },
-                  {
-                    "i": "path",
-                    "o": "plone.app.querystring.operation.string.relativePath",
-                    "v": ""
-                  }
-                ],
-                "sort_on": "sortable_title",
-                "sort_order": "ascending",
-                "sort_order_boolean": false
-              },
-              "showSearchInput": false,
-              "showSortOn": false,
-              "showTotalResults": true
             }
           },
           "blocks_layout": {
-            "items": [
-              "a549b9a3-0558-4692-a663-a55cc6393715",
-              "6d5201c3-839b-49e2-8a92-fc62dd4b18f8",
-              "b43f2ea4-098c-4323-b5b0-622b58580209"
-            ]
+            "items": ["b43f2ea4-098c-4323-b5b0-622b58580209"]
           },
           "selected": "6d5201c3-839b-49e2-8a92-fc62dd4b18f8",
           "title": "Maps and charts"

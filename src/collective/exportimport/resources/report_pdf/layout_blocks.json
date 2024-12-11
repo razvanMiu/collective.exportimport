@@ -1,8 +1,9 @@
 {
   "0a3f11ca-f5c1-4043-9780-1777a228fae9": {
-    "@type": "tabs_block",
     "data": {
       "assetPosition": "top",
+      "imageSize": "icon",
+      "iconSize": "small",
       "blocks": {
         "13e424cd-5934-4614-92ef-e6be8d05c441": {
           "@type": "tab",
@@ -10,24 +11,18 @@
             "8937dc26-5657-4105-959e-0bbf2352d771": {
               "@type": "contextNavigation",
               "bottomLevel": 0,
-              "topLevel": 0,
-              "variation": "report_navigation",
               "currentFolderOnly": true,
-              "portal_type": ["Document", "File", "Link"]
+              "portal_type": "Document,File,Link",
+              "topLevel": "0",
+              "variation": "report_navigation"
             },
             "undefined": {
-              "@type": "slate",
-              "plaintext": "",
-              "value": [
-                {
-                  "children": [
-                    {
-                      "text": ""
-                    }
-                  ],
-                  "type": "p"
-                }
-              ]
+              "@type": "contextNavigation",
+              "bottomLevel": 0,
+              "currentFolderOnly": true,
+              "portal_type": ["Document", "File", "Link"],
+              "topLevel": 0,
+              "variation": "report_navigation"
             }
           },
           "blocks_layout": {
@@ -53,61 +48,21 @@
         "3ea17926-72e8-4d1c-a76a-09c6b4b1c3a4": {
           "@type": "tab",
           "blocks": {
-            "6d5201c3-839b-49e2-8a92-fc62dd4b18f8": {
-              "@type": "slate"
-            },
-            "a549b9a3-0558-4692-a663-a55cc6393715": {
-              "@type": "search",
-              "availableViews": ["summary"],
-              "itemModel": {
-                "@type": "imageOnLeft",
-                "callToAction": {
-                  "enable": false
-                },
-                "hasDate": true,
-                "hasDescription": true,
-                "hasLabel": false,
-                "hasLink": true,
-                "hasMetaType": true,
-                "hasTags": false,
-                "maxTitle": "3",
-                "styles": {
-                  "inverted:bool": false
-                },
-                "titleOnImage": false
-              },
-              "listingBodyTemplate": "summary",
-              "query": {
-                "b_size": "5",
-                "query": [
-                  {
-                    "i": "portal_type",
-                    "o": "plone.app.querystring.operation.selection.any",
-                    "v": [
-                      "chart_static",
-                      "visualization",
-                      "map_interactive",
-                      "map_static",
-                      "tableau_visualization",
-                      "infographic",
-                      "map_visualization"
-                    ]
-                  },
-                  {
-                    "i": "path",
-                    "o": "plone.app.querystring.operation.string.relativePath",
-                    "v": ""
-                  }
-                ],
-                "sort_on": "sortable_title",
-                "sort_order": "ascending",
-                "sort_order_boolean": false
-              },
-              "showSearchInput": false,
-              "showSortOn": false,
-              "showTotalResults": true
-            },
             "b43f2ea4-098c-4323-b5b0-622b58580209": {
+              "@type": "slate",
+              "plaintext": "maps_and_charts_list_slate",
+              "value": [
+                {
+                  "children": [
+                    {
+                      "text": "maps_and_charts_list_slate"
+                    }
+                  ],
+                  "type": "p"
+                }
+              ]
+            },
+            "undefined": {
               "@type": "slate",
               "plaintext": "",
               "value": [
@@ -120,65 +75,10 @@
                   "type": "p"
                 }
               ]
-            },
-            "undefined": {
-              "@type": "search",
-              "availableViews": ["summary"],
-              "itemModel": {
-                "@type": "imageOnLeft",
-                "callToAction": {
-                  "enable": false
-                },
-                "hasDate": true,
-                "hasDescription": true,
-                "hasLabel": false,
-                "hasLink": true,
-                "hasMetaType": true,
-                "hasTags": false,
-                "maxTitle": "3",
-                "styles": {
-                  "inverted:bool": false
-                },
-                "titleOnImage": false
-              },
-              "listingBodyTemplate": "summary",
-              "query": {
-                "b_size": "5",
-                "query": [
-                  {
-                    "i": "portal_type",
-                    "o": "plone.app.querystring.operation.selection.any",
-                    "v": [
-                      "chart_static",
-                      "visualization",
-                      "map_interactive",
-                      "map_static",
-                      "tableau_visualization",
-                      "infographic",
-                      "map_visualization"
-                    ]
-                  },
-                  {
-                    "i": "path",
-                    "o": "plone.app.querystring.operation.string.relativePath",
-                    "v": ""
-                  }
-                ],
-                "sort_on": "sortable_title",
-                "sort_order": "ascending",
-                "sort_order_boolean": false
-              },
-              "showSearchInput": false,
-              "showSortOn": false,
-              "showTotalResults": true
             }
           },
           "blocks_layout": {
-            "items": [
-              "a549b9a3-0558-4692-a663-a55cc6393715",
-              "6d5201c3-839b-49e2-8a92-fc62dd4b18f8",
-              "b43f2ea4-098c-4323-b5b0-622b58580209"
-            ]
+            "items": ["b43f2ea4-098c-4323-b5b0-622b58580209"]
           },
           "selected": "6d5201c3-839b-49e2-8a92-fc62dd4b18f8",
           "title": "Maps and charts"
@@ -228,23 +128,22 @@
           "3ea17926-72e8-4d1c-a76a-09c6b4b1c3a4",
           "22266594-97f5-4524-946f-095a50759ae7"
         ]
-      },
-      "iconSize": "small",
-      "imageSize": "icon"
+      }
     },
-    "hideEmptyTabs": true,
-    "menuColor": "blue",
+    "verticalAlign": "flex-start",
     "menuFluid": true,
-    "menuInverted": true,
     "menuPointing": true,
     "menuSecondary": true,
+    "variation": "default",
+    "@type": "tabs_block",
+    "hideEmptyTabs": true,
+    "menuColor": "blue",
+    "menuInverted": true,
     "styles": {
       "style_name": null
     },
     "template": "accordion",
-    "theme": "primary",
-    "variation": "default",
-    "verticalAlign": "flex-start"
+    "theme": "primary"
   },
   "113d1917-e4cd-4f81-b64a-a8e547d4b79d": {
     "@type": "slate",
@@ -830,16 +729,22 @@
                 }
               ]
             },
+            "a8efebab-eba8-40e8-9bcd-5092ac94f136": {
+              "@type": "dividerBlock",
+              "hidden": true,
+              "spacing": "s",
+              "styles": {}
+            },
             "undefined": {
-              "@type": "metadata",
-              "data": {
-                "id": "preview_image",
-                "widget": "image"
-              }
+              "@type": "dividerBlock",
+              "hidden": true,
+              "spacing": "s",
+              "styles": {}
             }
           },
           "blocks_layout": {
             "items": [
+              "a8efebab-eba8-40e8-9bcd-5092ac94f136",
               "205555ae-dceb-4c82-a2e2-a8602b804439",
               "4220caf8-1bc2-4b92-9b51-5dc5ad4d9823"
             ]
@@ -1120,6 +1025,12 @@
                   "type": "p"
                 }
               ]
+            },
+            "18b760c9-9207-4911-9fed-71868d7e99f2": {
+              "@type": "dividerBlock",
+              "hidden": true,
+              "spacing": "s",
+              "styles": {}
             },
             "269a369a-9e7f-4a11-8502-a29d8bca9bed": {
               "@type": "slate",
@@ -1561,6 +1472,7 @@
             },
             "b6d39691-72fd-47b1-9f13-8ed0649ff7ac": {
               "@type": "callToActionBlock",
+              "download": true,
               "styles": {
                 "align": "right",
                 "theme": "primary"
@@ -1692,12 +1604,6 @@
                   "type": "p"
                 }
               ]
-            },
-            "18b760c9-9207-4911-9fed-71868d7e99f2": {
-              "@type": "dividerBlock",
-              "styles": {},
-              "spacing": "s",
-              "hidden": true
             }
           },
           "blocks_layout": {
@@ -1885,32 +1791,20 @@
           "@type": "tab",
           "blocks": {
             "8937dc26-5657-4105-959e-0bbf2352d771": {
-              "@type": "slate",
-              "plaintext": "",
-              "value": [
-                {
-                  "children": [
-                    {
-                      "text": ""
-                    }
-                  ],
-                  "type": "p"
-                }
-              ]
+              "@type": "contextNavigation",
+              "bottomLevel": 0,
+              "currentFolderOnly": true,
+              "portal_type": "Document,File,Link",
+              "topLevel": "0",
+              "variation": "report_navigation"
             },
             "undefined": {
-              "@type": "slate",
-              "plaintext": "",
-              "value": [
-                {
-                  "children": [
-                    {
-                      "text": ""
-                    }
-                  ],
-                  "type": "p"
-                }
-              ]
+              "@type": "contextNavigation",
+              "bottomLevel": 0,
+              "currentFolderOnly": true,
+              "portal_type": ["Document", "File", "Link"],
+              "topLevel": 0,
+              "variation": "report_navigation"
             }
           },
           "blocks_layout": {
@@ -1923,18 +1817,7 @@
           "assetPosition": "top",
           "blocks": {
             "e1fb8a6d-3c95-45a9-8e67-c639f8ba6d23": {
-              "@type": "slate",
-              "plaintext": "",
-              "value": [
-                {
-                  "children": [
-                    {
-                      "text": ""
-                    }
-                  ],
-                  "type": "p"
-                }
-              ]
+              "@type": "report_previous_versions"
             }
           },
           "blocks_layout": {

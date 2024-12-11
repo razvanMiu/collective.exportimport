@@ -1109,7 +1109,7 @@ class ExportEEAContent(ExportContent):
         "@components",
         "items",
         "next_item",
-        "maps_and_graphs"
+        "maps_and_charts"
     ]
 
     type = None
@@ -1250,7 +1250,7 @@ class ExportEEAContent(ExportContent):
             obj).versionId if IGetVersions else None
         item["relatedItems_unmapped"] = []
         item["relatedItems_backward"] = []
-        item["maps_and_graphs"] = []
+        item["maps_and_charts"] = []
 
         item = self.migrate_related_items(item, obj)
         # item = self.migrate_image(item, 'image')
@@ -1284,7 +1284,7 @@ class ExportEEAContent(ExportContent):
                     continue
                 if relatedItem.Type() in ['Infographic', 'Dashboard',
                                           'GIS Application', 'DavizVisualization', 'EEAFigure']:
-                    item["maps_and_graphs"].append(
+                    item["maps_and_charts"].append(
                         [relatedItem.Title(), relatedItem.UID()])
                 item["relatedItems_backward"].append(relatedItem.UID())
 
@@ -1308,7 +1308,7 @@ class ExportEEAContent(ExportContent):
                 continue
             if relatedItem.Type() in ['Infographic', 'Dashboard',
                                       'GIS Application', 'DavizVisualization', 'EEAFigure']:
-                item["maps_and_graphs"].append(
+                item["maps_and_charts"].append(
                     [relatedItem.Title(), relatedItem.UID()])
             ok = True
             data = {
@@ -1726,7 +1726,7 @@ class ExportReport(ExportEEAContent):
                 ISerializeToJson)
             translation = serializer()
             id = "%s-pdf-%s" % (languages[lang].lower(), translation["id"])
-            title = "%s PDF - %s" % (languages[lang], translation["title"])
+            title = translation["title"]
             file = {
                 "@id": item["@id"] + "/%s" % id,
                 "@type": "File",
@@ -1737,6 +1737,7 @@ class ExportReport(ExportEEAContent):
                 "exclude_from_nav": True,
                 "publication_file": True,
                 "report_language": lang,
+                "language": lang,
                 "parent": {
                     "@id": item["@id"],
                     "@type": item["@type"],
@@ -1750,8 +1751,8 @@ class ExportReport(ExportEEAContent):
             size_kbts = translation_obj.file.get_size() / 1024.0
             file_size_mbts = round(size_kbts / 1024.0, 2
                                    if size_kbts > 11 else 3)
-            slate_list += '<li><a href="../resolveuid/%s">%s</a> (%sMB)</li>' % (
-                translation["UID"], title, file_size_mbts)
+            slate_list += '<li><a href="../resolveuid/%s/@@download/file">%s</a> (%sMB)</li>' % (
+                translation["UID"], "%s PDF - %s" % (languages[lang], title), file_size_mbts)
             slate_list_plaintext += '%s (%sMB)\n' % (title, file_size_mbts)
         if slate_list:
             slate_list += '</ul>'
@@ -1761,10 +1762,10 @@ class ExportReport(ExportEEAContent):
                 {"plaintext": slate_list_plaintext,
                  "value": self.text_to_slate(slate_list)})
 
-        if len(item["maps_and_graphs"]) > 0:
+        if len(item["maps_and_charts"]) > 0:
             slate_list += '<ul>'
             slate_list_plaintext = ''
-            for relatedItem in item["maps_and_graphs"]:
+            for relatedItem in item["maps_and_charts"]:
                 title = relatedItem[0]
                 uid = relatedItem[1]
                 slate_list += '<li><a href="../resolveuid/%s">%s</a></li>' % (
@@ -1774,7 +1775,7 @@ class ExportReport(ExportEEAContent):
             slate_list += '</ul>'
             updateBlock(
                 item["blocks"],
-                "@marker", "maps_and_graphs_list_slate",
+                "@marker", "maps_and_charts_list_slate",
                 {"plaintext": slate_list_plaintext,
                  "value": self.text_to_slate(slate_list)})
 
