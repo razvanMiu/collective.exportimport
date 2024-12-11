@@ -1762,6 +1762,8 @@ class ExportReport(ExportEEAContent):
                 {"plaintext": slate_list_plaintext,
                  "value": self.text_to_slate(slate_list)})
 
+        import pdb
+        pdb.set_trace()
         if len(item["maps_and_charts"]) > 0:
             slate_list += '<ul>'
             slate_list_plaintext = ''
