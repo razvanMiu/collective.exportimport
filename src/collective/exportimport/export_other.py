@@ -1252,8 +1252,6 @@ class ExportEEAContent(ExportContent):
         item["relatedItems_backward"] = []
         item["maps_and_charts"] = []
 
-        import pdb
-        pdb.set_trace()
         item = self.migrate_related_items(item, obj)
         # item = self.migrate_image(item, 'image')
         item = self.migrate_temporal_coverage(item, "temporalCoverage")
