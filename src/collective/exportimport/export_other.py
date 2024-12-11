@@ -1698,10 +1698,6 @@ class ExportReport(ExportEEAContent):
         item = self.migrate_order_id_isbn(item)
         # item = self.migrate_trailer(item)
 
-        for field in self.DISSALLOWED_FIELDS:
-            if field in item:
-                del item[field]
-
         updateBlock(item["blocks"],
                     "@marker", "report_navigation",
                     {"root_node": [{"@id": item["@id"].replace("/www", "")}]})
@@ -1764,8 +1760,6 @@ class ExportReport(ExportEEAContent):
                 {"plaintext": slate_list_plaintext,
                  "value": self.text_to_slate(slate_list)})
 
-        import pdb
-        pdb.set_trace()
         if len(item["maps_and_charts"]) > 0:
             slate_list += '<ul>'
             slate_list_plaintext = ''
@@ -1789,5 +1783,9 @@ class ExportReport(ExportEEAContent):
 
         children = self.getChildren(obj)
         report_content += self.getFolderContents(children, item)
+
+        for field in self.DISSALLOWED_FIELDS:
+            if field in item:
+                del item[field]
 
         return [item] + report_content
