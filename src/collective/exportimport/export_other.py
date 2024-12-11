@@ -1696,9 +1696,15 @@ class ExportReport(ExportEEAContent):
         item = self.migrate_order_id_isbn(item)
         # item = self.migrate_trailer(item)
 
-        updateBlock(item["blocks"],
-                    "@marker", "report_navigation",
-                    {"root_node": [{"@id": item["@id"].replace("/www", "")}]})
+        updateBlock(
+            item["blocks"],
+            "@marker", "report_navigation",
+            {
+                "root_node":
+                [{"@id": item["@id"].replace("/www", ""),
+                  "Title": item["title"],
+                  "title": item["title"],
+                  "Description": item["description"]}]})
 
         # Migrate translations
         slate_list = ''
