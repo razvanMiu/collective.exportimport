@@ -1747,10 +1747,9 @@ class ExportReport(ExportEEAContent):
             translation = serializer()
             id = ("%s-pdf-%s" %
                   (languages[lang].lower(), translation["id"])).lower()
-            if id == 'turkish-pdf-briefing_2004_4':
-                import pdb
-                pdb.set_trace()
-            title = translation["title"].encode('utf8')
+            title = translation["title"].replace(
+                '\r\n', '\n').replace(
+                '\n', '')
             file = {
                 "@id": item["@id"] + "/%s" % id,
                 "@type": "File",
