@@ -1602,7 +1602,7 @@ class ExportReport(ExportEEAContent):
             if o[1].getLanguage() != 'en':
                 continue
             if o[1].meta_type not in [
-                    'Document', 'Folder', 'ATBlob', 'File', 'Link']:
+                    'Document', 'Folder', 'ATBlob', 'File', 'ATFile', 'Link']:
                 continue
             if o[1].meta_type != 'Folder':
                 objects.append(o[1])
@@ -1613,6 +1613,7 @@ class ExportReport(ExportEEAContent):
         return objects
 
     def getFolderContents(self, objects, item):
+        new_objects = []
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
@@ -1629,7 +1630,13 @@ class ExportReport(ExportEEAContent):
                 "review_state": item["review_state"],
                 "title": item["title"]
             }
-        return objects
+            del objects[index]["relatedItems"]
+            for field in self.DISSALLOWED_FIELDS:
+                if field in objects[index]:
+                    del objects[index][field]
+            if objects[index]["@type"] not in ["Image"]:
+                new_objects.append(objects[index])
+        return new_objects
 
     def global_dict_hook(self, item, obj):
         if item["expires"] and item["expires"] != 'None' and parser.parse(
@@ -1740,7 +1747,7 @@ class ExportReport(ExportEEAContent):
             translation = serializer()
             id = ("%s-pdf-%s" %
                   (languages[lang].lower(), translation["id"])).lower()
-            title = translation["title"]
+            title = translation["title"].encode('utf8')
             file = {
                 "@id": item["@id"] + "/%s" % id,
                 "@type": "File",
