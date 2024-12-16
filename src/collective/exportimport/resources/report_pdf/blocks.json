@@ -22,7 +22,8 @@
   },
   "841c0aa2-74fe-404f-8726-9343eca9ac85": {
     "@layout": "79ffe15a-1bc3-4e97-833f-838374d09237",
-    "@type": "report_next_versions",
+    "@type": "report_latest_version",
+    "@marker": "report_versions",
     "block": "a51b8c5a-0209-4003-9103-69d752bab053"
   },
   "8cb1f07e-229e-43a7-9f94-20d43314dde8": {
@@ -406,8 +407,8 @@
           "assetPosition": "top",
           "blocks": {
             "e1fb8a6d-3c95-45a9-8e67-c639f8ba6d23": {
-              "@type": "report_previous_versions",
-              "@marker": "report_previous_versions"
+              "@type": "report_versions",
+              "@marker": "report_versions"
             }
           },
           "blocks_layout": {

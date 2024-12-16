@@ -1595,8 +1595,8 @@ class ExportReport(ExportEEAContent):
                 continue
             if o[1].getLanguage() != 'en':
                 continue
-            if o[1].meta_type in [
-                    'ATImage', 'Collection', 'Fiche', 'Briefing']:
+            if o[1].meta_type not in [
+                    'Document', 'Folder', 'ATBlob', 'File', 'Link']:
                 continue
             if o[1].meta_type != 'Folder':
                 objects.append(o[1])
@@ -1784,6 +1784,8 @@ class ExportReport(ExportEEAContent):
 
         if len(item["publication_groups"]) > 1:
             print("====> Multiple publication groups for %s" % item["@id"])
+            import pdb
+            pdb.set_trace()
 
         children = self.getChildren(obj)
         report_content += self.getFolderContents(children, item)
