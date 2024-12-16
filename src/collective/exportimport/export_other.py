@@ -133,6 +133,12 @@ with open(os.path.dirname(__file__) + '/resources/related_items.json') as file:
 with open(os.path.dirname(__file__) + '/resources/languages.json') as file:
     languages = json.load(file)
 
+with open(os.path.dirname(__file__) + '/resources/folder_content/blocks.json') as file:
+    folder_blocks = json.load(file)
+
+with open(os.path.dirname(__file__) + '/resources/folder_content/blocks_layout.json') as file:
+    folder_blocks_layout = json.load(file)
+
 
 def make_uid():
     return str(uuid4())
@@ -1613,6 +1619,8 @@ class ExportReport(ExportEEAContent):
             objType = objects[index]["@type"]
             if objType == 'Folder':
                 objects[index]["@type"] = 'Document'
+                objects[index]["blocks"] = folder_blocks
+                objects[index]["blocks_layout"] = folder_blocks_layout
             objects[index]["parent"] = {
                 "@id": item["@id"],
                 "@type": item["@type"],
@@ -1645,6 +1653,9 @@ class ExportReport(ExportEEAContent):
         item = super(ExportReport, self).global_dict_hook(item, obj)
 
         preview_image = obj.cover if 'cover' in obj.keys() else None
+
+        item["id"] = item["id"].lower()
+        item["@id"] = item["@id"].lower()
 
         if preview_image:
             try:
@@ -1727,7 +1738,8 @@ class ExportReport(ExportEEAContent):
                 (translation_obj, self.request),
                 ISerializeToJson)
             translation = serializer()
-            id = "%s-pdf-%s" % (languages[lang].lower(), translation["id"])
+            id = ("%s-pdf-%s" %
+                  (languages[lang].lower(), translation["id"])).lower()
             title = translation["title"]
             file = {
                 "@id": item["@id"] + "/%s" % id,
@@ -1736,6 +1748,7 @@ class ExportReport(ExportEEAContent):
                 "id": id,
                 "title": title,
                 "file": translation["file"],
+                "review_state": "published",
                 "exclude_from_nav": True,
                 "publication_file": True,
                 "report_language": lang,
@@ -1784,8 +1797,6 @@ class ExportReport(ExportEEAContent):
 
         if len(item["publication_groups"]) > 1:
             print("====> Multiple publication groups for %s" % item["@id"])
-            import pdb
-            pdb.set_trace()
 
         children = self.getChildren(obj)
         report_content += self.getFolderContents(children, item)

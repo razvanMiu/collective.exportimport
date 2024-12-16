@@ -1,0 +1,65 @@
+{
+  "83283c21-fa08-4582-8973-9a24aaf60301": {
+    "@type": "slate"
+  },
+  "a46fe182-8ec9-4c4a-9731-37cd146da2b9": {
+    "@type": "listing",
+    "headlineTag": "h2",
+    "querystring": {
+      "limit": "10000",
+      "query": [
+        {
+          "i": "path",
+          "o": "plone.app.querystring.operation.string.relativePath",
+          "v": ""
+        }
+      ],
+      "sort_on": "sortable_title",
+      "sort_order": "ascending"
+    },
+    "styles": {},
+    "variation": "default"
+  },
+  "d100bb3a-78b1-4478-a554-01f0cd955eeb": {
+    "@layout": "8bf0d5ca-890e-4e8f-b3c8-1da51f168583",
+    "@type": "description",
+    "block": "d100bb3a-78b1-4478-a554-01f0cd955eeb",
+    "fixed": true,
+    "placeholder": "Add page description",
+    "plaintext": "",
+    "required": true,
+    "value": [
+      {
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "type": "p"
+      }
+    ]
+  },
+  "e78d9032-7e49-4503-bdbf-434659722e9f": {
+    "copyrightIcon": "ri-copyright-line",
+    "styles": {},
+    "variation": "default",
+    "@layout": "ebd09978-62d8-4ee3-bd97-417a486999c6",
+    "@type": "title",
+    "block": "e78d9032-7e49-4503-bdbf-434659722e9f",
+    "fixed": true,
+    "hideContentType": true,
+    "hideCreationDate": true,
+    "hideDownloadButton": true,
+    "hidePublishingDate": true,
+    "placeholder": "Add page title",
+    "required": true
+  },
+  "fb47bab8-263c-4e94-9564-8d46c0903e7c": {
+    "@layout": "98ac1308-85e6-4d4b-b212-dba1749d2845",
+    "@type": "layoutSettings",
+    "block": "daf20a93-107b-44e9-9fca-51dfcbc6b22d",
+    "fixed": true,
+    "layout_size": "narrow_view",
+    "required": true
+  }
+}
