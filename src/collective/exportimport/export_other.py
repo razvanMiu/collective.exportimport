@@ -1728,12 +1728,11 @@ class ExportReport(ExportEEAContent):
         slate_list = ''
         slate_list_plaintext = ''
         translations = obj.getTranslations().items()
-        translations.sort(key=lambda item: item[0])
-        import pdb
-        pdb.set_trace()
+        translations.sort(key=lambda item: languages.get(item[0]))
+
         for lang, i in translations:
             [translation_obj, review_state] = i
-            if lang == 'en':
+            if lang in ['en', 'zh']:
                 continue
             if review_state != 'published':
                 continue
