@@ -1810,6 +1810,8 @@ class ExportReport(ExportEEAContent):
 
         children = self.getChildren(obj)
         report_content += self.getFolderContents(children, item)
+        import pdb
+        pdb.set_trace()
 
         for field in self.DISSALLOWED_FIELDS:
             if field in item:
