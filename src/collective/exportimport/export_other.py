@@ -1589,9 +1589,6 @@ class ExportReport(ExportEEAContent):
         portal_workflow = getToolByName(
             self.context, "portal_workflow", None)
 
-        import pdb
-        pdb.set_trace()
-
         for o in obj.contentItems():
             if portal_workflow.getInfoFor(
                     o[1], 'review_state') != 'published':
@@ -1605,9 +1602,10 @@ class ExportReport(ExportEEAContent):
             if o[1].getLanguage() != 'en':
                 continue
             if o[1].meta_type not in [
-                    'Document', 'Folder', 'ATBlob', 'File', 'ATFile', 'Link']:
+                'ATDocument', 'Document', 'ATFolder', 'Folder', 'ATBlob',
+                    'File', 'ATFile', 'Link']:
                 continue
-            if o[1].meta_type != 'Folder':
+            if o[1].meta_type not in ['ATFolder', "Folder"]:
                 objects.append(o[1])
             else:
                 objects.append(o[1])
