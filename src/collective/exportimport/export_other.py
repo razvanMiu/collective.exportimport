@@ -1123,7 +1123,7 @@ class ExportEEAContent(ExportContent):
     blocks_layout = None
     catalog = None
 
-    folder_path = "/www/en/sandbox/reports-migration"
+    # folder_path = "/www/en/sandbox/reports-migration"
     parsed_ids = []
     images_ids = []
     missing_ids = []
@@ -1242,8 +1242,8 @@ class ExportEEAContent(ExportContent):
         else:
             self.parsed_ids.append(item["id"])
 
-        item["@id"] = "%s/%s" % (self.folder_path, item["id"])
-        item["parent"]["@id"] = self.folder_path
+        # item["@id"] = "%s/%s" % (self.folder_path, item["id"])
+        # item["parent"]["@id"] = self.folder_path
         item["parent"]["UID"] = None
         item["original_content_type"] = item["@type"]
 
@@ -1623,14 +1623,14 @@ class ExportReport(ExportEEAContent):
                 objects[index]["@type"] = 'Document'
                 objects[index]["blocks"] = folder_blocks
                 objects[index]["blocks_layout"] = folder_blocks_layout
-            objects[index]["parent"] = {
-                "@id": item["@id"],
-                "@type": item["@type"],
-                "UID": item["UID"],
-                "description": item["description"],
-                "review_state": item["review_state"],
-                "title": item["title"]
-            }
+            # objects[index]["parent"] = {
+            #     "@id": item["@id"],
+            #     "@type": item["@type"],
+            #     "UID": item["UID"],
+            #     "description": item["description"],
+            #     "review_state": item["review_state"],
+            #     "title": item["title"]
+            # }
             del objects[index]["relatedItems"]
             for field in self.DISSALLOWED_FIELDS:
                 if field in objects[index]:
