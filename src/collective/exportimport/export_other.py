@@ -1123,7 +1123,7 @@ class ExportEEAContent(ExportContent):
     blocks_layout = None
     catalog = None
 
-    # folder_path = "/www/en/sandbox/reports-migration"
+    folder_path = "/www/en/sandbox/reports-migration"
     parsed_ids = []
     images_ids = []
     missing_ids = []
@@ -1233,17 +1233,17 @@ class ExportEEAContent(ExportContent):
 
         item = json.loads(item)
 
-        if item["id"] in self.parsed_ids:
-            parts = item["@id"].split('/')
-            [parentId, id] = parts[-2:]
-            # item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
-            item["id"] = '%s-%s' % (id, parentId)
-            self.missing_ids.append(item["UID"])
-        else:
-            self.parsed_ids.append(item["id"])
+        # if item["id"] in self.parsed_ids:
+        #     parts = item["@id"].split('/')
+        #     [parentId, id] = parts[-2:]
+        #     # item["@id"] = '/'.join(parts[:-2]) + '/%s-%s' % (id, parentId)
+        #     item["id"] = '%s-%s' % (id, parentId)
+        #     self.missing_ids.append(item["UID"])
+        # else:
+        #     self.parsed_ids.append(item["id"])
 
-        # item["@id"] = "%s/%s" % (self.folder_path, item["id"])
-        # item["parent"]["@id"] = self.folder_path
+        item["@id"] = "%s/%s" % (self.folder_path, item["id"])
+        item["parent"]["@id"] = self.folder_path
         item["parent"]["UID"] = None
         item["original_content_type"] = item["@type"]
 
@@ -1583,6 +1583,10 @@ class ExportReport(ExportEEAContent):
                      "value": self.text_to_slate(trailer["data"])})
         return item
 
+    def getId(self, id):
+        return id.replace("http://10.120.10.133:63954/www/SITE/publications",
+                          self.folder_path)
+
     def getChildren(self, obj):
         objects = []
 
@@ -1619,18 +1623,13 @@ class ExportReport(ExportEEAContent):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
             objType = objects[index]["@type"]
+            objects[index]["@id"] = self.getId(objects[index]["@id"])
+            objects[index]["parent"]["@id"] = self.getId(
+                objects[index]["parent"]["@id"])
             if objType == 'Folder':
                 objects[index]["@type"] = 'Document'
                 objects[index]["blocks"] = folder_blocks
                 objects[index]["blocks_layout"] = folder_blocks_layout
-            # objects[index]["parent"] = {
-            #     "@id": item["@id"],
-            #     "@type": item["@type"],
-            #     "UID": item["UID"],
-            #     "description": item["description"],
-            #     "review_state": item["review_state"],
-            #     "title": item["title"]
-            # }
             del objects[index]["relatedItems"]
             for field in self.DISSALLOWED_FIELDS:
                 if field in objects[index]:
