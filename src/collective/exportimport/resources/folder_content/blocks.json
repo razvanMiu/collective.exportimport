@@ -4,7 +4,7 @@
   },
   "a46fe182-8ec9-4c4a-9731-37cd146da2b9": {
     "@type": "listing",
-    "headlineTag": "h2",
+    "headlineTag": "h3",
     "querystring": {
       "limit": "10000",
       "query": [
