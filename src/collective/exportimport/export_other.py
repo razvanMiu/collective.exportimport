@@ -37,6 +37,7 @@ from zope.component import queryUtility
 from zope.interface import providedBy
 from uuid import uuid4
 from dateutil import parser
+from urllib.parse import urlparse
 
 import json
 import logging
@@ -1584,8 +1585,9 @@ class ExportReport(ExportEEAContent):
         return item
 
     def getId(self, id):
-        return id.replace("http://10.120.10.133:63954/www/SITE/publications",
-                          self.folder_path)
+        URL = urlparse(id)
+        return URL.path.replace("/www/SITE/publications",
+                                self.folder_path)
 
     def getChildren(self, obj):
         objects = []
