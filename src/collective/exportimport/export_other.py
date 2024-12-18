@@ -1623,10 +1623,14 @@ class ExportReport(ExportEEAContent):
         new_objects = []
 
         for index, o in enumerate(objects):
+            import pdb
+            pdb.set_trace()
+            uid = objects.aq_parent.UID()
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
             objType = objects[index]["@type"]
             objects[index]["@id"] = self.getId(objects[index]["@id"])
+            objects[index]["parent"]["UID"] = uid
             objects[index]["parent"]["@id"] = self.getId(
                 objects[index]["parent"]["@id"])
             if objType == 'Folder':
