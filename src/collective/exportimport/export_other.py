@@ -1625,7 +1625,7 @@ class ExportReport(ExportEEAContent):
         for index, o in enumerate(objects):
             import pdb
             pdb.set_trace()
-            uid = objects.aq_parent.UID()
+            uid = objects[index].aq_parent.UID()
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
             objType = objects[index]["@type"]
