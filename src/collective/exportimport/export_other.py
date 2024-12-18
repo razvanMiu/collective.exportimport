@@ -37,7 +37,6 @@ from zope.component import queryUtility
 from zope.interface import providedBy
 from uuid import uuid4
 from dateutil import parser
-from urllib.parse import urlparse
 
 import json
 import logging
@@ -46,6 +45,7 @@ import pkg_resources
 import six
 import base64
 import uuid
+import urlparse.urlparse
 import requests
 import re
 import sys
@@ -1585,7 +1585,7 @@ class ExportReport(ExportEEAContent):
         return item
 
     def getId(self, id):
-        URL = urlparse(id)
+        URL = urlparse.urlparse(id)
         return URL.path.replace("/www/SITE/publications",
                                 self.folder_path)
 
