@@ -1621,8 +1621,7 @@ class ExportReport(ExportEEAContent):
 
     def getFolderContents(self, objects, item):
         new_objects = []
-        import pdb
-        pdb.set_trace()
+
         for index, o in enumerate(objects):
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
