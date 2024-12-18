@@ -45,7 +45,7 @@ import pkg_resources
 import six
 import base64
 import uuid
-import urlparse.urlparse
+import urlparse
 import requests
 import re
 import sys
