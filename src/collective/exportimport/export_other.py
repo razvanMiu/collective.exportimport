@@ -1738,7 +1738,7 @@ class ExportReport(ExportEEAContent):
 
         for lang, i in translations:
             [translation_obj, review_state] = i
-            if lang in ['en', 'zh']:
+            if lang in ['en']:
                 continue
             if review_state != 'published':
                 continue
