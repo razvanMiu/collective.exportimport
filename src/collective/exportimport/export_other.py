@@ -1535,17 +1535,14 @@ class ExportReport(ExportEEAContent):
 
         subtitle = x1 + ' ' + x2 if x1 and x2 else x1
 
-        import pdb
-        pdb.set_trace()
-
         updateBlock(item["blocks"],
                     "@marker", "serial_title",
                     {"subtitle": subtitle})
         updateBlock(
             item["blocks"],
             "@marker", "serial_subtitle_slate",
-            {"plaintext": subtitle,
-             "value": self.text_to_slate('<small>%s</small>' % subtitle)})
+            {"plaintext": subtitle, "value": self.text_to_slate(
+                '<p><small>%s</small></p>' % subtitle)})
 
         return item
 
@@ -1794,6 +1791,8 @@ class ExportReport(ExportEEAContent):
                  "value": self.text_to_slate(slate_list)})
 
         if len(item["maps_and_charts"]) > 0:
+            import pdb
+            pdb.set_trace()
             slate_list += '<ul>'
             slate_list_plaintext = ''
             for relatedItem in item["maps_and_charts"]:
