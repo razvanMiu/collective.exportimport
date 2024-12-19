@@ -1595,6 +1595,9 @@ class ExportReport(ExportEEAContent):
         portal_workflow = getToolByName(
             self.context, "portal_workflow", None)
 
+        import pdb
+        pdb.set_trace()
+
         for o in obj.contentItems():
             if portal_workflow.getInfoFor(
                     o[1], 'review_state') != 'published':
