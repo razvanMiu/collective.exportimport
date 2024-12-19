@@ -1606,8 +1606,6 @@ class ExportReport(ExportEEAContent):
                 continue
             if isExpired(o[1]):
                 continue
-            if IGetVersions and not IGetVersions(o[1]).isLatest():
-                continue
             if o[1].getLanguage() != 'en':
                 continue
             if o[1].meta_type not in [
