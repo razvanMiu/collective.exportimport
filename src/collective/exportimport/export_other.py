@@ -1535,6 +1535,9 @@ class ExportReport(ExportEEAContent):
 
         subtitle = x1 + ' ' + x2 if x1 and x2 else x1
 
+        import pdb
+        pdb.set_trace()
+
         updateBlock(item["blocks"],
                     "@marker", "serial_title",
                     {"subtitle": subtitle})
@@ -1542,7 +1545,7 @@ class ExportReport(ExportEEAContent):
             item["blocks"],
             "@marker", "serial_subtitle_slate",
             {"plaintext": subtitle,
-             "value": self.text_to_slate(subtitle)})
+             "value": self.text_to_slate('<small>%s</small>' % subtitle)})
 
         return item
 
@@ -1594,9 +1597,6 @@ class ExportReport(ExportEEAContent):
 
         portal_workflow = getToolByName(
             self.context, "portal_workflow", None)
-
-        import pdb
-        pdb.set_trace()
 
         for o in obj.contentItems():
             if portal_workflow.getInfoFor(
@@ -1814,11 +1814,12 @@ class ExportReport(ExportEEAContent):
         if len(item["publication_groups"]) > 1:
             print("====> Multiple publication groups for %s" % item["@id"])
 
-        children = self.getChildren(obj)
-        report_content += self.getFolderContents(children, item)
+        # children = self.getChildren(obj)
+        # report_content += self.getFolderContents(children, item)
 
         for field in self.DISSALLOWED_FIELDS:
             if field in item:
                 del item[field]
 
-        return [item] + report_content
+        return item
+        # return [item] + report_content
