@@ -26,6 +26,15 @@
     "@marker": "eea_latest_version",
     "block": "a51b8c5a-0209-4003-9103-69d752bab053"
   },
+  "2e634209-c5a6-4040-b2fa-9197c405717b": {
+    "@layout": "6411affa-6f55-4a01-b87b-3654936f88d6",
+    "@type": "dividerBlock",
+    "block": "eb9d294b-4ddb-4245-bdd7-ff20a22f7f8a",
+    "fitted": true,
+    "hidden": true,
+    "spacing": "s",
+    "styles": {}
+  },
   "8cb1f07e-229e-43a7-9f94-20d43314dde8": {
     "@layout": "a4517d09-f98f-4e88-9ed8-59509c7ac126",
     "@type": "columnsBlock",
@@ -98,6 +107,7 @@
                         {
                           "children": [
                             {
+                              "style-report-title": true,
                               "text": "Report title"
                             }
                           ],
