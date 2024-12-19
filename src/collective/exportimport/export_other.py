@@ -1124,7 +1124,7 @@ class ExportEEAContent(ExportContent):
     blocks_layout = None
     catalog = None
 
-    folder_path = "/www/en/sandbox/reports-migration"
+    folder_path = "/www/en/analysis/publications"
     parsed_ids = []
     images_ids = []
     missing_ids = []
