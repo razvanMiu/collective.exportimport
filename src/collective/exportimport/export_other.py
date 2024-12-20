@@ -1470,7 +1470,8 @@ class ExportEEAContent(ExportContent):
             BLOCKS_CONVERTER, data=json.dumps(data),
             headers=headers)
         if req.status_code != 200:
-            logger.debug(req.text)
+            print("==> Failed to convert to blocks")
+            # logger.debug(req.text)
             return 'Broken'
             # raise ValueError
 
