@@ -1630,6 +1630,7 @@ class ExportReport(ExportEEAContent):
             objects[index]["parent"]["@id"] = self.getId(
                 objects[index]["parent"]["@id"])
             if objects[index].get("body"):
+                blocks = self.convert_to_blocks(objects[index].get("body"))
                 import pdb
                 pdb.set_trace()
             if objType == 'Folder':
