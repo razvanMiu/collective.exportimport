@@ -463,6 +463,7 @@ class ExportContent(BrowserView):
             blocks = blocks.replace(root, "")
         item = {
             "@id": item["@id"],
+            "@type": item["@type"],
             "id": item["id"],
             "UID": item["UID"],
             "blocks": json.loads(blocks),
