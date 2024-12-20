@@ -445,9 +445,11 @@ class ExportContent(BrowserView):
 
         item = self.global_dict_hook(item, obj)
         roots = [
+            "http://backend6:8080/bise",
             "http://backend6:8080",
             "https://demo-biodiversity.devel5cph.eea.europa.eu",
-            "https://biodiversity.europa.eu"
+            "https://biodiversity.europa.eu",
+            "/bise",
         ]
         blocks = json.dumps(item.get("blocks", {}))
         ok = False
