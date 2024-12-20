@@ -1630,9 +1630,17 @@ class ExportReport(ExportEEAContent):
             objects[index]["parent"]["@id"] = self.getId(
                 objects[index]["parent"]["@id"])
             if objects[index].get("text"):
-                blocks = self.convert_to_blocks(objects[index].get("text"))
-                import pdb
-                pdb.set_trace()
+                text = objects[index]["text"]["data"]
+                blocks = {}
+                blocks_layout = {"items": []}
+                data = self.convert_to_blocks(text)
+                for i in data:
+                    id = i[0]
+                    block = i[1]
+                    blocks[id] = block
+                    blocks_layout["items"].append(id)
+                objects[index]["blocks"] = blocks
+                objects[index]["blocks_layout"] = blocks_layout
             if objType == 'Folder':
                 objects[index]["@type"] = 'Document'
                 objects[index]["blocks"] = folder_blocks
@@ -1641,7 +1649,9 @@ class ExportReport(ExportEEAContent):
             for field in self.DISSALLOWED_FIELDS:
                 if field in objects[index]:
                     del objects[index][field]
-            if objects[index]["@type"] not in ["Image"]:
+            # if objects[index]["@type"] not in ["Image"]:
+            #     new_objects.append(objects[index])
+            if objects[index]["@type"] not in ["Image"] and objects[index].get("text"):
                 new_objects.append(objects[index])
         return new_objects
 
