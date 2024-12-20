@@ -464,7 +464,11 @@ class ExportContent(BrowserView):
             "id": item["id"],
             "UID": item["UID"],
             "blocks": json.loads(blocks),
-            "parent": item["parent"],
+            "parent": {
+                "@id": item["parent"]["@id"],
+                "@type": item["parent"]["@type"],
+                "UID": item["parent"]["UID"],
+            },
         }
 
         item = self.custom_dict_hook(item, obj)
