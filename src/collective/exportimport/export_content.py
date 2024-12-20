@@ -181,7 +181,8 @@ class ExportContent(BrowserView):
             filename = "{}.json".format(filename)
 
         self.errors = []
-        content_generator = self.export_content()
+        content_generator = [
+            item for item in self.export_content() if item is not None]
 
         number = 0
 
