@@ -1629,6 +1629,9 @@ class ExportReport(ExportEEAContent):
             objects[index]["parent"]["UID"] = uid
             objects[index]["parent"]["@id"] = self.getId(
                 objects[index]["parent"]["@id"])
+            if objects[index].get("body"):
+                import pdb
+                pdb.set_trace()
             if objType == 'Folder':
                 objects[index]["@type"] = 'Document'
                 objects[index]["blocks"] = folder_blocks
@@ -1701,7 +1704,7 @@ class ExportReport(ExportEEAContent):
                     "title": item["title"]
                 },
             }
-            report_content.append(file)
+            # report_content.append(file)
             updateBlock(
                 item["blocks"],
                 "@marker", "file_call_to_action",
@@ -1775,7 +1778,7 @@ class ExportReport(ExportEEAContent):
                     "title": item["title"]
                 },
             }
-            report_content.append(file)
+            # report_content.append(file)
             size_kbts = translation_obj.file.get_size() / 1024.0
             file_size_mbts = round(size_kbts / 1024.0, 2
                                    if size_kbts > 11 else 3)
@@ -1791,8 +1794,6 @@ class ExportReport(ExportEEAContent):
                  "value": self.text_to_slate(slate_list)})
 
         if len(item["maps_and_charts"]) > 0:
-            import pdb
-            pdb.set_trace()
             slate_list += '<ul>'
             slate_list_plaintext = ''
             for relatedItem in item["maps_and_charts"]:
@@ -1813,12 +1814,13 @@ class ExportReport(ExportEEAContent):
         if len(item["publication_groups"]) > 1:
             print("====> Multiple publication groups for %s" % item["@id"])
 
-        # children = self.getChildren(obj)
-        # report_content += self.getFolderContents(children, item)
+        children = self.getChildren(obj)
+        report_content += self.getFolderContents(children, item)
 
         for field in self.DISSALLOWED_FIELDS:
             if field in item:
                 del item[field]
 
-        return item
+        # return item
         # return [item] + report_content
+        return report_content
