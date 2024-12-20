@@ -1629,8 +1629,8 @@ class ExportReport(ExportEEAContent):
             objects[index]["parent"]["UID"] = uid
             objects[index]["parent"]["@id"] = self.getId(
                 objects[index]["parent"]["@id"])
-            if objects[index].get("body"):
-                blocks = self.convert_to_blocks(objects[index].get("body"))
+            if objects[index].get("text"):
+                blocks = self.convert_to_blocks(objects[index].get("text"))
                 import pdb
                 pdb.set_trace()
             if objType == 'Folder':
