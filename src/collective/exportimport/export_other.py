@@ -1128,6 +1128,7 @@ class ExportEEAContent(ExportContent):
     parsed_ids = []
     images_ids = []
     missing_ids = []
+    broken = []
 
     def update(self):
         """Use this to override stuff before the export starts
@@ -1466,11 +1467,11 @@ class ExportEEAContent(ExportContent):
                    "Accept": "application/json"}
 
         req = requests.post(
-            BLOCKS_CONVERTER, data=json.dumps(data), headers=headers)
+            BLOCKS_CONVERTER, data=json.dumps(data),
+            headers=headers)
         if req.status_code != 200:
-            import pdb
-            pdb.set_trace()
             logger.debug(req.text)
+            return 'Broken'
             # raise ValueError
 
         blocks = req.json()["data"]
@@ -1497,6 +1498,8 @@ class ExportEEAContent(ExportContent):
         return slate
 
     def finish(self):
+        import pdb
+        pdb.set_trace()
         self.parsed_ids = []
         self.missing_ids = []
 
@@ -1634,6 +1637,9 @@ class ExportReport(ExportEEAContent):
                 blocks = {}
                 blocks_layout = {"items": []}
                 data = self.convert_to_blocks(text)
+                if data == 'Broken':
+                    data = []
+                    self.broken.append(objects[index]["UID"])
                 for i in data:
                     id = i[0]
                     block = i[1]
