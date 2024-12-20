@@ -452,6 +452,7 @@ class ExportContent(BrowserView):
         ok = False
         for root in roots:
             if root in blocks:
+                print("Has roots - %s" % item["@id"])
                 ok = True
                 break
         if not item or not ok:
