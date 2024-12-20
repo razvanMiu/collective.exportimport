@@ -1625,6 +1625,7 @@ class ExportReport(ExportEEAContent):
         new_objects = []
 
         for index, o in enumerate(objects):
+            data = None
             uid = objects[index].aq_parent.UID()
             serializer = getMultiAdapter((o, self.request), ISerializeToJson)
             objects[index] = serializer()
@@ -1639,15 +1640,15 @@ class ExportReport(ExportEEAContent):
                 blocks_layout = {"items": []}
                 data = self.convert_to_blocks(text)
                 if data == 'Broken':
-                    data = []
                     self.broken.append(objects[index]["UID"])
-                for i in data:
-                    id = i[0]
-                    block = i[1]
-                    blocks[id] = block
-                    blocks_layout["items"].append(id)
-                objects[index]["blocks"] = blocks
-                objects[index]["blocks_layout"] = blocks_layout
+                elif data:
+                    for i in data:
+                        id = i[0]
+                        block = i[1]
+                        blocks[id] = block
+                        blocks_layout["items"].append(id)
+                    objects[index]["blocks"] = blocks
+                    objects[index]["blocks_layout"] = blocks_layout
             if objType == 'Folder':
                 objects[index]["@type"] = 'Document'
                 objects[index]["blocks"] = folder_blocks
@@ -1658,7 +1659,7 @@ class ExportReport(ExportEEAContent):
                     del objects[index][field]
             # if objects[index]["@type"] not in ["Image"]:
             #     new_objects.append(objects[index])
-            if objects[index]["@type"] not in ["Image"] and objects[index].get("text"):
+            if objects[index]["@type"] not in ["Image"] and objects[index].get("text") and data:
                 new_objects.append(objects[index])
         return new_objects
 
