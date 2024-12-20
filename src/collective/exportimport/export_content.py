@@ -493,12 +493,12 @@ class ExportContent(BrowserView):
 
         item = self.global_dict_hook(item, obj)
         if not item:
-            logger.info(u"Skipping %s", obj.absolute_url())
+            # logger.info(u"Skipping %s", obj.absolute_url())
             return
 
         item = self.custom_dict_hook(item, obj)
         if not item:
-            logger.info(u"Skipping %s", obj.absolute_url())
+            # logger.info(u"Skipping %s", obj.absolute_url())
             return
 
         return item
