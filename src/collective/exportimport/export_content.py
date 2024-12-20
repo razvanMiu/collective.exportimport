@@ -453,11 +453,11 @@ class ExportContent(BrowserView):
         ok = False
         for root in roots:
             if root in blocks:
-                print("Has roots - %s" % item["@id"])
+                logger.info(u"Has roots - %s", item["@id"])
                 ok = True
                 break
         if not item or not ok:
-            logger.info(u"Skipping %s", obj.absolute_url())
+            # logger.info(u"Skipping %s", obj.absolute_url())
             return
         for root in roots:
             blocks = blocks.replace(root, "")
