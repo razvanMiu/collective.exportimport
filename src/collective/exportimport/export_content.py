@@ -102,6 +102,9 @@ LISTING_VIEW_MAPPING = {  # OLD (AT and old DX) : NEW
     "view": "listing_view",
 }
 
+with open(os.path.dirname(__file__) + '/resources/ids.json') as file:
+    ids = json.load(file)
+
 
 class ExportContent(BrowserView):
 
@@ -367,8 +370,15 @@ class ExportContent(BrowserView):
         # Override richtext serializer to export links using resolveuid/xxx
         alsoProvides(self.request, IRawRichTextMarker)
 
+        import pdb
+        pdb.set_trace()
+
         for index, brain in enumerate(brains, start=1):
             skip = False
+
+            if brain.UID not in ids:
+                continue
+
             if brain.UID in self.DROP_UIDS:
                 continue
 
