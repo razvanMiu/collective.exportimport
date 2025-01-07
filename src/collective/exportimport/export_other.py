@@ -1713,9 +1713,7 @@ class ExportReport(ExportEEAContent):
             for field in self.DISSALLOWED_FIELDS:
                 if field in objects[index]:
                     del objects[index][field]
-            # if objects[index]["@type"] not in ["Image"]:
-            #     new_objects.append(objects[index])
-            if objects[index]["@type"] not in ["Image"] and objects[index].get("text") and data:
+            if objects[index]["@type"] not in ["Image"]:
                 new_objects.append(objects[index])
         return new_objects
 
