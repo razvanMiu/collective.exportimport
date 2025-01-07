@@ -1611,7 +1611,7 @@ class ExportReport(ExportEEAContent):
                 continue
             if o[1].meta_type not in [
                 'ATDocument', 'Document', 'ATFolder', 'Folder', 'ATBlob',
-                    'File', 'ATFile', 'Link']:
+                    'File', 'ATFile', 'Link', 'Image', 'ATImage']:
                 continue
             if o[1].meta_type not in ['ATFolder', "Folder"]:
                 objects.append(o[1])
@@ -1842,4 +1842,4 @@ class ExportReport(ExportEEAContent):
 
         # return item
         # return [item] + report_content
-        return report_content
+        return [i for i in report_content if i["@type"] in ["Document", "Image"]]

@@ -103,7 +103,8 @@ LISTING_VIEW_MAPPING = {  # OLD (AT and old DX) : NEW
 }
 
 with open(os.path.dirname(__file__) + '/resources/ids.json') as file:
-    ids = json.load(file)
+    # ids = json.load(file)
+    ids = []
 
 
 class ExportContent(BrowserView):
