@@ -141,6 +141,42 @@ with open(os.path.dirname(__file__) + '/resources/folder_content/blocks_layout.j
     folder_blocks_layout = json.load(file)
 
 
+def resolve_to_uid(src, obj_path):
+    """
+    Resolve a src to a UID based on Plone's path resolution rules.
+    - src: The source path from the HTML (e.g., "logo.gif", "../Images/xxx.jpg").
+    - obj_path: The path of the Plone object containing the HTML field (e.g., "/www/Site/publication/x-1/r").
+    """
+    # Handle absolute paths (start with '/')
+    if src.startswith("/"):
+        normalized_path = src
+
+    # Handle relative paths (start with '../')
+    elif src.startswith("../"):
+        # Break down the obj_path and resolve relative references
+        obj_path_parts = obj_path.strip("/").split("/")
+        src_parts = src.split("/")
+        while src_parts[0] == "..":
+            src_parts.pop(0)
+            obj_path_parts.pop()
+        normalized_path = "/" + "/".join(obj_path_parts + src_parts)
+
+    # Handle paths without a prefix
+    else:
+        # Append the src to the parent folder of obj_path
+        obj_path_parts = obj_path.strip("/").split("/")
+        normalized_path = "/" + "/".join(obj_path_parts[:-1]) + "/" + src
+
+    # Use Plone's catalog to find the object by path
+    brain = api.content.find(path=normalized_path)
+    if brain:
+        # Return the UID of the found object
+        return brain[0].UID
+
+    # If no match is found, return the original src
+    return src
+
+
 def make_uid():
     return str(uuid4())
 
@@ -1638,13 +1674,16 @@ class ExportReport(ExportEEAContent):
                 text = objects[index]["text"]["data"]
 
                 # Regex pattern to match resolveuid and extract the ID
-                pattern = re.compile(r'src=\"([a-zA-Z0-9\/\?]*)')
+                pattern = re.compile(
+                    r'\bsrc=["\'](?!resolveuid)([^"\']+)["\']')
 
                 # Find all matches
                 matches = pattern.findall(text)
 
                 # Save all found ids
                 for match in matches:
+                    uid = resolve_to_uid(match)
+
                     import pdb
                     pdb.set_trace()
                     # self.images_ids.append(match[1])
