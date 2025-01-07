@@ -1686,9 +1686,7 @@ class ExportReport(ExportEEAContent):
                     if uid == match:
                         continue
                     text = text.replace(
-                        u'src="{match}"', u'src=\"../resolveuid/{uid}\"')
-                    text = text.replace(
-                        u'src=\"{match}\"', u'src=\"../resolveuid/{uid}\"')
+                        "src=\"{match}\"", "src=\"../resolveuid/{uid}\"")
                     self.images_ids.append(uid)
 
                 blocks = {}
@@ -1704,7 +1702,7 @@ class ExportReport(ExportEEAContent):
                         blocks_layout["items"].append(id)
                     objects[index]["blocks"] = blocks
                     objects[index]["blocks_layout"] = blocks_layout
-                del objects[index]["text"]
+                # del objects[index]["text"]
             if objType == 'Folder':
                 objects[index]["@type"] = 'Document'
                 objects[index]["blocks"] = folder_blocks
