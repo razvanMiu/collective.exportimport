@@ -1600,7 +1600,7 @@ class ExportReport(ExportEEAContent):
             self.context, "portal_workflow", None)
 
         for o in obj.contentItems():
-            if portal_workflow.getInfoFor(
+            if obj.Type() != "Image" and portal_workflow.getInfoFor(
                     o[1], 'review_state') != 'published':
                 continue
             if IObjectArchived and IObjectArchived.providedBy(o[1]):
@@ -1636,6 +1636,19 @@ class ExportReport(ExportEEAContent):
                 objects[index]["parent"]["@id"])
             if objects[index].get("text"):
                 text = objects[index]["text"]["data"]
+
+                # Regex pattern to match resolveuid and extract the ID
+                pattern = re.compile(r'src=\"([a-zA-Z0-9\/\?]*)')
+
+                # Find all matches
+                matches = pattern.findall(text)
+
+                # Save all found ids
+                for match in matches:
+                    import pdb
+                    pdb.set_trace()
+                    # self.images_ids.append(match[1])
+
                 blocks = {}
                 blocks_layout = {"items": []}
                 data = self.convert_to_blocks(text)
