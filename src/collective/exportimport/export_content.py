@@ -370,6 +370,9 @@ class ExportContent(BrowserView):
 
         logger.info(u"Exporting {} {}".format(len(brains), self.portal_type))
 
+        import pdb
+        pdb.set_trace()
+
         # Override richtext serializer to export links using resolveuid/xxx
         alsoProvides(self.request, IRawRichTextMarker)
 
@@ -499,8 +502,6 @@ class ExportContent(BrowserView):
             item = self.update_data_for_migration(item, obj)
 
         item = self.global_dict_hook(item, obj)
-        import pdb
-        pdb.set_trace()
         if not item:
             # logger.info(u"Skipping %s", obj.absolute_url())
             return
