@@ -1682,12 +1682,11 @@ class ExportReport(ExportEEAContent):
 
                 # Save all found ids
                 for match in matches:
-                    import pdb
-                    pdb.set_trace()
+                    uid = resolve_to_uid(match, "/".join(o.getPhysicalPath()))
 
-                    uid = resolve_to_uid(match, "")
-
-                    # self.images_ids.append(match[1])
+                    text = text.replace(
+                        f'src="{match}"', f'src="../resolveuid/{uid}"')
+                    self.images_ids.append(uid)
 
                 blocks = {}
                 blocks_layout = {"items": []}
@@ -1896,3 +1895,7 @@ class ExportReport(ExportEEAContent):
         # return item
         # return [item] + report_content
         return [i for i in report_content if i["@type"] in ["Document", "Image"]]
+
+    def finish(self):
+        import pdb
+        pdb.set_trace()
