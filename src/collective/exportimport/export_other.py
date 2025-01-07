@@ -1685,7 +1685,7 @@ class ExportReport(ExportEEAContent):
                     uid = resolve_to_uid(match, "/".join(o.getPhysicalPath()))
 
                     text = text.replace(
-                        f'src="{match}"', f'src="../resolveuid/{uid}"')
+                        u'src="{match}"', u'src="../resolveuid/{uid}"')
                     self.images_ids.append(uid)
 
                 blocks = {}
@@ -1894,7 +1894,7 @@ class ExportReport(ExportEEAContent):
 
         # return item
         # return [item] + report_content
-        return [i for i in report_content if i["@type"] in ["Document", "Image"]]
+        return [i for i in report_content if i["@type"] in ["Document"]]
 
     def finish(self):
         import pdb
