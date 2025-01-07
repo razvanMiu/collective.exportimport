@@ -1724,11 +1724,12 @@ class ExportReport(ExportEEAContent):
                         blocks_layout["items"].append(id)
                     objects[index]["blocks"] = blocks
                     objects[index]["blocks_layout"] = blocks_layout
-                # del objects[index]["text"]
+                del objects[index]["text"]
             if objType == 'Folder':
                 objects[index]["@type"] = 'Document'
                 objects[index]["blocks"] = folder_blocks
                 objects[index]["blocks_layout"] = folder_blocks_layout
+                continue
             del objects[index]["relatedItems"]
             for field in self.DISSALLOWED_FIELDS:
                 if field in objects[index]:
@@ -1913,9 +1914,6 @@ class ExportReport(ExportEEAContent):
         for field in self.DISSALLOWED_FIELDS:
             if field in item:
                 del item[field]
-
-        import pdb
-        pdb.set_trace()
 
         # return item
         # return [item] + report_content
