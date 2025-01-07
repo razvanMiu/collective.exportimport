@@ -1686,8 +1686,30 @@ class ExportReport(ExportEEAContent):
                     if uid == match:
                         continue
                     text = text.replace(
-                        "src=\"%s\"" % match, "src=\"../resolveuid/%s\"" % uid)
+                        "src=\"%s\"" % match, "src=\"/resolveuid/%s\"" % uid)
                     self.images_ids.append(uid)
+
+                pattern = re.compile(
+                    r'\href=["\'](?!resolveuid)([^"\']+)["\']')
+
+                # Find all matches
+                matches = pattern.findall(text)
+
+                # Save all found ids
+                for match in matches:
+                    uid = resolve_to_uid(match, "/".join(o.getPhysicalPath()))
+                    if uid == match:
+                        continue
+                    text = text.replace(
+                        "href=\"%s\"" % match, "href=\"/resolveuid/%s\"" % uid)
+
+                text = text.replace("../resolveuid", "/resolveuid")
+                text = text.replace("../../resolveuid", "/resolveuid")
+                text = text.replace("../../../resolveuid", "/resolveuid")
+                text = text.replace("../../../../resolveuid", "/resolveuid")
+                text = text.replace("../../../../../resolveuid", "/resolveuid")
+                text = text.replace(
+                    "../../../../../../resolveuid", "/resolveuid")
 
                 blocks = {}
                 blocks_layout = {"items": []}
