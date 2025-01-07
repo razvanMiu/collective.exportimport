@@ -357,6 +357,8 @@ class ExportContent(BrowserView):
 
     def export_content(self):
         query = self.build_query()
+        if len(ids) > 0:
+            query["UID"] = {"query": ids, "operator": "or"}
         catalog = api.portal.get_tool("portal_catalog")
         workflow = api.portal.get_tool("portal_workflow")
         brains = catalog.unrestrictedSearchResults(**query)
@@ -370,14 +372,8 @@ class ExportContent(BrowserView):
         # Override richtext serializer to export links using resolveuid/xxx
         alsoProvides(self.request, IRawRichTextMarker)
 
-        import pdb
-        pdb.set_trace()
-
         for index, brain in enumerate(brains, start=1):
             skip = False
-
-            if brain.UID not in ids:
-                continue
 
             if brain.UID in self.DROP_UIDS:
                 continue
@@ -502,6 +498,8 @@ class ExportContent(BrowserView):
             item = self.update_data_for_migration(item, obj)
 
         item = self.global_dict_hook(item, obj)
+        import pdb
+        pdb.set_trace()
         if not item:
             # logger.info(u"Skipping %s", obj.absolute_url())
             return
