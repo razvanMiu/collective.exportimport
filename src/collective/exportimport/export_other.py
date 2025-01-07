@@ -1682,10 +1682,11 @@ class ExportReport(ExportEEAContent):
 
                 # Save all found ids
                 for match in matches:
-                    uid = resolve_to_uid(match)
-
                     import pdb
                     pdb.set_trace()
+
+                    uid = resolve_to_uid(match, "")
+
                     # self.images_ids.append(match[1])
 
                 blocks = {}
