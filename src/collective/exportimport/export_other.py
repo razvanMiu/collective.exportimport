@@ -1682,6 +1682,8 @@ class ExportReport(ExportEEAContent):
 
                 # Save all found ids
                 for match in matches:
+                    import pdb
+                    pdb.set_trace()
                     uid = resolve_to_uid(match, "/".join(o.getPhysicalPath()))
                     if uid == match:
                         continue
@@ -1704,7 +1706,7 @@ class ExportReport(ExportEEAContent):
                         blocks_layout["items"].append(id)
                     objects[index]["blocks"] = blocks
                     objects[index]["blocks_layout"] = blocks_layout
-                    del objects[index]["text"]
+                del objects[index]["text"]
             if objType == 'Folder':
                 objects[index]["@type"] = 'Document'
                 objects[index]["blocks"] = folder_blocks
