@@ -1682,8 +1682,6 @@ class ExportReport(ExportEEAContent):
 
                 # Save all found ids
                 for match in matches:
-                    import pdb
-                    pdb.set_trace()
                     uid = resolve_to_uid(match, "/".join(o.getPhysicalPath()))
                     if uid == match:
                         continue
@@ -1897,6 +1895,9 @@ class ExportReport(ExportEEAContent):
         for field in self.DISSALLOWED_FIELDS:
             if field in item:
                 del item[field]
+
+        import pdb
+        pdb.set_trace()
 
         # return item
         # return [item] + report_content
