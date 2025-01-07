@@ -1683,12 +1683,10 @@ class ExportReport(ExportEEAContent):
                 # Save all found ids
                 for match in matches:
                     uid = resolve_to_uid(match, "/".join(o.getPhysicalPath()))
-                    import pdb
-                    pdb.set_trace()
                     if uid == match:
                         continue
                     text = text.replace(
-                        "src=\"{match}\"", "src=\"../resolveuid/{uid}\"")
+                        "src=\"%s\"" % match, "src=\"../resolveuid/%s\"" % uid)
                     self.images_ids.append(uid)
 
                 blocks = {}
