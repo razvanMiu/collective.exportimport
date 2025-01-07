@@ -1683,6 +1683,8 @@ class ExportReport(ExportEEAContent):
                 # Save all found ids
                 for match in matches:
                     uid = resolve_to_uid(match, "/".join(o.getPhysicalPath()))
+                    import pdb
+                    pdb.set_trace()
                     if uid == match:
                         continue
                     text = text.replace(
