@@ -450,7 +450,9 @@ class ExportContent(BrowserView):
             "http://backend6:8080/bise",
             "http://backend6:8080",
             "https://demo-biodiversity.devel5cph.eea.europa.eu",
+            "http://demo-biodiversity.devel5cph.eea.europa.eu",
             "https://biodiversity.europa.eu",
+            "http://biodiversity.europa.eu",
             "/bise",
         ]
         blocks = json.dumps(item.get("blocks", {}))
