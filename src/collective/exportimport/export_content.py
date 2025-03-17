@@ -445,15 +445,16 @@ class ExportContent(BrowserView):
 
         item = self.global_dict_hook(item, obj)
         roots = [
-            "http://backend:8080/bise",
+            "http://backend:8080/fise",
             "http://backend:8080",
-            "http://backend6:8080/bise",
+            "http://backend6:8080/fise",
             "http://backend6:8080",
-            "https://demo-biodiversity.devel5cph.eea.europa.eu",
-            "http://demo-biodiversity.devel5cph.eea.europa.eu",
-            "https://biodiversity.europa.eu",
-            "http://biodiversity.europa.eu",
-            "/bise",
+            "http://backend-eea-design-system:8080/fise",
+            "https://demo-forest-eea-design-system.devel4cph.eea.europa.eu",
+            "http://demo-forest-eea-design-system.devel4cph.eea.europa.eu",
+            "https://dev-forest-eea-design-system.devel4cph.eea.europa.eu",
+            "http://dev-forest-eea-design-system.devel4cph.eea.europa.eu",
+            "/fise",
         ]
         blocks = json.dumps(item.get("blocks", {}))
         ok = False
