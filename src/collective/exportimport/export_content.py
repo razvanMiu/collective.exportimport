@@ -398,6 +398,8 @@ class ExportContent(BrowserView):
                 # if brain.review_state == review_state or review_state != 'published':
                 #     continue
 
+                import pdb
+                pdb.set_trace()
                 if not is_mandatory:
                     continue
                 if review_state != 'published':
