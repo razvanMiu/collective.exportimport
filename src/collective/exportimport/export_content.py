@@ -386,7 +386,7 @@ class ExportContent(BrowserView):
                 continue
 
             try:
-                is_mandatory = True if brain.UID in mandatory else False
+                # is_mandatory = True if brain.UID in mandatory else False
 
                 if brain.UID in ["93ffd36e5350449dbe1e1efa06dcea8d"]:
                     continue
@@ -398,10 +398,10 @@ class ExportContent(BrowserView):
                 # if brain.review_state == review_state or review_state != 'published':
                 #     continue
 
-                import pdb
-                pdb.set_trace()
-                if not is_mandatory:
-                    continue
+                # import pdb
+                # pdb.set_trace()
+                # if not is_mandatory:
+                #     continue
                 if review_state != 'published':
                     continue
                 if IObjectArchived and IObjectArchived.providedBy(obj):
@@ -410,7 +410,7 @@ class ExportContent(BrowserView):
                     continue
                 if IGetVersions and not IGetVersions(obj).isLatest():
                     continue
-                if obj.getLanguage() != 'en':
+                if obj.getLanguage() == 'en':
                     continue
                 # if review_state != 'published':
                 #     ok = False
