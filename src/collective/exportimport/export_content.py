@@ -328,8 +328,6 @@ class ExportContent(BrowserView):
                 elif self.include_blobs == 2:
                     noLongerProvides(self.request, IPathBlobsMarker)
                 f.seek(0)
-                import pdb
-                pdb.set_trace()
                 self.finish()
                 return response.write(safe_bytes(f.read()))
 
@@ -361,7 +359,7 @@ class ExportContent(BrowserView):
     def export_content(self):
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
-        workflow = api.portal.get_tool("portal_workflow")
+        # workflow = api.portal.get_tool("portal_workflow")
         brains = catalog.unrestrictedSearchResults(**query)
         p = int(self.request.get('p', '0') or '0')
         nrOfHits = int(self.request.get('nrOfHits', '0') or '0')
@@ -533,6 +531,11 @@ class ExportContent(BrowserView):
             logger.info(u"Skipping %s", obj.absolute_url())
             return
 
+        # Add English translation reference for non-English content
+        if obj.getLanguage() != 'en':
+            english_info = self.get_english_translation_info(obj)
+            item['english_translation'] = english_info
+
         return item
 
     def global_dict_hook(self, item, obj):
@@ -540,6 +543,21 @@ class ExportContent(BrowserView):
         Return None if you want to skip this particular object.
         """
         return item
+
+    def get_english_translation_info(self, obj):
+        """Get full reference info for the English translation of an object."""
+        if not hasattr(obj, 'getTranslation'):
+            return None
+
+        english_obj = obj.getTranslation('en') or obj.getCanonical()
+        if english_obj is None:
+            return None
+
+        return {
+            'UID': IUUID(english_obj, None),
+            '@id': english_obj.absolute_url(),
+            'path': '/'.join(english_obj.getPhysicalPath()),
+        }
 
     def custom_dict_hook(self, item, obj):
         """Add you own method e.g. def dict_hook_document(self, item, obj)
