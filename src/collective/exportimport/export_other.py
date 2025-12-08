@@ -1224,9 +1224,26 @@ class ExportEEAContent(ExportContent):
         else:
             self.parsed_ids.append(item["id"])
 
-        item["@id"] = "%s/%s" % (self.folder_path, item["id"])
-        item["parent"]["@id"] = self.folder_path
-        item["parent"]["UID"] = None
+        # Check if item has an English translation to use as parent
+        english_translation = item.get("english_translation")
+        if english_translation:
+            # Make the English translation the parent
+            # English content is already exported to folder_path with its original ID
+            # Use language code as the non-English item's ID (e.g., 'de', 'fr')
+            lang = obj.getLanguage()
+            # Get the English item's ID from its path
+            english_path = english_translation.get("path", "")
+            english_item_id = english_path.split("/")[-1]
+            english_parent_id = "%s/%s" % (self.folder_path, english_item_id)
+            item["@id"] = "%s/%s" % (english_parent_id, lang)
+            item["id"] = lang
+            item["parent"]["@id"] = english_parent_id
+            item["parent"]["UID"] = english_translation.get("UID")
+        else:
+            # No English translation, use default folder_path
+            item["@id"] = "%s/%s" % (self.folder_path, item["id"])
+            item["parent"]["@id"] = self.folder_path
+            item["parent"]["UID"] = None
         item["original_content_type"] = item["@type"]
 
         if self.type:

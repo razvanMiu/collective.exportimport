@@ -545,11 +545,21 @@ class ExportContent(BrowserView):
         return item
 
     def get_english_translation_info(self, obj):
-        """Get full reference info for the English translation of an object."""
+        """Get full reference info for the English translation of an object.
+
+        Returns None if:
+        - No English translation exists
+        - English translation is archived/expired and no valid version exists
+        """
         if not hasattr(obj, 'getTranslation'):
             return None
 
         english_obj = obj.getTranslation('en') or obj.getCanonical()
+        if english_obj is None:
+            return None
+
+        # Check if English translation needs version lookup
+        english_obj = self._get_valid_english_version(english_obj)
         if english_obj is None:
             return None
 
@@ -558,6 +568,43 @@ class ExportContent(BrowserView):
             '@id': english_obj.absolute_url(),
             'path': '/'.join(english_obj.getPhysicalPath()),
         }
+
+    def _get_valid_english_version(self, english_obj):
+        """Find a valid English version (not archived, not expired, latest if possible).
+
+        Returns the valid object or None if no valid version exists.
+        """
+        # Check if current English object is valid
+        is_archived = IObjectArchived and IObjectArchived.providedBy(
+            english_obj)
+        is_expired_obj = isExpired(english_obj)
+        is_latest = True
+        if IGetVersions:
+            try:
+                is_latest = IGetVersions(english_obj).isLatest()
+            except Exception:
+                is_latest = True  # Assume latest if versioning not applicable
+
+        # If current object is valid, return it
+        if not is_archived and not is_expired_obj and is_latest:
+            return english_obj
+
+        # Try to find a valid version
+        if IGetVersions:
+            try:
+                versions = IGetVersions(english_obj).versions()
+                # Iterate through versions (most recent first)
+                for version in reversed(versions):
+                    v_archived = IObjectArchived and IObjectArchived.providedBy(
+                        version)
+                    v_expired = isExpired(version)
+                    if not v_archived and not v_expired:
+                        return version
+            except Exception:
+                pass
+
+        # No valid version found
+        return None
 
     def custom_dict_hook(self, item, obj):
         """Add you own method e.g. def dict_hook_document(self, item, obj)
