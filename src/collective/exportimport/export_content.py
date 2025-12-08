@@ -521,6 +521,11 @@ class ExportContent(BrowserView):
         if self.migration:
             item = self.update_data_for_migration(item, obj)
 
+        # Add English translation reference for non-English content
+        if obj.getLanguage() != 'en':
+            english_info = self.get_english_translation_info(obj)
+            item['english_translation'] = english_info
+
         item = self.global_dict_hook(item, obj)
         if not item:
             logger.info(u"Skipping %s", obj.absolute_url())
@@ -530,11 +535,6 @@ class ExportContent(BrowserView):
         if not item:
             logger.info(u"Skipping %s", obj.absolute_url())
             return
-
-        # Add English translation reference for non-English content
-        if obj.getLanguage() != 'en':
-            english_info = self.get_english_translation_info(obj)
-            item['english_translation'] = english_info
 
         return item
 
