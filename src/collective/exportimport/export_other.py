@@ -1227,16 +1227,11 @@ class ExportEEAContent(ExportContent):
         # Check if item has an English translation to use as parent
         english_translation = item.get("english_translation")
         if english_translation:
-            # Make the English translation the parent
-            # English content is already exported to folder_path with its original ID
-            # Use language code as the non-English item's ID (e.g., 'de', 'fr')
-            lang = obj.getLanguage()
             # Get the English item's ID from its path
             english_path = english_translation.get("path", "")
             english_item_id = english_path.split("/")[-1]
             english_parent_id = "%s/%s" % (self.folder_path, english_item_id)
-            item["@id"] = "%s/%s" % (english_parent_id, lang)
-            item["id"] = lang
+            item["@id"] = "%s/%s" % (english_parent_id, item["id"])
             item["parent"]["@id"] = english_parent_id
             item["parent"]["UID"] = english_translation.get("UID")
         else:
