@@ -17,7 +17,7 @@ from plone.uuid.interfaces import IUUID
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFPlone.interfaces.constrains import ENABLED
 from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
-from Products.CMFPlone.utils import safe_unicode
+from Products.CMFPlone.utils import safe_unicode, isExpired
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from zope.component import getMultiAdapter
@@ -33,6 +33,16 @@ import os
 import pkg_resources
 import six
 import tempfile
+
+try:
+    from eea.versions.interfaces import IGetVersions
+except ImportError:
+    IGetVersions = None
+
+try:
+    from eea.workflow.interfaces import IObjectArchived
+except ImportError:
+    IObjectArchived = None
 
 try:
     pkg_resources.get_distribution("Products.Archetypes")
@@ -93,6 +103,10 @@ LISTING_VIEW_MAPPING = {  # OLD (AT and old DX) : NEW
 }
 
 
+with open(os.path.dirname(__file__) + '/resources/mandatory.json') as file:
+    mandatory = json.load(file)
+
+
 class ExportContent(BrowserView):
 
     template = ViewPageTemplateFile("templates/export_content.pt")
@@ -102,6 +116,10 @@ class ExportContent(BrowserView):
     DROP_UIDS = []
 
     DROP_PATHS = []
+
+    locations = []
+
+    x = []
 
     def __call__(
         self,
@@ -142,7 +160,8 @@ class ExportContent(BrowserView):
             ("2", _(u"as blob paths")),
         )
         self.include_revisions = include_revisions
-        self.write_errors = write_errors or self.request.form.get("write_errors")
+        self.write_errors = write_errors or self.request.form.get(
+            "write_errors")
 
         self.update()
 
@@ -190,7 +209,9 @@ class ExportContent(BrowserView):
             if directory:
                 if not os.path.exists(directory):
                     os.makedirs(directory)
-                    logger.info("Created central export/import directory %s", directory)
+                    logger.info(
+                        "Created central export/import directory %s",
+                        directory)
             else:
                 cfg = getConfiguration()
                 directory = cfg.clienthome
@@ -213,7 +234,9 @@ class ExportContent(BrowserView):
                     with open(os.path.join(directory, "errors.json"), "w") as f:
                         json.dump(errors, f, indent=4)
             msg = _(u"Exported {} items ({}) to {} with {} errors").format(
-                number, ", ".join(self.portal_type), directory, len(self.errors)
+                number, ", ".join(
+                    self.portal_type), directory, len(
+                    self.errors)
             )
             logger.info(msg)
             api.portal.show_message(msg, self.request)
@@ -232,7 +255,9 @@ class ExportContent(BrowserView):
             if directory:
                 if not os.path.exists(directory):
                     os.makedirs(directory)
-                    logger.info("Created central export/import directory %s", directory)
+                    logger.info(
+                        "Created central export/import directory %s",
+                        directory)
             else:
                 cfg = getConfiguration()
                 directory = cfg.clienthome
@@ -334,7 +359,13 @@ class ExportContent(BrowserView):
     def export_content(self):
         query = self.build_query()
         catalog = api.portal.get_tool("portal_catalog")
+        # workflow = api.portal.get_tool("portal_workflow")
         brains = catalog.unrestrictedSearchResults(**query)
+        p = int(self.request.get('p', '0') or '0')
+        nrOfHits = int(self.request.get('nrOfHits', '0') or '0')
+
+        cindex = 0
+
         logger.info(u"Exporting {} {}".format(len(brains), self.portal_type))
 
         # Override richtext serializer to export links using resolveuid/xxx
@@ -352,15 +383,62 @@ class ExportContent(BrowserView):
             if skip:
                 continue
 
-            if not index % 100:
-                logger.info(u"Handled {} items...".format(index))
             try:
+                # is_mandatory = True if brain.UID in mandatory else False
+
+                if brain.UID in ["93ffd36e5350449dbe1e1efa06dcea8d"]:
+                    continue
+
                 obj = brain.getObject()
+
+                # review_state = workflow.getInfoFor(obj, 'review_state')
+
+                # if brain.review_state == review_state or review_state != 'published':
+                #     continue
+
+                # import pdb
+                # pdb.set_trace()
+                # if not is_mandatory:
+                #     continue
+                # if review_state != 'published':
+                #     continue
+                # if IObjectArchived and IObjectArchived.providedBy(obj):
+                #     continue
+                # if isExpired(obj):
+                #     continue
+                # if IGetVersions and not IGetVersions(obj).isLatest():
+                #     continue
+                if obj.getLanguage() == 'en':
+                    continue
+                # if review_state != 'published':
+                #     ok = False
+                #     versions = IGetVersions(obj).versions()
+                #     for version in reversed(versions):
+                #         if workflow.getInfoFor(version, 'review_state') == 'published' and not IObjectArchived.providedBy(version) and not isExpired(version) and version.getLanguage() == 'en':
+                #             ok = True
+                #             obj = version
+                #             self.x.append(versions[-1])
+                #             break
+                #     if not ok:
+                #         continue
+                # else:
+                #     continue
+                if p and nrOfHits:
+                    startIndex = (p - 1) * nrOfHits
+                    endIndex = p * nrOfHits
+
+                    if cindex < startIndex:
+                        cindex += 1
+                        continue
+                    if cindex >= endIndex:
+                        break
+                    cindex += 1
             except Exception:
                 msg = u"Error getting brain {}".format(brain.getPath())
                 self.errors.append({"path": None, "message": msg})
                 logger.exception(msg, exc_info=True)
                 continue
+
             if obj is None:
                 msg = u"brain.getObject() is None {}".format(brain.getPath())
                 logger.error(msg)
@@ -371,7 +449,9 @@ class ExportContent(BrowserView):
                 continue
             try:
                 self.safe_portal_type = fix_portal_type(obj.portal_type)
-                serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
+                serializer = getMultiAdapter(
+                    (obj, self.request),
+                    ISerializeToJson)
                 if IPloneSiteRoot.providedBy(obj):
                     item = serializer()
                 elif getattr(aq_base(obj), "isPrincipiaFolderish", False):
@@ -379,11 +459,18 @@ class ExportContent(BrowserView):
                 else:
                     item = serializer()
                 item = self.update_export_data(item, obj)
+                if not item:
+                    continue
 
-                yield item
+                if isinstance(item, list):
+                    for i in item:
+                        yield i
+                else:
+                    yield item
             except Exception:
                 msg = u"Error exporting {}".format(obj.absolute_url())
-                self.errors.append({"path": obj.absolute_url(), "message": msg})
+                self.errors.append(
+                    {"path": obj.absolute_url(), "message": msg})
                 logger.exception(msg, exc_info=True)
 
     def portal_types(self):
@@ -434,6 +521,11 @@ class ExportContent(BrowserView):
         if self.migration:
             item = self.update_data_for_migration(item, obj)
 
+        # Add English translation reference for non-English content
+        if obj.getLanguage() != 'en':
+            english_info = self.get_english_translation_info(obj)
+            item['english_translation'] = english_info
+
         item = self.global_dict_hook(item, obj)
         if not item:
             logger.info(u"Skipping %s", obj.absolute_url())
@@ -452,12 +544,75 @@ class ExportContent(BrowserView):
         """
         return item
 
+    def get_english_translation_info(self, obj):
+        """Get full reference info for the English translation of an object.
+
+        Returns None if:
+        - No English translation exists
+        - English translation is archived/expired and no valid version exists
+        """
+        if not hasattr(obj, 'getTranslation'):
+            return None
+
+        english_obj = obj.getTranslation('en') or obj.getCanonical()
+        if english_obj is None:
+            return None
+
+        # Check if English translation needs version lookup
+        english_obj = self._get_valid_english_version(english_obj)
+        if english_obj is None:
+            return None
+
+        return {
+            'UID': IUUID(english_obj, None),
+            '@id': english_obj.absolute_url(),
+            'path': '/'.join(english_obj.getPhysicalPath()),
+        }
+
+    def _get_valid_english_version(self, english_obj):
+        """Find a valid English version (not archived, not expired, latest if possible).
+
+        Returns the valid object or None if no valid version exists.
+        """
+        # Check if current English object is valid
+        is_archived = IObjectArchived and IObjectArchived.providedBy(
+            english_obj)
+        is_expired_obj = isExpired(english_obj)
+        is_latest = True
+        if IGetVersions:
+            try:
+                is_latest = IGetVersions(english_obj).isLatest()
+            except Exception:
+                is_latest = True  # Assume latest if versioning not applicable
+
+        # If current object is valid, return it
+        if not is_archived and not is_expired_obj and is_latest:
+            return english_obj
+
+        # Try to find a valid version
+        if IGetVersions:
+            try:
+                versions = IGetVersions(english_obj).versions()
+                # Iterate through versions (most recent first)
+                for version in reversed(versions):
+                    v_archived = IObjectArchived and IObjectArchived.providedBy(
+                        version)
+                    v_expired = isExpired(version)
+                    if not v_archived and not v_expired:
+                        return version
+            except Exception:
+                pass
+
+        # No valid version found
+        return None
+
     def custom_dict_hook(self, item, obj):
         """Add you own method e.g. def dict_hook_document(self, item, obj)
         Use this to modify or skip the serialized data by type.
         Return a dict or None if you want to skip this particular object.
         """
-        hook = getattr(self, "dict_hook_{}".format(self.safe_portal_type), None)
+        hook = getattr(self, "dict_hook_{}".format(
+            self.safe_portal_type), None)
         if hook and callable(hook):
             item = hook(item, obj)
         return item
@@ -575,7 +730,8 @@ class ExportContent(BrowserView):
         repo_tool = api.portal.get_tool("portal_repository")
         history_metadata = repo_tool.getHistoryMetadata(obj)
         serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
-        content_history_viewlet = ContentHistoryViewlet(obj, self.request, None, None)
+        content_history_viewlet = ContentHistoryViewlet(
+            obj, self.request, None, None)
         content_history_viewlet.navigation_root_url = ""
         content_history_viewlet.site_url = ""
         full_history = content_history_viewlet.fullHistory() or []
@@ -590,9 +746,8 @@ class ExportContent(BrowserView):
             item_version = self.update_data_for_migration(item_version, obj)
             item["exportimport.versions"][version_id] = item_version
             # inject metadata (missing for Archetypes content):
-            comment = history_metadata.retrieve(version_id)["metadata"]["sys_metadata"][
-                "comment"
-            ]
+            comment = history_metadata.retrieve(
+                version_id)["metadata"]["sys_metadata"]["comment"]
             if comment and comment != item["exportimport.versions"][version_id].get(
                 "changeNote"
             ):
@@ -600,17 +755,14 @@ class ExportContent(BrowserView):
             principal = history_metadata.retrieve(version_id)["metadata"][
                 "sys_metadata"
             ]["principal"]
-            if principal and principal != item["exportimport.versions"][version_id].get(
-                "changeActor"
-            ):
+            if principal and principal != item["exportimport.versions"][
+                    version_id].get("changeActor"):
                 item["exportimport.versions"][version_id]["changeActor"] = principal
         # current changenote
-        item["changeNote"] = history_metadata.retrieve(-1)["metadata"]["sys_metadata"][
-            "comment"
-        ]
-        item["changeActor"] = history_metadata.retrieve(-1)["metadata"]["sys_metadata"][
-            "principal"
-        ]
+        item["changeNote"] = history_metadata.retrieve(
+            -1)["metadata"]["sys_metadata"]["comment"]
+        item["changeActor"] = history_metadata.retrieve(
+            -1)["metadata"]["sys_metadata"]["principal"]
         return item
 
 

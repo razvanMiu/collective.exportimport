@@ -1,0 +1,798 @@
+{
+  "Alpine": {
+    "label": "Alpine",
+    "value": "ALP"
+  },
+  "Anatolian": {
+    "label": "Anatolian",
+    "value": "ANA"
+  },
+  "Arctic": {
+    "label": "Arctic",
+    "value": "ARC"
+  },
+  "Atlantic": {
+    "label": "Atlantic",
+    "value": "ATL"
+  },
+  "Black Sea": {
+    "label": "Black Sea",
+    "value": "BLS"
+  },
+  "Boreal": {
+    "label": "Boreal",
+    "value": "BOR"
+  },
+  "Barents Sea": {
+    "label": "Barents Sea",
+    "value": "BSEA"
+  },
+  "Central Mediterranean Sea": {
+    "label": "Central Mediterranean Sea",
+    "value": "CMED"
+  },
+  "Continental": {
+    "label": "Continental",
+    "value": "CON"
+  },
+  "Celtic Seas": {
+    "label": "Celtic Seas",
+    "value": "CSEA"
+  },
+  "Eastern Mediterranean Sea": {
+    "label": "Eastern Mediterranean Sea",
+    "value": "EMED"
+  },
+  "Iberian Coast": {
+    "label": "Iberian Coast",
+    "value": "IC"
+  },
+  "Iceland Sea": {
+    "label": "Iceland Sea",
+    "value": "ICES"
+  },
+  "Macaronesia": {
+    "label": "Macaronesia",
+    "value": "MAC"
+  },
+  "Marine Arctic Ocean": {
+    "label": "Marine Arctic Ocean",
+    "value": "MARC"
+  },
+  "North-East Atlantic Ocean": {
+    "label": "North-East Atlantic Ocean",
+    "value": "MATL"
+  },
+  "Marine Baltic sea": {
+    "label": "Marine Baltic sea",
+    "value": "MBAL"
+  },
+  "Marine Black sea": {
+    "label": "Marine Black sea",
+    "value": "MBLS"
+  },
+  "Marine Caspian sea": {
+    "label": "Marine Caspian sea",
+    "value": "MCAS"
+  },
+  "Mediterranean Sea": {
+    "label": "Mediterranean Sea",
+    "value": "MED"
+  },
+  "Marine Macaronesian/Atlantic ocean": {
+    "label": "Marine Macaronesian/Atlantic ocean",
+    "value": "MMAC"
+  },
+  "Marine Mediterranean sea": {
+    "label": "Marine Mediterranean sea",
+    "value": "MMED"
+  },
+  "Marine North sea": {
+    "label": "Marine North sea",
+    "value": "MNOS"
+  },
+  "Greater North Sea": {
+    "label": "Greater North Sea",
+    "value": "NSEA"
+  },
+  "Pannonian": {
+    "label": "Pannonian",
+    "value": "PAN"
+  },
+  "Steppic": {
+    "label": "Steppic",
+    "value": "STE"
+  },
+  "Western Mediterranean Sea": {
+    "label": "Western Mediterranean Sea",
+    "value": "WMED"
+  },
+  "Cyprus": {
+    "label": "Cyprus",
+    "value": "geo-146669"
+  },
+  "Portugal": {
+    "label": "Portugal",
+    "value": "geo-2264397"
+  },
+  "Spain": {
+    "label": "Spain",
+    "value": "geo-2510769"
+  },
+  "Malta": {
+    "label": "Malta",
+    "value": "geo-2562770"
+  },
+  "Denmark": {
+    "label": "Denmark",
+    "value": "geo-2623032"
+  },
+  "Iceland": {
+    "label": "Iceland",
+    "value": "geo-2629691"
+  },
+  "United Kingdom": {
+    "label": "United Kingdom",
+    "value": "geo-2635167"
+  },
+  "Switzerland": {
+    "label": "Switzerland",
+    "value": "geo-2658434"
+  },
+  "Sweden": {
+    "label": "Sweden",
+    "value": "geo-2661886"
+  },
+  "Netherlands": {
+    "label": "Netherlands",
+    "value": "geo-2750405"
+  },
+  "Austria": {
+    "label": "Austria",
+    "value": "geo-2782113"
+  },
+  "Belgium": {
+    "label": "Belgium",
+    "value": "geo-2802361"
+  },
+  "Germany": {
+    "label": "Germany",
+    "value": "geo-2921044"
+  },
+  "Luxembourg": {
+    "label": "Luxembourg",
+    "value": "geo-2960313"
+  },
+  "Ireland": {
+    "label": "Ireland",
+    "value": "geo-2963597"
+  },
+  "Turkey": {
+    "label": "Turkey",
+    "value": "geo-298795"
+  },
+  "Türkiye": {
+    "label": "Turkey",
+    "value": "geo-298795"
+  },
+  "France": {
+    "label": "France",
+    "value": "geo-3017382"
+  },
+  "Liechtenstein": {
+    "label": "Liechtenstein",
+    "value": "geo-3042058"
+  },
+  "Slovakia": {
+    "label": "Slovakia",
+    "value": "geo-3057568"
+  },
+  "Czechia": {
+    "label": "Czechia",
+    "value": "geo-3077311"
+  },
+  "Norway": {
+    "label": "Norway",
+    "value": "geo-3144096"
+  },
+  "Italy": {
+    "label": "Italy",
+    "value": "geo-3175395"
+  },
+  "Slovenia": {
+    "label": "Slovenia",
+    "value": "geo-3190538"
+  },
+  "Greece": {
+    "label": "Greece",
+    "value": "geo-390903"
+  },
+  "Estonia": {
+    "label": "Estonia",
+    "value": "geo-453733"
+  },
+  "Latvia": {
+    "label": "Latvia",
+    "value": "geo-458258"
+  },
+  "Lithuania": {
+    "label": "Lithuania",
+    "value": "geo-597427"
+  },
+  "Finland": {
+    "label": "Finland",
+    "value": "geo-660013"
+  },
+  "Hungary": {
+    "label": "Hungary",
+    "value": "geo-719819"
+  },
+  "Bulgaria": {
+    "label": "Bulgaria",
+    "value": "geo-732800"
+  },
+  "Poland": {
+    "label": "Poland",
+    "value": "geo-798544"
+  },
+  "Romania": {
+    "label": "Romania",
+    "value": "geo-798549"
+  },
+  "Croatia": {
+    "label": "Croatia",
+    "value": "geo-3202326"
+  },
+  "Montenegro": {
+    "label": "Montenegro",
+    "value": "geo-3194884"
+  },
+  "Bosnia and Herzegovina": {
+    "label": "Bosnia and Herzegovina",
+    "value": "geo-3277605"
+  },
+  "Serbia": {
+    "label": "Serbia",
+    "value": "geo-6290252"
+  },
+  "North Macedonia": {
+    "label": "North Macedonia",
+    "value": "geo-718075"
+  },
+  "Albania": {
+    "label": "Albania",
+    "value": "geo-783754"
+  },
+  "Kosovo": {
+    "label": "Kosovo",
+    "value": "geo-831053"
+  },
+  "Turkmenistan": {
+    "label": "Turkmenistan",
+    "value": "geo-1218197"
+  },
+  "Tajikistan": {
+    "label": "Tajikistan",
+    "value": "geo-1220409"
+  },
+  "Uzbekistan": {
+    "label": "Uzbekistan",
+    "value": "geo-1512440"
+  },
+  "Kazakhstan": {
+    "label": "Kazakhstan",
+    "value": "geo-1522867"
+  },
+  "Kyrgyzstan": {
+    "label": "Kyrgyzstan",
+    "value": "geo-1527747"
+  },
+  "Armenia": {
+    "label": "Armenia",
+    "value": "geo-174982"
+  },
+  "Russia": {
+    "label": "Russia",
+    "value": "geo-2017370"
+  },
+  "Monaco": {
+    "label": "Monaco",
+    "value": "geo-2993457"
+  },
+  "San Marino": {
+    "label": "San Marino",
+    "value": "geo-3168068"
+  },
+  "Azerbaijan": {
+    "label": "Azerbaijan",
+    "value": "geo-587116"
+  },
+  "Georgia": {
+    "label": "Georgia",
+    "value": "geo-614540"
+  },
+  "Moldova": {
+    "label": "Moldova",
+    "value": "geo-617790"
+  },
+  "Belarus": {
+    "label": "Belarus",
+    "value": "geo-630336"
+  },
+  "Ukraine": {
+    "label": "Ukraine",
+    "value": "geo-690791"
+  },
+  "Canada": {
+    "label": "Canada",
+    "value": "geo-6251999"
+  },
+  "Tyskland": {
+    "label": "Germany",
+    "value": "geo-2921044"
+  },
+  "Paris": {
+    "label": "Paris",
+    "value": "geo-2988507"
+  },
+  "Middle East": {
+    "label": "Middle East",
+    "value": "geo-6269133"
+  },
+  "Kongens Nytorv": {
+    "label": "Copenhagen",
+    "value": "geo-2618425"
+  },
+  "Norwegian Sea": {
+    "label": "Norwegian Sea",
+    "value": "geo-2960847"
+  },
+  "Central Denmark Region": {
+    "label": "Central Jutland",
+    "value": "geo-6418539"
+  },
+  "Azores": {
+    "label": "Azores",
+    "value": "geo-3411865"
+  },
+  "Canal de la Mancha": {
+    "label": "English Channel",
+    "value": "geo-2649991"
+  },
+  "Caucasus Region [FNC PENDING April2000]": {
+    "label": "Caucasus Region",
+    "value": "geo-615318"
+  },
+  "Gries Glacier": {
+    "label": "Griespass",
+    "value": "geo-3175822"
+  },
+  "Tyrkiet": {
+    "label": "Turkey",
+    "value": "geo-298795"
+  },
+  "Baden-Wurttemberg": {
+    "label": "Baden-Wurttemberg",
+    "value": "geo-2953481"
+  },
+  "Island": {
+    "label": "Iceland",
+    "value": "geo-2629691"
+  },
+  "Daugavpils": {
+    "label": "Daugavpils",
+    "value": "geo-460413"
+  },
+  "Greenland Sea": {
+    "label": "Greenland Sea",
+    "value": "geo-2960853"
+  },
+  "New Zealand": {
+    "label": "New Zealand",
+    "value": "geo-2186224"
+  },
+  "Litauen": {
+    "label": "Lithuania",
+    "value": "geo-597427"
+  },
+  "Atlantic Ocean": {
+    "label": "Atlantic Ocean",
+    "value": "geo-3373405"
+  },
+  "Greenland": {
+    "label": "Greenland",
+    "value": "geo-3425505"
+  },
+  "England": {
+    "label": "England",
+    "value": "geo-6269131"
+  },
+  "North Atlantic Ocean": {
+    "label": "North Atlantic Ocean",
+    "value": "geo-3411923"
+  },
+  "Mediterranean": {
+    "label": "Mediterranean Sea",
+    "value": "geo-363196"
+  },
+  "London": {
+    "label": "London",
+    "value": "geo-2643743"
+  },
+  "South Korea": {
+    "label": "South Korea",
+    "value": "geo-1835841"
+  },
+  "Libyen": {
+    "label": "Libya",
+    "value": "geo-2215636"
+  },
+  "Bavaria": {
+    "label": "Bavaria",
+    "value": "geo-2951839"
+  },
+  "Iberian Plain": {
+    "label": "Iberian Plain",
+    "value": "geo-3163738"
+  },
+  "Bosnien-Herzegovina": {
+    "label": "Bosnia and Herzegovina",
+    "value": "geo-3277605"
+  },
+  "Marine North-east Atlantic ocean": {
+    "label": "North Atlantic Ocean",
+    "value": "geo-3411923"
+  },
+  "Letonia": {
+    "label": "Latvia",
+    "value": "geo-458258"
+  },
+  "Italia": {
+    "label": "Italy",
+    "value": "geo-3175395"
+  },
+  "Mar Levantino": {
+    "label": "Levantine Sea",
+    "value": "geo-11152682"
+  },
+  "Prag": {
+    "label": "Prague",
+    "value": "geo-3067696"
+  },
+  "Southern Ocean": {
+    "label": "Southern Ocean",
+    "value": "geo-4036776"
+  },
+  "Vienna": {
+    "label": "Vienna",
+    "value": "geo-2761369"
+  },
+  "Aegean Sea": {
+    "label": "Aegean Sea",
+    "value": "geo-265695"
+  },
+  "South Pacific Ocean": {
+    "label": "South Pacific Ocean",
+    "value": "geo-4030483"
+  },
+  "Marea Nordului": {
+    "label": "North Sea",
+    "value": "geo-2960848"
+  },
+  "China": {
+    "label": "China",
+    "value": "geo-1814991"
+  },
+  "India": {
+    "label": "India",
+    "value": "geo-1269750"
+  },
+  "The Netherlands": {
+    "label": "Netherlands",
+    "value": "geo-2750405"
+  },
+  "Reino Unido": {
+    "label": "United Kingdom",
+    "value": "geo-2635167"
+  },
+  "North America": {
+    "label": "North America",
+    "value": "geo-6255149"
+  },
+  "Serbien": {
+    "label": "Serbia",
+    "value": "geo-6290252"
+  },
+  "Bay of Biscay": {
+    "label": "Bay of Biscay",
+    "value": "geo-2960858"
+  },
+  "Thessaloniki": {
+    "label": "Thessaloniki",
+    "value": "geo-734077"
+  },
+  "United States": {
+    "label": "United States",
+    "value": "geo-6252001"
+  },
+  "Celtic Shelf": {
+    "label": "Celtic Shelf",
+    "value": "geo-3163789"
+  },
+  "South Africa": {
+    "label": "South Africa",
+    "value": "geo-953987"
+  },
+  "Mar Egeo": {
+    "label": "Aegean Sea",
+    "value": "geo-265695"
+  },
+  "South America": {
+    "label": "South America",
+    "value": "geo-6255150"
+  },
+  "Canary Islands": {
+    "label": "Canary Islands",
+    "value": "geo-2520308"
+  },
+  "Japan": {
+    "label": "Japan",
+    "value": "geo-1861060"
+  },
+  "Bosnia-Herzegovina": {
+    "label": "Bosnia and Herzegovina",
+    "value": "geo-3277605"
+  },
+  "Kosovo (UNSCR 1244/99)": {
+    "label": "Kosovo (UNSCR 1244/99)",
+    "value": "geo-831053"
+  },
+  "Pacific Ocean": {
+    "label": "Pacific Ocean",
+    "value": "geo-2363254"
+  },
+  "Hintereisferner": {
+    "label": "Hintereisferner",
+    "value": "geo-2776341"
+  },
+  "Andorra": {
+    "label": "Andorra",
+    "value": "geo-3041565"
+  },
+  "Wales": {
+    "label": "Wales",
+    "value": "geo-2634895"
+  },
+  "Mar Mediterr\u00e1neo": {
+    "label": "Mediterranean Sea",
+    "value": "geo-363196"
+  },
+  "\u00c5lfotbreen": {
+    "label": "Ålfotbreen",
+    "value": "geo-9151587"
+  },
+  "Europe": {
+    "label": "Europe",
+    "value": "geo-6255148"
+  },
+  "Australia": {
+    "label": "Australia",
+    "value": "geo-2077456"
+  },
+  "Europa": {
+    "label": "Europe",
+    "value": "geo-6255148"
+  },
+  "Algeria": {
+    "label": "Algeria",
+    "value": "geo-2589581"
+  },
+  "Apennine Mountains": {
+    "label": "Apennines",
+    "value": "geo-3182982"
+  },
+  "6": {
+    "label": "Copenhagen",
+    "value": "geo-2618425"
+  },
+  "8": {
+    "label": "Copenhagen",
+    "value": "geo-2618425"
+  },
+  "Chile": {
+    "label": "Chile",
+    "value": "geo-3895114"
+  },
+  "Krak\u00f3w": {
+    "label": "Kraków",
+    "value": "geo-3094802"
+  },
+  "Ionian Sea": {
+    "label": "Ionian Sea",
+    "value": "geo-2463713"
+  },
+  "Ruman\u00eda": {
+    "label": "Romania",
+    "value": "geo-798549"
+  },
+  "Island of France, France": {
+    "label": "Île-de-France",
+    "value": "geo-3012874"
+  },
+  "Irish Sea": {
+    "label": "Irish Sea",
+    "value": "geo-6640368"
+  },
+  "Gr\u00e6kenland": {
+    "label": "Greece",
+    "value": "geo-390903"
+  },
+  "Morocco": {
+    "label": "Morocco",
+    "value": "geo-2542007"
+  },
+  "Stockholm": {
+    "label": "Stockholm",
+    "value": "geo-2673730"
+  },
+  "Schleswig-Holstein": {
+    "label": "Schleswig-Holstein",
+    "value": "geo-2838632"
+  },
+  "South Atlantic Ocean": {
+    "label": "South Atlantic Ocean",
+    "value": "geo-3358844"
+  },
+  "Barentsz Sea": {
+    "label": "Barentsz Sea",
+    "value": "geo-630674"
+  },
+  "Hesse": {
+    "label": "Hesse",
+    "value": "geo-2905330"
+  },
+  "Adriatic Sea": {
+    "label": "Adriatic Sea",
+    "value": "geo-3183462"
+  },
+  "Toulouse": {
+    "label": "Toulouse",
+    "value": "geo-2972315"
+  },
+  "Lower Saxony": {
+    "label": "Lower Saxony",
+    "value": "geo-2862926"
+  },
+  "Africa": {
+    "label": "Africa",
+    "value": "geo-6255146"
+  },
+  "Macaronesia, Espa\u00f1a": {
+    "label": "Macaronesia",
+    "value": "geo-12214552"
+  },
+  "Australien": {
+    "label": "Australia",
+    "value": "geo-2077456"
+  },
+  "Kallavesi": {
+    "label": "Kallavesi",
+    "value": "geo-654742"
+  },
+  "Baltic Sea": {
+    "label": "Baltic Sea",
+    "value": "geo-2633321"
+  },
+  "Tunisia": {
+    "label": "Tunisia",
+    "value": "geo-2464461"
+  },
+  "6, Kongens Nytorv, Frederiksstaden, Copenhagen, Copenhagen Municipality, Capital Region of Denmark, 1050, Denmark": {
+    "label": "Copenhagen",
+    "value": "geo-2618425"
+  },
+  "Iliki": {
+    "label": "Iliki",
+    "value": "geo-261796"
+  },
+  "Venice": {
+    "label": "Venice",
+    "value": "geo-3164603"
+  },
+  "Indals\u00e4lven": {
+    "label": "Indalsälven",
+    "value": "geo-2703761"
+  },
+  "Athens": {
+    "label": "Athens",
+    "value": "geo-264371"
+  },
+  "Israel": {
+    "label": "Israel",
+    "value": "geo-294640"
+  },
+  "North Sea": {
+    "label": "North Sea",
+    "value": "geo-2960848"
+  },
+  "V\u00f5rtsj\u00e4rv": {
+    "label": "Võrtsjärv",
+    "value": "geo-587451"
+  },
+  "Alsace": {
+    "label": "Alsace",
+    "value": "geo-3038033"
+  },
+  "Zealand": {
+    "label": "Zealand",
+    "value": "geo-6418541"
+  },
+  "Budapest": {
+    "label": "Budapest",
+    "value": "geo-3054643"
+  },
+  "Rhineland-Palatinate": {
+    "label": "Rhineland-Palatinate",
+    "value": "geo-2847618"
+  },
+  "English Channel": {
+    "label": "English Channel",
+    "value": "geo-2649991"
+  },
+  "Celtic Sea": {
+    "label": "Celtic Sea",
+    "value": "geo-2960856"
+  },
+  "Faroe Bank": {
+    "label": "Faroe Bank",
+    "value": "geo-3163773"
+  },
+  "Arctic Ocean": {
+    "label": "Arctic Ocean",
+    "value": "geo-2960860"
+  },
+  "Bratislava, Slovakia": {
+    "label": "Bratislava",
+    "value": "geo-3060972"
+  },
+  "Skagerrak": {
+    "label": "Skagerrak",
+    "value": "geo-2960845"
+  },
+  "North Rhine-Westphalia": {
+    "label": "North Rhine-Westphalia",
+    "value": "geo-2861876"
+  },
+  "Mexico": {
+    "label": "Mexico",
+    "value": "geo-3996063"
+  },
+  "Egypt": {
+    "label": "Egypt",
+    "value": "geo-357994"
+  },
+  "Prague": {
+    "label": "Prague",
+    "value": "geo-3067696"
+  },
+  "Eslovenia": {
+    "label": "Slovenia",
+    "value": "geo-3190538"
+  },
+  "Indian Ocean": {
+    "label": "Indian Ocean",
+    "value": "geo-1545739"
+  },
+  "Antarctica": {
+    "label": "Antarctica",
+    "value": "geo-6697173"
+  },
+  "Earth": {
+    "label": "Earth",
+    "value": "geo-6295630"
+  },
+  "Croacia": {
+    "label": "Croatia",
+    "value": "geo-3202326"
+  }
+}
